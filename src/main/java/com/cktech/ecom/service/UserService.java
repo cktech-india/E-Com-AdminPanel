@@ -1,5 +1,6 @@
 package com.cktech.ecom.service;
 
+import com.cktech.ecom.model.user.UserAddressDTO;
 import com.cktech.ecom.model.user.UserDTO;
 import com.cktech.ecom.repository.UserAddressRepository;
 import com.cktech.ecom.repository.UserRepository;
@@ -19,8 +20,20 @@ public class UserService {
     }
 
     public UserDTO saveUser(UserDTO user) {
-        userAddressRepository.saveAll(user.getAddresses());
-        return userRepository.save(user);
+        UserDTO savedUser = userRepository.save(user);
+
+        // Save addresses
+        if (user.getAddresses() != null && !user.getAddresses().isEmpty()) {
+
+            for (UserAddressDTO address : user.getAddresses()) {
+                address.setUserId(savedUser.getId());
+                address.setCompanyCode(savedUser.getCompanyCode()); // optional
+            }
+
+            userAddressRepository.saveAll(user.getAddresses());
+        }
+
+        return savedUser;
     }
 
     public UserDTO getByUserId(Long id) {
