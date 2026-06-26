@@ -17,24 +17,29 @@ public class UserController {
     }
 
     @PostMapping("")
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO user) {
-        return ResponseEntity.ok(userService.saveUser(user));
+    public ResponseEntity<UserDTO> save(@RequestBody UserDTO user) {
+        return ResponseEntity.ok(userService.save(user));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> findByUserId(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getByUserId(id));
+    public ResponseEntity<UserDTO> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.get(id));
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<UserDTO>> userList() {
+    public ResponseEntity<List<UserDTO>> getList() {
+        return ResponseEntity.ok(userService.getList());
+    }
+
+    @GetMapping("/active-list")
+    public ResponseEntity<List<UserDTO>> getActiveList() {
         return ResponseEntity.ok(userService.getActiveUserList());
     }
 
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
-        userService.markAsDeleted(id);
-        return ResponseEntity.ok(
-                "User deleted successfully");
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        userService.delete(id);
+        return ResponseEntity.ok("User deleted successfully");
     }
 }
