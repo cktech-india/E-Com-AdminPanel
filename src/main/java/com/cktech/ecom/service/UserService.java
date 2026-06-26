@@ -19,48 +19,55 @@ public class UserService {
         this.userAddressRepository = userAddressRepository;
     }
 
-    public UserDTO saveUser(UserDTO user) {
-        UserDTO savedUser = userRepository.save(user);
-
+    public UserDTO save(UserDTO user) {
         // Save addresses
         if (user.getAddresses() != null && !user.getAddresses().isEmpty()) {
-
             for (UserAddressDTO address : user.getAddresses()) {
-                address.setUserId(savedUser.getId());
-                address.setCompanyCode(savedUser.getCompanyCode()); // optional
+                address.setUserId(user.getId());
+                address.setCompanyCode(user.getCompanyCode()); // optional
             }
-
             userAddressRepository.saveAll(user.getAddresses());
         }
-
-        return savedUser;
+        return userRepository.save(user);
     }
 
-    public UserDTO getByUserId(Long id) {
+    public UserDTO get(Long id) {
         var user = userRepository.findById(id).orElseThrow();
         user.setAddresses(userAddressRepository.findByUserId(user.getId()));
         return user;
     }
 
-    public List<UserDTO> getActiveUserList() {
-        var user = userRepository.findByIsDeletedFalseAndIsActiveTrue();
+    public List<UserDTO> getList() {
+        var user = userRepository.findByIsDeletedFalse();
         for (UserDTO userDTO : user) {
-            var address  = userAddressRepository.findByUserId(userDTO.getId());
+            var address = userAddressRepository.findByUserId(userDTO.getId());
             if (address != null) {
                 userDTO.setAddresses(address);
             }
         }
         return user;
     }
-@Transactional
-    public void markAsDeleted(Long id) {
+
+    public List<UserDTO> getActiveUserList() {
+        var user = userRepository.findByIsDeletedFalseAndIsActiveTrue();
+        for (UserDTO userDTO : user) {
+            var address = userAddressRepository.findByUserId(userDTO.getId());
+            if (address != null) {
+                userDTO.setAddresses(address);
+            }
+        }
+        return user;
+    }
+
+    @Transactional
+    public void delete(Long id) {
         var data = userRepository.findById(id).orElseThrow();
         data.setIsDeleted(true);
         userRepository.save(data);
-    var addressData = userAddressRepository.findByUserId(id);
-    for (var address : addressData) {
-        address.setIsDeleted(true);
-    }
-    userAddressRepository.saveAll(addressData);
+        var addressData = userAddressRepository.findByUserId(id);
+        for (var address : addressData) {
+            address.setIsDeleted(true);
+        }
+        userAddressRepository.saveAll(addressData);
     }
 }
