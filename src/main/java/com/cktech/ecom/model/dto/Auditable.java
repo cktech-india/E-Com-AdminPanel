@@ -9,8 +9,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 
@@ -50,23 +48,5 @@ public abstract class Auditable {
 
     @Transient
     private String currentUser; // This will not be a column in the DB
-
-    public String getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated() ||
-                "anonymousUser".equals(authentication.getPrincipal())) {
-            return "system";
-        }
-
-        Object principal = authentication.getPrincipal();
-
-        if (principal instanceof org.springframework.security.core.userdetails.UserDetails) {
-            // This matches the 'userDetails' object you created in your filter
-            return ((org.springframework.security.core.userdetails.UserDetails) principal).getUsername();
-        }
-        // Fallback to name if it's just a string or other type
-        return authentication.getName();
-    }
 }
 
