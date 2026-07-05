@@ -35,4 +35,6 @@ public class TaxRateService {
     public void delete(Long id) {
         taxRateRepository.updateIsDeletedFlag(id, true, "id");
     }
+
+
 }
