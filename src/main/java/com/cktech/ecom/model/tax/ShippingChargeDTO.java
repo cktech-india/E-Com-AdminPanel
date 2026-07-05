@@ -37,4 +37,5 @@ public class ShippingChargeDTO extends Auditable {
 
     @Column(length = 1)
     private String status = "A";
+    
 }

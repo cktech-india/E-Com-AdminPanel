@@ -1,6 +1,6 @@
 package com.cktech.ecom.controller;
 
-import com.cktech.ecom.model.shipping.ShippingChargeDTO;
+import com.cktech.ecom.model.tax.ShippingChargeDTO;
 import com.cktech.ecom.service.ShippingChargeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

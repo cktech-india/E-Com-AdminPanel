@@ -1,6 +1,6 @@
 package com.cktech.ecom.service;
 
-import com.cktech.ecom.model.shipping.ShippingChargeDTO;
+import com.cktech.ecom.model.tax.ShippingChargeDTO;
 import com.cktech.ecom.repository.ShippingChargeRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;

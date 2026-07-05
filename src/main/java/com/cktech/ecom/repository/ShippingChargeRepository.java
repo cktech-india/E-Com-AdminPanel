@@ -1,6 +1,6 @@
 package com.cktech.ecom.repository;
 
-import com.cktech.ecom.model.shipping.ShippingChargeDTO;
+import com.cktech.ecom.model.tax.ShippingChargeDTO;
 import com.cktech.ecom.repository.common.GenericRepository;
 import org.springframework.stereotype.Repository;
 
