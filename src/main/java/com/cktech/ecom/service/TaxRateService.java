@@ -33,7 +33,9 @@ public class TaxRateService {
 
     @Transactional
     public void delete(Long id) {
-        taxRateRepository.updateIsDeletedFlag(id, true, "id");
+        var data = taxRateRepository.findById(id).orElseThrow();
+        data.setIsDeleted(true);
+        taxRateRepository.save(data);
     }
 
 

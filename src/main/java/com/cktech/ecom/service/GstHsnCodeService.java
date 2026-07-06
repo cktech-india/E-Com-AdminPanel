@@ -33,6 +33,8 @@ public class GstHsnCodeService {
 
     @Transactional
     public void delete(Integer id) {
-        gstHsnCodeRepository.updateIsDeletedFlag(id, true, "id");
+        var data = gstHsnCodeRepository.findById(id).orElseThrow();
+        data.setIsDeleted(true);
+        gstHsnCodeRepository.save(data);
     }
 }

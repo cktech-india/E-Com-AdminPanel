@@ -33,6 +33,8 @@ public class ShippingChargeService {
 
     @Transactional
     public void delete(Integer id) {
-        shippingChargeRepository.updateIsDeletedFlag(id, true, "id");
+        var data = shippingChargeRepository.findById(id).orElseThrow();
+        data.setIsDeleted(true);
+        shippingChargeRepository.save(data);
     }
 }

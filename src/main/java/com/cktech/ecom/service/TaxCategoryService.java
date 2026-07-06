@@ -33,6 +33,8 @@ public class TaxCategoryService {
 
     @Transactional
     public void delete(Long id) {
-        taxCategoryRepository.updateIsDeletedFlag(id, true, "id");
+        var data = taxCategoryRepository.findById(id).orElseThrow();
+        data.setIsDeleted(true);
+        taxCategoryRepository.save(data);
     }
 }
