@@ -40,18 +40,6 @@ public class StateService {
 
     }
 
-    public StateDTO update(Long id, StateDTO state) {
-
-        var data = stateRepository.findById(id).orElseThrow();
-
-        data.setStateCode(state.getStateCode());
-        data.setStateName(state.getStateName());
-        data.setGstStateCode(state.getGstStateCode());
-
-        return stateRepository.save(data);
-
-    }
-
     @Transactional
     public void delete(Long id) {
 
