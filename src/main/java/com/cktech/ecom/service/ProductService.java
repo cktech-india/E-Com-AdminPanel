@@ -25,13 +25,15 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Product not found with ID : " + id));
     }
 
+    // Get all products (not deleted)
+    public List<ProductDTO> getProductList() {
+        return productRepository.findByIsDeletedFalse();
+    }
 
-
+    // Get only active products
     public List<ProductDTO> getActiveProductList() {
         return productRepository.findByIsDeletedFalseAndIsActiveTrue();
     }
-
-
 
     @Transactional
     public void delete(Long id) {

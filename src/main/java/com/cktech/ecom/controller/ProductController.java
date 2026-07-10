@@ -23,10 +23,10 @@ public class ProductController {
         return ResponseEntity.ok(productService.save(product));
     }
 
-    // Get All Products
+    // Get All Products (isDeleted = false)
     @GetMapping
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
-        return ResponseEntity.ok(productService.getActiveProductList());
+        return ResponseEntity.ok(productService.getProductList());
     }
 
     // Get Product By ID
@@ -35,14 +35,13 @@ public class ProductController {
         return ResponseEntity.ok(productService.get(id));
     }
 
-
-    // Get Active Products
+    // Get Active Products (isDeleted = false && isActive = true)
     @GetMapping("/active-list")
     public ResponseEntity<List<ProductDTO>> getActiveList() {
         return ResponseEntity.ok(productService.getActiveProductList());
     }
 
-    // Delete Product (Soft Delete)
+    // Soft Delete Product
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         productService.delete(id);
