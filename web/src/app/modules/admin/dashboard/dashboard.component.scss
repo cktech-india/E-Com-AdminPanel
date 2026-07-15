@@ -1,0 +1,59 @@
+// dashboard.component.scss
+// Minimal overrides — all layout/spacing is handled by Tailwind utility classes.
+// Only add styles here that cannot be expressed in Tailwind.
+
+// ── Card tweaks ────────────────────────────────────────────────────────────
+
+// Ensure mat-card-header doesn't add extra padding that conflicts with our
+// custom flex header layout
+.app-dashboard {
+    mat-card-header .mat-mdc-card-header-content {
+        width: 100%;
+    }
+
+    // Remove default bottom margin on mat-card-title when used inside our custom header
+    mat-card-title {
+        margin-bottom: 0;
+    }
+
+    // mat-card default padding conflicts with our p-* Tailwind classes; override
+    .mat-mdc-card-content:first-child {
+        padding-top: 1rem;
+    }
+}
+
+// ── Table tweaks ───────────────────────────────────────────────────────────
+
+.mat-mdc-table {
+    // Let the card control the background
+    background: transparent;
+
+    .mat-mdc-header-cell {
+        color: var(--mat-table-header-headline-color, rgba(0, 0, 0, 0.87));
+        font-size: 0.7rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+
+    .mat-mdc-row:hover {
+        background: rgba(0, 0, 0, 0.03);
+    }
+}
+
+// ── Loading spinner spin animation ─────────────────────────────────────────
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+// ── Expansion panel border ─────────────────────────────────────────────────
+
+.mat-expansion-panel {
+    border-radius: 0.75rem !important;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1) !important;
+}

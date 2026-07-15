@@ -1,0 +1,131 @@
+<div class="flex flex-col w-full min-w-0 bg-gray-50 dark:bg-transparent">
+
+    <div
+        class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 sm:py-8 sm:px-10 border-b bg-card">
+        <div class="flex items-center">
+            <div class="p-3 bg-primary-50 dark:bg-primary-900/20 rounded-xl mr-4">
+                <mat-icon class="icon-size-8 text-primary" svgIcon="heroicons_outline:folder-open"></mat-icon>
+            </div>
+            <div class="flex flex-col">
+                <h2 class="text-3xl font-extrabold tracking-tight leading-none">Files Repository</h2>
+                <div class="flex items-center mt-2 text-secondary">
+                    <mat-icon class="icon-size-4" svgIcon="heroicons_solid:home"></mat-icon>
+                    <span class="ml-1.5 text-sm font-medium">Home</span>
+                    @for (segment of pathSegments; track segment.path) {
+                    <mat-icon class="icon-size-4 mx-1" svgIcon="heroicons_solid:chevron-right"></mat-icon>
+                    <span class="text-sm font-medium">{{ segment.name }}</span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-6 py-4">
+            <div class="flex items-center cursor-pointer group" [class.opacity-50]="currentPath === '/'"
+                [class.pointer-events-none]="currentPath === '/'" (click)="goBack()">
+                <mat-icon class="icon-size-6 text-slate-500 group-hover:text-primary transition-colors"
+                    svgIcon="heroicons_outline:arrow-left"></mat-icon>
+                <span
+                    class="ml-2 text-md font-medium text-slate-400 group-hover:text-primary transition-colors">Back</span>
+            </div>
+
+            <div class="flex items-center cursor-pointer group" (click)="createFolder()">
+                <div
+                    class="flex items-center justify-center w-9 h-9 rounded-lg bg-slate-700 group-hover:bg-primary transition-colors shadow-sm">
+                    <mat-icon class="icon-size-5 text-white" svgIcon="heroicons_solid:folder-plus"></mat-icon>
+                </div>
+                <span class="ml-3 text-md font-semibold text-slate-700 dark:text-slate-200">New Folder</span>
+            </div>
+
+            <div class="flex items-center cursor-pointer group" (click)="folderUpload.click()">
+                <div
+                    class="flex items-center justify-center w-9 h-9 rounded-lg bg-slate-700 group-hover:bg-blue-600 transition-colors shadow-sm">
+                    <mat-icon class="icon-size-5 text-white" svgIcon="heroicons_solid:folder-arrow-down"></mat-icon>
+                </div>
+                <span class="ml-3 text-md font-semibold text-slate-700 dark:text-slate-200">Upload Folder</span>
+            </div>
+
+            <div class="flex items-center cursor-pointer group" (click)="fileUpload.click()">
+                <div
+                    class="flex items-center justify-center w-9 h-9 rounded-lg bg-slate-700 group-hover:bg-indigo-600 transition-colors shadow-sm">
+                    <mat-icon class="icon-size-5 text-white" svgIcon="heroicons_solid:document-arrow-up"></mat-icon>
+                </div>
+                <span class="ml-3 text-md font-semibold text-slate-700 dark:text-slate-200">Upload File</span>
+            </div>
+
+            <input #folderUpload type="file" (change)="uploadFile($event)" webkitdirectory directory hidden multiple />
+            <input #fileUpload type="file" (change)="uploadFile($event)" hidden multiple />
+        </div>
+    </div>
+
+    <div class="p-6 sm:p-10">
+        @if (items.length > 0) {
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-10">
+            @for (item of items; track item.name) {
+            <div class="group flex flex-col items-center cursor-pointer transition-transform duration-200 hover:-translate-y-1"
+                (click)="item.type === 'folder' ? goToFolder(item.name) : downloadFile(item)">
+
+                <div
+                    class="relative w-full aspect-[4/3] flex items-center justify-center rounded-3xl bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 group-hover:shadow-md group-hover:border-primary transition-all">
+
+                    <div
+                        class="flex items-center justify-center w-4/5 h-4/5 rounded-2xl bg-amber-50 dark:bg-amber-900/10 border border-amber-100/50 dark:border-amber-900/20">
+                        @if (item.type === 'folder') {
+                        <mat-icon class="icon-size-24 text-amber-500" svgIcon="heroicons_solid:folder"></mat-icon>
+                        } @else {
+                        @switch (getFileType(item.name)) {
+                        @case ('image') {
+                        <img [src]="item.url" class="object-cover w-full h-full rounded-xl" />
+                        }
+                        @default {
+                        <mat-icon class="icon-size-20" [style.color]="getFileIconColor(item.name)">
+                            {{ getFileIcon(item.name) }}
+                        </mat-icon>
+                        }
+                        }
+                        }
+                    </div>
+
+                    <div
+                        class="absolute top-3 right-3 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        @if (item.type === 'file') {
+                        <button mat-icon-button
+                            class="icon-size-8 min-w-8 h-8 bg-white dark:bg-gray-900 shadow-sm rounded-full"
+                            (click)="$event.stopPropagation(); downloadFile(item)"
+                            matTooltip="Download File">
+                            <mat-icon class="icon-size-4 text-blue-600" svgIcon="heroicons_solid:arrow-down-tray"></mat-icon>
+                        </button>
+                        <button mat-icon-button
+                            class="icon-size-8 min-w-8 h-8 bg-white dark:bg-gray-900 shadow-sm rounded-full"
+                            (click)="$event.stopPropagation(); copyToClipboard(item)"
+                            matTooltip="Copy Link">
+                            <mat-icon class="icon-size-4 text-indigo-600" svgIcon="heroicons_outline:link"></mat-icon>
+                        </button>
+                        }
+                        <button mat-icon-button
+                            class="icon-size-8 min-w-8 h-8 bg-white dark:bg-gray-900 shadow-sm rounded-full"
+                            (click)="$event.stopPropagation(); deleteFile(item)"
+                            matTooltip="Delete">
+                            <mat-icon class="icon-size-4 text-red-500" svgIcon="heroicons_outline:trash"></mat-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-4 w-full text-center">
+                    <span class="text-sm font-bold text-gray-800 dark:text-gray-100 tracking-tight truncate block px-4">
+                        {{ item.name }}
+                    </span>
+                </div>
+            </div>
+            }
+        </div>
+        } @else {
+        <div class="flex flex-col items-center justify-center py-32">
+            <div class="p-6 bg-gray-100 dark:bg-gray-800 rounded-full">
+                <mat-icon class="icon-size-16 text-hint" svgIcon="heroicons_outline:circle-stack"></mat-icon>
+            </div>
+            <h3 class="mt-6 text-xl font-semibold">Your repository is empty</h3>
+            <p class="text-secondary">Click the buttons above to get started</p>
+        </div>
+        }
+    </div>
+</div>

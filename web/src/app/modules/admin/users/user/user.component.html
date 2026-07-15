@@ -1,0 +1,199 @@
+<mat-card class="page-card">
+    <mat-card-content>
+
+        <!-- HEADER -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+            <div>
+                <h2 class="text-2xl font-bold tracking-tight text-slate-900">Users</h2>
+            </div>
+
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+
+                <!-- SEARCH -->
+                <mat-form-field class="fuse-mat-dense w-full sm:w-72">
+                    <mat-icon matPrefix svgIcon="heroicons_outline:magnifying-glass"></mat-icon>
+                    <input matInput placeholder="Search User..." [formControl]="searchControl" autocomplete="off" />
+                </mat-form-field>
+
+                <!-- ADD -->
+                <button (click)="newRowClicked()" mat-flat-button color="primary" class="rounded-lg">
+                    <mat-icon class="mr-2" svgIcon="heroicons_solid:plus"></mat-icon>
+                    Add New User
+                </button>
+
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="overflow-x-auto">
+            <ck-table-grid [properties]="table"></ck-table-grid>
+        </div>
+
+    </mat-card-content>
+</mat-card>
+
+
+<!-- ================= DRAWER ================= -->
+
+<fuse-drawer class="z-999 w-screen min-w-screen sm:w-100 sm:min-w-100 p-2" fixed [mode]="'over'"
+    [name]="'entityFormTpl'" [position]="'right'" #entityFormTpl>
+    <div class="p-4">
+
+        <!-- HEADER -->
+        <div class="grid grid-cols-12 gap-4 mb-4">
+            <div class="col-span-12 sm:col-span-6">
+                <div class="font-semibold text-2xl text-primary">User Entry</div>
+            </div>
+
+            <div class="col-span-12 sm:col-span-6 flex justify-end gap-2">
+
+                <button mat-raised-button color="primary" (click)="onSubmitClicked()" [disabled]="inputForm.invalid">
+                    <mat-icon class="mr-1">send</mat-icon>
+                    Submit
+                </button>
+
+                <button mat-raised-button color="warn" (click)="onCancelClicked()">
+                    <mat-icon class="mr-1">close</mat-icon>
+                    Cancel
+                </button>
+
+            </div>
+        </div>
+
+        <!-- FORM -->
+        <form [formGroup]="inputForm">
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+
+                <!-- USER CODE -->
+                <div class="col-span-1 sm:col-span-2">
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>User Code</mat-label>
+                        <input matInput formControlName="userCode" [readonly]="recordMode !== 'C'">
+                    </mat-form-field>
+                </div>
+
+                <!-- FIRST NAME -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>First Name</mat-label>
+                    <input matInput formControlName="firstName">
+                </mat-form-field>
+
+                <!-- LAST NAME -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Last Name</mat-label>
+                    <input matInput formControlName="lastName">
+                </mat-form-field>
+
+                <!-- EMAIL -->
+                <div class="col-span-1 sm:col-span-2">
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Email</mat-label>
+                        <input matInput formControlName="email">
+                    </mat-form-field>
+                </div>
+
+                <!-- MOBILE -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Mobile</mat-label>
+                    <input matInput formControlName="mobile">
+                </mat-form-field>
+
+                <!-- GROUP -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>User Group</mat-label>
+                    <mat-select formControlName="groupCode">
+                        @for (role of userGroupDropdownItem; track $index) {
+                        <mat-option [value]="role.id">{{ role.name }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                <!-- ACTIVE -->
+                <div class="col-span-1 sm:col-span-2">
+                    <mat-slide-toggle formControlName="isActive">
+                        Active ?
+                    </mat-slide-toggle>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</fuse-drawer>
+
+
+<!-- PASSWORD RESET MODAL -->
+<ng-template #resetPasswordTpl let-data>
+    <div class="flex flex-col max-w-md w-full rounded-2xl bg-white p-6 shadow-xl border border-slate-100 overflow-hidden">
+        <!-- Dialog Header -->
+        <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+            <div class="flex items-center gap-3">
+                <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-50 text-blue-600">
+                    <mat-icon svgIcon="heroicons_outline:key"></mat-icon>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-slate-800">Password Reset</h3>
+                    <p class="text-xs text-slate-400">User: <span class="font-semibold text-slate-600">{{ data.userCode }}</span></p>
+                </div>
+            </div>
+            <button mat-icon-button (click)="closeResetDialog()" class="text-slate-400 hover:text-slate-600">
+                <mat-icon svgIcon="heroicons_outline:x-mark"></mat-icon>
+            </button>
+        </div>
+
+        <div class="flex flex-col gap-5">
+            <!-- Manual Reset Card -->
+            <div class="group relative flex flex-col p-5 rounded-2xl border border-slate-200 bg-slate-50/50 hover:bg-slate-50/80 transition-all duration-200">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Option A</span>
+                </div>
+                <h4 class="text-sm font-bold text-slate-700 mb-1">Set Password Manually</h4>
+                <p class="text-xs text-slate-500 mb-4">Enter a specific password directly for this account.</p>
+                
+                <mat-form-field appearance="outline" class="w-full fuse-mat-dense mb-1">
+                    <mat-label>New Password</mat-label>
+                    <input matInput type="password" [formControl]="manualPasswordControl" placeholder="Min. 8 characters" autocomplete="new-password">
+                    @if (manualPasswordControl.hasError('required')) {
+                        <mat-error>Password is required</mat-error>
+                    }
+                </mat-form-field>
+                
+                <button mat-flat-button color="primary" class="w-full py-2.5 rounded-xl font-semibold shadow-sm" (click)="onManualResetSubmit(data)">
+                    Set Password
+                </button>
+            </div>
+
+            <!-- Divider -->
+            <div class="flex items-center justify-center my-1">
+                <div class="w-full border-t border-dashed border-slate-200"></div>
+                <span class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-white">Or</span>
+                <div class="w-full border-t border-dashed border-slate-200"></div>
+            </div>
+
+            <!-- Auto-Generate Card -->
+            <div class="group relative flex flex-col p-5 rounded-2xl border border-slate-200 bg-slate-50/50 hover:bg-slate-50/80 transition-all duration-200">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-2 h-2 rounded-full bg-teal-500"></div>
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Option B</span>
+                </div>
+                <h4 class="text-sm font-bold text-slate-700 mb-1">Auto-Generate & Email</h4>
+                <p class="text-xs text-slate-500 mb-4">Generates a random secure password and sends it directly to: <strong class="text-slate-700">{{ data.email }}</strong>.</p>
+                
+                <button mat-flat-button class="w-full py-2.5 rounded-xl font-semibold shadow-sm bg-teal-600 hover:bg-teal-700 text-white" (click)="onAutoGenerateEmailSubmit(data)">
+                    <mat-icon class="mr-2 text-white" svgIcon="heroicons_outline:envelope"></mat-icon>
+                    Generate & Send Email
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="flex justify-end items-center mt-6 pt-3 border-t border-slate-100 gap-2">
+            <button mat-stroked-button (click)="closeResetDialog()" class="rounded-xl font-semibold border-slate-200 text-slate-600 hover:bg-slate-50">
+                Close
+            </button>
+        </div>
+    </div>
+</ng-template>

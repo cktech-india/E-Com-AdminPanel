@@ -1,0 +1,263 @@
+<mat-card class="page-card">
+    <mat-card-content>
+
+        <!-- HEADER -->
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold tracking-tight text-slate-900">Tax & Shipping Settings</h2>
+            <p class="text-xs text-slate-500">Configure states, freight charges, GST tax groups, and custom state rates.</p>
+        </div>
+
+        <!-- TABS -->
+        <mat-tab-group (selectedIndexChange)="onTabChanged($event)">
+
+            <!-- TAB 0: TAX CATEGORIES -->
+            <mat-tab label="Tax Categories">
+                <div class="py-4">
+                    <div class="flex justify-end mb-4">
+                        <button mat-flat-button color="primary" (click)="newCategoryClicked()" class="rounded-lg">
+                            <mat-icon class="mr-2">add</mat-icon>
+                            Add Category
+                        </button>
+                    </div>
+                    <ck-table-grid [properties]="taxCategoryTable"></ck-table-grid>
+                </div>
+            </mat-tab>
+
+            <!-- TAB 1: TAX RATES -->
+            <mat-tab label="Tax Rates">
+                <div class="py-4">
+                    <div class="flex justify-end mb-4">
+                        <button mat-flat-button color="primary" (click)="newRateClicked()" class="rounded-lg">
+                            <mat-icon class="mr-2">add</mat-icon>
+                            Add Tax Rate
+                        </button>
+                    </div>
+                    <ck-table-grid [properties]="taxRateTable"></ck-table-grid>
+                </div>
+            </mat-tab>
+
+            <!-- TAB 2: GST HSN CODES -->
+            <mat-tab label="GST HSN Codes">
+                <div class="py-4">
+                    <div class="flex justify-end mb-4">
+                        <button mat-flat-button color="primary" (click)="newHsnClicked()" class="rounded-lg">
+                            <mat-icon class="mr-2">add</mat-icon>
+                            Add HSN Code
+                        </button>
+                    </div>
+                    <ck-table-grid [properties]="hsnTable"></ck-table-grid>
+                </div>
+            </mat-tab>
+
+            <!-- TAB 3: SHIPPING CHARGES -->
+            <mat-tab label="Shipping Charges">
+                <div class="py-4">
+                    <div class="flex justify-end mb-4">
+                        <button mat-flat-button color="primary" (click)="newShippingClicked()" class="rounded-lg">
+                            <mat-icon class="mr-2">add</mat-icon>
+                            Add Shipping Rate
+                        </button>
+                    </div>
+                    <ck-table-grid [properties]="shippingTable"></ck-table-grid>
+                </div>
+            </mat-tab>
+
+            <!-- TAB 4: STATES -->
+            <mat-tab label="States">
+                <div class="py-4">
+                    <div class="flex justify-end mb-4">
+                        <button mat-flat-button color="primary" (click)="newStateClicked()" class="rounded-lg">
+                            <mat-icon class="mr-2">add</mat-icon>
+                            Add State
+                        </button>
+                    </div>
+                    <ck-table-grid [properties]="stateTable"></ck-table-grid>
+                </div>
+            </mat-tab>
+
+        </mat-tab-group>
+
+    </mat-card-content>
+</mat-card>
+
+
+<!-- ================= DRAWERS ================= -->
+
+<!-- 1. TAX CATEGORY DRAWER -->
+<fuse-drawer class="z-999 w-screen min-w-screen sm:w-100 sm:min-w-100 p-2" fixed [mode]="'over'"
+    [name]="'taxCategoryDrawer'" [position]="'right'" #taxCategoryDrawer>
+    <div class="p-4 flex flex-col h-full overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+            <div class="font-bold text-xl text-primary">{{ recordMode === 'C' ? 'Create Tax Category' : 'Edit Tax Category' }}</div>
+            <div class="flex gap-2">
+                <button mat-raised-button color="primary" (click)="saveTaxCategory()" [disabled]="taxCategoryForm.invalid">Save</button>
+                <button mat-raised-button color="warn" (click)="taxCategoryDrawer.close()">Cancel</button>
+            </div>
+        </div>
+        <form [formGroup]="taxCategoryForm">
+            <div class="grid grid-cols-1 gap-4">
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Category Name</mat-label>
+                    <input matInput formControlName="name" placeholder="e.g. GST 18%">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Description</mat-label>
+                    <textarea matInput formControlName="description" rows="3"></textarea>
+                </mat-form-field>
+                <mat-slide-toggle formControlName="isActive">Active Category ?</mat-slide-toggle>
+            </div>
+        </form>
+    </div>
+</fuse-drawer>
+
+<!-- 2. TAX RATE DRAWER -->
+<fuse-drawer class="z-999 w-screen min-w-screen sm:w-100 sm:min-w-100 p-2" fixed [mode]="'over'"
+    [name]="'taxRateDrawer'" [position]="'right'" #taxRateDrawer>
+    <div class="p-4 flex flex-col h-full overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+            <div class="font-bold text-xl text-primary">{{ recordMode === 'C' ? 'Create Tax Rate' : 'Edit Tax Rate' }}</div>
+            <div class="flex gap-2">
+                <button mat-raised-button color="primary" (click)="saveTaxRate()" [disabled]="taxRateForm.invalid">Save</button>
+                <button mat-raised-button color="warn" (click)="taxRateDrawer.close()">Cancel</button>
+            </div>
+        </div>
+        <form [formGroup]="taxRateForm">
+            <div class="grid grid-cols-1 gap-4">
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Tax Rate Name</mat-label>
+                    <input matInput formControlName="taxName" placeholder="e.g. SGST 9%">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Tax Rate (%)</mat-label>
+                    <input matInput type="number" formControlName="taxPercentage" placeholder="0">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Tax Category Group</mat-label>
+                    <mat-select formControlName="taxCategoryId">
+                        @for (tc of taxCategories; track $index) {
+                            <mat-option [value]="tc.id">{{ tc.name }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>State</mat-label>
+                    <mat-select formControlName="stateCode">
+                        <mat-option [value]="null">Global (All States)</mat-option>
+                        @for (st of states; track $index) {
+                            <mat-option [value]="st.stateCode">{{ st.stateName }} ({{ st.stateCode }})</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+                <mat-slide-toggle formControlName="isActive">Active Tax Rate ?</mat-slide-toggle>
+            </div>
+        </form>
+    </div>
+</fuse-drawer>
+
+<!-- 3. HSN DRAWER -->
+<fuse-drawer class="z-999 w-screen min-w-screen sm:w-100 sm:min-w-100 p-2" fixed [mode]="'over'"
+    [name]="'hsnDrawer'" [position]="'right'" #hsnDrawer>
+    <div class="p-4 flex flex-col h-full overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+            <div class="font-bold text-xl text-primary">{{ recordMode === 'C' ? 'Create HSN Code' : 'Edit HSN Code' }}</div>
+            <div class="flex gap-2">
+                <button mat-raised-button color="primary" (click)="saveHsn()" [disabled]="hsnForm.invalid">Save</button>
+                <button mat-raised-button color="warn" (click)="hsnDrawer.close()">Cancel</button>
+            </div>
+        </div>
+        <form [formGroup]="hsnForm">
+            <div class="grid grid-cols-1 gap-4">
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>HSN Code</mat-label>
+                    <input matInput formControlName="hsnCode" placeholder="e.g. 9701">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Description</mat-label>
+                    <textarea matInput formControlName="description" rows="2"></textarea>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Total GST Rate (%)</mat-label>
+                    <input matInput type="number" formControlName="gstRate">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>CGST Rate (%)</mat-label>
+                    <input matInput type="number" formControlName="cgstRate">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>SGST Rate (%)</mat-label>
+                    <input matInput type="number" formControlName="sgstRate">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>IGST Rate (%)</mat-label>
+                    <input matInput type="number" formControlName="igstRate">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Tax Category Group</mat-label>
+                    <mat-select formControlName="taxCategoryId">
+                        @for (tc of taxCategories; track $index) {
+                            <mat-option [value]="tc.id">{{ tc.name }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </form>
+    </div>
+</fuse-drawer>
+
+<!-- 4. SHIPPING DRAWER -->
+<fuse-drawer class="z-999 w-screen min-w-screen sm:w-100 sm:min-w-100 p-2" fixed [mode]="'over'"
+    [name]="'shippingDrawer'" [position]="'right'" #shippingDrawer>
+    <div class="p-4 flex flex-col h-full overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+            <div class="font-bold text-xl text-primary">{{ recordMode === 'C' ? 'Create Shipping Rate' : 'Edit Shipping Rate' }}</div>
+            <div class="flex gap-2">
+                <button mat-raised-button color="primary" (click)="saveShipping()" [disabled]="shippingForm.invalid">Save</button>
+                <button mat-raised-button color="warn" (click)="shippingDrawer.close()">Cancel</button>
+            </div>
+        </div>
+        <form [formGroup]="shippingForm">
+            <div class="grid grid-cols-1 gap-4">
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Size Label</mat-label>
+                    <input matInput formControlName="size" placeholder="e.g. Small / 12x12 inches">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Same State Charge (₹)</mat-label>
+                    <input matInput type="number" formControlName="sameStateCharge">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Other State Charge (₹)</mat-label>
+                    <input matInput type="number" formControlName="otherStateCharge">
+                </mat-form-field>
+                <mat-slide-toggle formControlName="isActive">Active Shipping Rate ?</mat-slide-toggle>
+            </div>
+        </form>
+    </div>
+</fuse-drawer>
+
+<!-- 5. STATE DRAWER -->
+<fuse-drawer class="z-999 w-screen min-w-screen sm:w-100 sm:min-w-100 p-2" fixed [mode]="'over'"
+    [name]="'stateDrawer'" [position]="'right'" #stateDrawer>
+    <div class="p-4 flex flex-col h-full overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+            <div class="font-bold text-xl text-primary">{{ recordMode === 'C' ? 'Create State' : 'Edit State' }}</div>
+            <div class="flex gap-2">
+                <button mat-raised-button color="primary" (click)="saveState()" [disabled]="stateForm.invalid">Save</button>
+                <button mat-raised-button color="warn" (click)="stateDrawer.close()">Cancel</button>
+            </div>
+        </div>
+        <form [formGroup]="stateForm">
+            <div class="grid grid-cols-1 gap-4">
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>State Name</mat-label>
+                    <input matInput formControlName="stateName" placeholder="e.g. Tamil Nadu">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>State Code</mat-label>
+                    <input matInput formControlName="stateCode" placeholder="e.g. TN">
+                </mat-form-field>
+                <mat-slide-toggle formControlName="isActive">Active State ?</mat-slide-toggle>
+            </div>
+        </form>
+    </div>
+</fuse-drawer>

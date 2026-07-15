@@ -1,0 +1,100 @@
+<mat-card class="page-card">
+    <mat-card-content>
+
+        <!-- HEADER -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+            <div>
+                <h2 class="text-2xl font-bold tracking-tight text-slate-900">Contact Inquiries</h2>
+                <p class="text-xs text-slate-500">Track and respond to queries and feedback forms submitted by customers on the store websites.</p>
+            </div>
+
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+
+                <!-- SEARCH -->
+                <mat-form-field class="fuse-mat-dense w-full sm:w-72">
+                    <mat-icon matPrefix>search</mat-icon>
+                    <input matInput placeholder="Search Customer Name..." [formControl]="searchControl" autocomplete="off" />
+                </mat-form-field>
+
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="overflow-x-auto">
+            <ck-table-grid [properties]="table"></ck-table-grid>
+        </div>
+
+    </mat-card-content>
+</mat-card>
+
+
+<!-- ================= DRAWER ================= -->
+
+<fuse-drawer class="z-999 w-screen min-w-screen sm:w-110 sm:min-w-110 p-2" fixed [mode]="'over'"
+    [name]="'inquiryFormTpl'" [position]="'right'" #inquiryFormTpl>
+    <div class="p-4 flex flex-col h-full overflow-y-auto">
+
+        <!-- HEADER -->
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+            <div>
+                <div class="font-semibold text-2xl text-primary font-bold">Contact Inquiry Detail</div>
+                <p class="text-xs text-slate-400">View message text and toggle resolution status.</p>
+            </div>
+
+            <div class="flex gap-2">
+                <button mat-raised-button color="primary" (click)="onSubmitClicked()">
+                    <mat-icon class="mr-1">done</mat-icon>
+                    Update
+                </button>
+                <button mat-raised-button color="warn" (click)="onCancelClicked()">
+                    <mat-icon class="mr-1">close</mat-icon>
+                    Cancel
+                </button>
+            </div>
+        </div>
+
+        <!-- FORM -->
+        <form [formGroup]="inputForm" class="flex-grow">
+
+            <div class="grid grid-cols-1 gap-4">
+
+                <!-- CUSTOMER NAME -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Customer Name</mat-label>
+                    <input matInput formControlName="fullName">
+                </mat-form-field>
+
+                <!-- EMAIL -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Email Address</mat-label>
+                    <input matInput formControlName="email">
+                </mat-form-field>
+
+                <!-- SUBJECT -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Subject</mat-label>
+                    <input matInput formControlName="subject">
+                </mat-form-field>
+
+                <!-- STATUS -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Resolution Status</mat-label>
+                    <mat-select formControlName="status">
+                        <mat-option value="NEW">NEW / UNRESOLVED</mat-option>
+                        <mat-option value="PENDING">PENDING</mat-option>
+                        <mat-option value="RESOLVED">RESOLVED</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <!-- MESSAGE BODY -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Message Text</mat-label>
+                    <textarea matInput formControlName="message" rows="8"></textarea>
+                </mat-form-field>
+
+            </div>
+
+        </form>
+
+    </div>
+</fuse-drawer>

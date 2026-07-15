@@ -1,0 +1,125 @@
+.mat-card {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  border-radius: 12px;
+}
+
+.overflow-auto {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 10px;
+  }
+}
+
+
+.mat-mdc-table {
+  width: 100%;
+
+  .mat-mdc-header-cell {
+    background-color: #f9fafb;
+    color: #4b5563;
+    font-weight: 600;
+    padding: 12px;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+  .mat-mdc-cell {
+    padding: 8px 12px;
+    border-bottom: 1px solid #f3f4f6;
+  }
+}
+
+
+.cell-padding {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.custom-table-input {
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  font-size: 13px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background-color: #ffffff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: #3f51b5;
+    box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.1);
+  }
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+}
+
+
+::ng-deep {
+  .compact-select {
+    width: 100%;
+
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none !important;
+    }
+
+    .mat-mdc-text-field-wrapper {
+      height: 34px !important;
+      padding: 0 8px !important;
+      background-color: transparent !important;
+      display: flex;
+      align-items: center;
+    }
+
+
+    .mat-mdc-form-field-infix {
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      min-height: auto !important;
+    }
+  }
+
+  .mat-mdc-slide-toggle {
+    transform: scale(0.8);
+    transform-origin: left;
+  }
+}
+
+.read-only-text {
+  font-size: 13px;
+  color: #374151;
+  padding: 4px 0;
+}
+
+.action-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+
+  &:hover {
+    transform: scale(1.2);
+  }
+}
+
+.icon-small {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.m-r-4 {
+  margin-right: 8px;
+}

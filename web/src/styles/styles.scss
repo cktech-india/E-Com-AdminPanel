@@ -1,0 +1,857 @@
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Import/write your custom styles here.
+/*  @ Styles from this file will override 'vendors.scss' and Fuse's base styles.
+/* ----------------------------------------------------------------------------------------------------- */
+/* Customizing ngx-toastr to look modern */
+/* Add this at the top of your global stylesheet */
+@import 'ngx-toastr/toastr';
+
+/* Card Container and Card Styles */
+.card-container {
+  width: 100%;
+}
+
+.contract-card {
+  height: 100%;
+  border-radius: 8px !important;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  background-color: var(--fuse-card);
+  color: var(--fuse-text);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px var(--fuse-shadow) !important;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+
+    h2.contract-name {
+      margin: 0;
+      font-weight: 600;
+      font-size: 18px;
+    }
+  }
+
+  .card-body {
+    padding: 0;
+  }
+}
+
+.status-indicator {
+  box-shadow: 0 2px 4px var(--fuse-shadow);
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.info-group {
+  margin-bottom: 8px;
+}
+
+.field-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--fuse-text-secondary);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.field-value {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--fuse-text);
+}
+
+.card-actions {
+  padding-top: 8px;
+}
+
+.document-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+/* Responsive adjustments for cards */
+@media (max-width: 768px) {
+  .contract-card {
+    padding: 12px 16px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+
+    .status-indicator {
+      margin-bottom: 12px;
+      margin-right: 0 !important;
+    }
+  }
+
+  .card-body {
+    grid-template-columns: 1fr !important;
+  }
+}
+.mat-slide-panel-container {
+    background: var(--fuse-card);
+}
+
+/* Common Card Styles */
+.page-card {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px var(--fuse-shadow);
+    margin-bottom: 24px;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+    background-color: var(--fuse-card);
+}
+
+.page-card:hover {
+    box-shadow: 0 6px 12px var(--fuse-shadow);
+}
+
+/* Page Title Styles */
+.page-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--fuse-primary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.page-id {
+    font-size: 1rem;
+    color: var(--fuse-text-secondary);
+    margin-left: 8px;
+}
+
+/* Responsive Header Styles */
+.page-header {
+    display: flex;
+    flex-direction: column;
+
+    @media (min-width: 640px) {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 1.25rem;
+    }
+
+    .page-header {
+        text-align: center;
+    }
+
+    .page-header > div:first-child {
+        margin-bottom: 16px;
+    }
+
+    .drawer-header > div:first-child {
+        margin-bottom: 8px;
+    }
+}
+
+/* Button Styles */
+.action-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    transition: transform 0.2s ease;
+}
+
+.action-button:hover {
+    transform: translateY(-2px);
+}
+
+.action-buttons-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin-top: 16px;
+
+    @media (min-width: 640px) {
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 0;
+    }
+}
+
+.action-button {
+    width: 100%;
+
+    @media (min-width: 640px) {
+        width: auto;
+        min-width: 120px;
+    }
+}
+
+@media (max-width: 768px) {
+    .action-buttons-container {
+        justify-content: center;
+    }
+
+    .action-button:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.approve-button {
+    background-color: #4caf50;
+}
+
+.reject-button {
+    background-color: #f44336;
+}
+
+/* Table Styles */
+.table-container {
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 16px;
+    width: 100%;
+    overflow-x: auto;
+
+    @media (max-width: 640px) {
+        margin-top: 8px;
+    }
+}
+
+/* Responsive Table */
+.responsive-table {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+
+    table {
+        min-width: 100%;
+    }
+
+    @media (max-width: 640px) {
+        /* Card view for tables on mobile */
+        .mat-mdc-row {
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px var(--fuse-shadow);
+            background-color: var(--fuse-card);
+        }
+
+        .mat-mdc-cell {
+            display: flex;
+            padding: 4px 0;
+            border-bottom: none;
+
+            &:before {
+                content: attr(data-label);
+                font-weight: 500;
+                width: 40%;
+                margin-right: 8px;
+            }
+        }
+
+        .mat-mdc-header-row {
+            display: none;
+        }
+    }
+}
+
+/* Drawer Styles */
+.submission-drawer {
+    width: 25vw;
+    max-width: 90vw;
+    min-width: 320px;
+    padding: 0;
+    box-shadow: -2px 0 8px var(--fuse-shadow);
+}
+
+.drawer-content {
+    padding: 24px;
+    background-color: var(--fuse-card);
+    color: var(--fuse-text);
+    height: 100%;
+    overflow-y: auto;
+}
+
+.drawer-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--fuse-primary);
+    margin-bottom: 16px;
+}
+
+.drawer-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.drawer-buttons .action-button {
+    width: auto;
+    min-width: 120px;
+}
+
+@media (max-width: 768px) {
+    .submission-drawer {
+        width: 80vw;
+    }
+
+    .drawer-content {
+        padding: 16px;
+    }
+
+    .drawer-buttons {
+        justify-content: center;
+        margin-top: 8px;
+    }
+}
+
+/* Form Styles */
+.form-container {
+    background-color: var(--fuse-card);
+    color: var(--fuse-text);
+    border-radius: 8px;
+    padding: 16px;
+    width: 100%;
+    margin-top: 1rem;
+
+    @media (max-width: 640px) {
+        padding: 12px 8px;
+    }
+}
+
+.form-field-container {
+    margin-bottom: 16px;
+
+    @media (max-width: 640px) {
+        margin-bottom: 12px;
+    }
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+/* Responsive Grid Layouts */
+.responsive-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+
+    @media (min-width: 640px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 1024px) {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.responsive-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+
+    @media (min-width: 640px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 1024px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Responsive form field styles */
+@media (max-width: 640px) {
+    .mat-mdc-form-field-subscript-wrapper {
+        margin-top: 0;
+    }
+
+    .mat-mdc-form-field-infix {
+        min-height: 48px;
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+
+    .mat-mdc-text-field-wrapper {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-container .grid {
+        gap: 12px !important;
+    }
+
+    .page-title {
+        font-size: 1.125rem;
+    }
+
+    .page-id {
+        font-size: 0.875rem;
+        display: block;
+        margin-left: 0;
+        margin-top: 4px;
+    }
+
+    .action-button {
+        min-width: 100px;
+        padding: 4px 12px;
+    }
+
+    .action-button mat-icon {
+        font-size: 18px;
+        height: 18px;
+        width: 18px;
+        line-height: 18px;
+    }
+}
+
+
+/* File Upload Styles */
+.file-upload-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    border: 1px dashed var(--fuse-border);
+    border-radius: 8px;
+    background-color: var(--fuse-background-light);
+    color: var(--fuse-text);
+    transition: border-color 0.3s ease;
+    margin-bottom: 16px;
+    width: 100%;
+
+    &:hover {
+        border-color: var(--fuse-primary);
+    }
+
+    @media (max-width: 640px) {
+        padding: 12px;
+        margin-bottom: 12px;
+        gap: 6px;
+    }
+}
+
+.file-upload-label {
+    font-weight: 500;
+    color: var(--fuse-text-secondary);
+    display: block;
+    margin-bottom: 4px;
+
+    @media (max-width: 640px) {
+        font-size: 14px;
+    }
+}
+
+.file-upload-input {
+    padding: 8px 0;
+    width: 100%;
+
+    @media (max-width: 640px) {
+        padding: 6px 0;
+    }
+}
+
+.drawer-upload {
+    margin: 0;
+    width: 100%;
+}
+
+/* Stepper Styles */
+.stepper-responsive {
+    width: 100%;
+
+    .mat-horizontal-stepper-header-container {
+        @media (max-width: 768px) {
+            display: none;
+        }
+    }
+
+    .mat-vertical-stepper-header {
+        padding: 16px;
+
+        @media (max-width: 640px) {
+            padding: 12px;
+        }
+    }
+
+    .mat-vertical-content-container {
+        margin-left: 24px;
+
+        @media (max-width: 640px) {
+            margin-left: 12px;
+        }
+    }
+
+    .mat-vertical-content {
+        padding: 0 16px 16px 16px;
+
+        @media (max-width: 640px) {
+            padding: 0 12px 12px 12px;
+        }
+    }
+
+    .mat-stepper-vertical, .mat-stepper-horizontal {
+        background-color: transparent;
+    }
+
+    .mat-step-header {
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.04);
+        }
+    }
+
+    .mat-step-label {
+        @media (max-width: 640px) {
+            font-size: 14px;
+        }
+    }
+}
+
+/* Document List Styles */
+.document-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 16px;
+    width: 100%;
+
+    @media (max-width: 480px) {
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    @media (min-width: 640px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 1024px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.document-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: var(--fuse-background-light);
+    color: var(--fuse-text);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:hover {
+        background-color: var(--fuse-background-hover);
+        transform: translateY(-2px);
+    }
+
+    span {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .download-icon {
+        color: var(--fuse-primary);
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 480px) {
+        padding: 8px 12px;
+    }
+}
+
+/* Alert Message Styles */
+.alert-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin: 16px 0;
+    width: 100%;
+
+    @media (max-width: 640px) {
+        padding: 10px 12px;
+        margin: 12px 0;
+        font-size: 14px;
+    }
+
+    &.success-message {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+        border-left: 4px solid #4caf50;
+    }
+
+    &.error-message {
+        background-color: #ffebee;
+        color: #c62828;
+        border-left: 4px solid #f44336;
+    }
+
+    mat-icon {
+        font-size: 20px;
+        height: 20px;
+        width: 20px;
+
+        @media (max-width: 640px) {
+            font-size: 18px;
+            height: 18px;
+            width: 18px;
+        }
+    }
+}
+
+.success-snackbar {
+    --mdc-snackbar-container-color: #10b981; /* Tailwind emerald-500 */
+    --mdc-snackbar-label-text-color: white;
+    border-radius: 12px !important;
+}
+
+/* ======================================================== */
+/* Font Size Adjustments for Entity Form and List Pages     */
+/* ======================================================== */
+
+/* --- Small Font Size ('sm') --- */
+body.entity-font-size-sm {
+    /* Page Titles & Headers */
+    app-entity-form-entry-component h2,
+    app-entity-form-list-components h2 {
+        font-size: 14px !important;
+    }
+    /* Group / Sub headers */
+    app-entity-form-entry-component h3,
+    app-entity-form-list-components h3 {
+        font-size: 11px !important;
+    }
+    /* Table headers, cells, dynamic display, labels, inputs, select, buttons, paginator */
+    app-entity-form-entry-component th,
+    app-entity-form-entry-component td,
+    app-entity-form-entry-component .mat-mdc-header-cell,
+    app-entity-form-entry-component .mat-mdc-cell,
+    app-entity-form-entry-component .mat-mdc-form-field,
+    app-entity-form-entry-component .mat-mdc-form-field *,
+    app-entity-form-entry-component .mat-mdc-input-element,
+    app-entity-form-entry-component .mdc-text-field,
+    app-entity-form-entry-component .mdc-floating-label,
+    app-entity-form-entry-component .mat-mdc-select-value,
+    app-entity-form-entry-component input,
+    app-entity-form-entry-component textarea,
+    app-entity-form-entry-component select,
+    app-entity-form-entry-component button,
+    app-entity-form-entry-component .mat-mdc-button,
+    app-entity-form-entry-component .mat-mdc-raised-button,
+    app-entity-form-entry-component .mat-mdc-stroked-button,
+    app-entity-form-entry-component span,
+    app-entity-form-entry-component p,
+    app-entity-form-list-components th,
+    app-entity-form-list-components td,
+    app-entity-form-list-components .mat-mdc-header-cell,
+    app-entity-form-list-components .mat-mdc-cell,
+    app-entity-form-list-components .mat-mdc-form-field,
+    app-entity-form-list-components .mat-mdc-form-field *,
+    app-entity-form-list-components .mat-mdc-input-element,
+    app-entity-form-list-components .mdc-text-field,
+    app-entity-form-list-components .mdc-floating-label,
+    app-entity-form-list-components .mat-mdc-select-value,
+    app-entity-form-list-components input,
+    app-entity-form-list-components textarea,
+    app-entity-form-list-components select,
+    app-entity-form-list-components button,
+    app-entity-form-list-components .mat-mdc-button,
+    app-entity-form-list-components .mat-mdc-raised-button,
+    app-entity-form-list-components .mat-mdc-stroked-button,
+    app-entity-form-list-components span,
+    app-entity-form-list-components p,
+    app-entity-form-list-components .mat-mdc-paginator,
+    app-entity-form-list-components .mat-mdc-paginator * {
+        font-size: 11px !important;
+    }
+}
+
+/* --- Medium Font Size ('md' - Default) --- */
+body.entity-font-size-md {
+    app-entity-form-entry-component h2,
+    app-entity-form-list-components h2 {
+        font-size: 18px !important;
+    }
+    app-entity-form-entry-component h3,
+    app-entity-form-list-components h3 {
+        font-size: 14px !important;
+    }
+    app-entity-form-entry-component th,
+    app-entity-form-list-components th,
+    app-entity-form-entry-component .mat-mdc-header-cell,
+    app-entity-form-list-components .mat-mdc-header-cell {
+        font-size: 12px !important;
+    }
+    app-entity-form-entry-component td,
+    app-entity-form-list-components td,
+    app-entity-form-entry-component .mat-mdc-cell,
+    app-entity-form-list-components .mat-mdc-cell,
+    app-entity-form-entry-component .mat-mdc-form-field,
+    app-entity-form-entry-component .mat-mdc-form-field *,
+    app-entity-form-entry-component .mat-mdc-input-element,
+    app-entity-form-entry-component .mdc-text-field,
+    app-entity-form-entry-component .mdc-floating-label,
+    app-entity-form-entry-component .mat-mdc-select-value,
+    app-entity-form-entry-component input,
+    app-entity-form-list-components input,
+    app-entity-form-entry-component textarea,
+    app-entity-form-list-components textarea,
+    app-entity-form-entry-component span,
+    app-entity-form-list-components span,
+    app-entity-form-list-components .mat-mdc-form-field,
+    app-entity-form-list-components .mat-mdc-form-field *,
+    app-entity-form-list-components .mat-mdc-input-element,
+    app-entity-form-list-components .mdc-text-field,
+    app-entity-form-list-components .mdc-floating-label,
+    app-entity-form-list-components .mat-mdc-select-value {
+        font-size: 14px !important;
+    }
+}
+
+/* --- Large Font Size ('lg') --- */
+body.entity-font-size-lg {
+    app-entity-form-entry-component h2,
+    app-entity-form-list-components h2 {
+        font-size: 22px !important;
+    }
+    app-entity-form-entry-component h3,
+    app-entity-form-list-components h3 {
+        font-size: 16px !important;
+    }
+    app-entity-form-entry-component th,
+    app-entity-form-entry-component .mat-mdc-header-cell,
+    app-entity-form-list-components th,
+    app-entity-form-list-components .mat-mdc-header-cell {
+        font-size: 14px !important;
+    }
+    app-entity-form-entry-component td,
+    app-entity-form-entry-component .mat-mdc-cell,
+    app-entity-form-entry-component .mat-mdc-form-field,
+    app-entity-form-entry-component .mat-mdc-form-field *,
+    app-entity-form-entry-component .mat-mdc-input-element,
+    app-entity-form-entry-component .mdc-text-field,
+    app-entity-form-entry-component .mdc-floating-label,
+    app-entity-form-entry-component .mat-mdc-select-value,
+    app-entity-form-entry-component input,
+    app-entity-form-entry-component textarea,
+    app-entity-form-entry-component select,
+    app-entity-form-entry-component button,
+    app-entity-form-entry-component .mat-mdc-button,
+    app-entity-form-entry-component .mat-mdc-raised-button,
+    app-entity-form-entry-component .mat-mdc-stroked-button,
+    app-entity-form-entry-component span,
+    app-entity-form-entry-component p,
+    app-entity-form-list-components td,
+    app-entity-form-list-components .mat-mdc-cell,
+    app-entity-form-list-components .mat-mdc-form-field,
+    app-entity-form-list-components .mat-mdc-form-field *,
+    app-entity-form-list-components .mat-mdc-input-element,
+    app-entity-form-list-components .mdc-text-field,
+    app-entity-form-list-components .mdc-floating-label,
+    app-entity-form-list-components .mat-mdc-select-value,
+    app-entity-form-list-components input,
+    app-entity-form-list-components textarea,
+    app-entity-form-list-components select,
+    app-entity-form-list-components button,
+    app-entity-form-list-components .mat-mdc-button,
+    app-entity-form-list-components .mat-mdc-raised-button,
+    app-entity-form-list-components .mat-mdc-stroked-button,
+    app-entity-form-list-components span,
+    app-entity-form-list-components p,
+    app-entity-form-list-components .mat-mdc-paginator,
+    app-entity-form-list-components .mat-mdc-paginator * {
+        font-size: 16px !important;
+    }
+}
+
+/* --- Extra Large Font Size ('xl') --- */
+body.entity-font-size-xl {
+    app-entity-form-entry-component h2,
+    app-entity-form-list-components h2 {
+        font-size: 26px !important;
+    }
+    app-entity-form-entry-component h3,
+    app-entity-form-list-components h3 {
+        font-size: 18px !important;
+    }
+    app-entity-form-entry-component th,
+    app-entity-form-entry-component .mat-mdc-header-cell,
+    app-entity-form-list-components th,
+    app-entity-form-list-components .mat-mdc-header-cell {
+        font-size: 16px !important;
+    }
+    app-entity-form-entry-component td,
+    app-entity-form-entry-component .mat-mdc-cell,
+    app-entity-form-entry-component .mat-mdc-form-field,
+    app-entity-form-entry-component .mat-mdc-form-field *,
+    app-entity-form-entry-component .mat-mdc-input-element,
+    app-entity-form-entry-component .mdc-text-field,
+    app-entity-form-entry-component .mdc-floating-label,
+    app-entity-form-entry-component .mat-mdc-select-value,
+    app-entity-form-entry-component input,
+    app-entity-form-entry-component textarea,
+    app-entity-form-entry-component select,
+    app-entity-form-entry-component button,
+    app-entity-form-entry-component .mat-mdc-button,
+    app-entity-form-entry-component .mat-mdc-raised-button,
+    app-entity-form-entry-component .mat-mdc-stroked-button,
+    app-entity-form-entry-component span,
+    app-entity-form-entry-component p,
+    app-entity-form-list-components td,
+    app-entity-form-list-components .mat-mdc-cell,
+    app-entity-form-list-components .mat-mdc-form-field,
+    app-entity-form-list-components .mat-mdc-form-field *,
+    app-entity-form-list-components .mat-mdc-input-element,
+    app-entity-form-list-components .mdc-text-field,
+    app-entity-form-list-components .mdc-floating-label,
+    app-entity-form-list-components .mat-mdc-select-value,
+    app-entity-form-list-components input,
+    app-entity-form-list-components textarea,
+    app-entity-form-list-components select,
+    app-entity-form-list-components button,
+    app-entity-form-list-components .mat-mdc-button,
+    app-entity-form-list-components .mat-mdc-raised-button,
+    app-entity-form-list-components .mat-mdc-stroked-button,
+    app-entity-form-list-components span,
+    app-entity-form-list-components p,
+    app-entity-form-list-components .mat-mdc-paginator,
+    app-entity-form-list-components .mat-mdc-paginator * {
+        font-size: 18px !important;
+    }
+}
+
+
+

@@ -1,0 +1,137 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 min-w-0">
+            <!-- Breadcrumbs -->
+            <div class="flex flex-wrap items-center font-medium">
+                <div>
+                    <a class="whitespace-nowrap text-primary-500">Admin</a>
+                </div>
+                <div class="flex items-center ml-1 whitespace-nowrap">
+                    <mat-icon
+                        class="icon-size-5 text-secondary"
+                        [svgIcon]="'heroicons_solid:chevron-right'"></mat-icon>
+                    <a class="ml-1 text-secondary">Active Sessions</a>
+                </div>
+            </div>
+            <!-- Title -->
+            <div class="mt-2">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    Active Sessions
+                </h2>
+            </div>
+        </div>
+        <!-- Actions -->
+        <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4 gap-2">
+            <mat-form-field class="fuse-mat-dense fuse-mat-rounded min-w-64" [subscriptSizing]="'dynamic'">
+                <mat-icon
+                    matPrefix
+                    class="icon-size-5"
+                    [svgIcon]="'heroicons_solid:magnifying-glass'"></mat-icon>
+                <input
+                    matInput
+                    (keyup)="applyFilter($event)"
+                    placeholder="Search by user or ID"
+                    #input>
+            </mat-form-field>
+
+            <button
+                mat-flat-button
+                color="warn"
+                [disabled]="!selection.hasValue()"
+                (click)="killBulkSessions()">
+                <mat-icon [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                <span class="ml-2 whitespace-nowrap">Kill Selected ({{ selection.selected.length }})</span>
+            </button>
+
+            <button
+                mat-flat-button
+                [color]="'primary'"
+                (click)="loadSessions()">
+                <mat-icon [svgIcon]="'heroicons_outline:arrow-path'"></mat-icon>
+                <span class="ml-2">Refresh</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+        <div class="max-w-5xl mx-auto">
+            <div class="bg-card shadow rounded-2xl overflow-hidden flex flex-col relative min-h-80">
+                <div class="overflow-x-auto pb-14">
+                    <table mat-table [dataSource]="sessions" class="w-full">
+
+                        <!-- Checkbox Column -->
+                        <ng-container matColumnDef="select">
+                            <th mat-header-cell *matHeaderCellDef class="bg-gray-50 dark:bg-gray-800 w-12">
+                                <mat-checkbox (change)="$event ? masterToggle() : null"
+                                              [checked]="selection.hasValue() && isAllSelected()"
+                                              [indeterminate]="selection.hasValue() && !isAllSelected()">
+                                </mat-checkbox>
+                            </th>
+                            <td mat-cell *matCellDef="let row">
+                                <mat-checkbox (click)="$event.stopPropagation()"
+                                              (change)="$event ? selection.toggle(row) : null"
+                                              [checked]="selection.isSelected(row)">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+
+                        <!-- User Name Column -->
+                        <ng-container matColumnDef="userName">
+                            <th mat-header-cell *matHeaderCellDef class="bg-gray-50 dark:bg-gray-800">User Name</th>
+                            <td mat-cell *matCellDef="let session">
+                                <span class="font-semibold">{{ session.userName }}</span>
+                            </td>
+                        </ng-container>
+
+                        <!-- User Code Column -->
+                        <ng-container matColumnDef="userCode">
+                            <th mat-header-cell *matHeaderCellDef class="bg-gray-50 dark:bg-gray-800 text-center">User ID</th>
+                            <td mat-cell *matCellDef="let session" class="text-center text-secondary">
+                                {{ session.userCode }}
+                            </td>
+                        </ng-container>
+
+                        <!-- Login Time Column -->
+                        <ng-container matColumnDef="loginTime">
+                            <th mat-header-cell *matHeaderCellDef class="bg-gray-50 dark:bg-gray-800">Login Time</th>
+                            <td mat-cell *matCellDef="let session" class="text-secondary">
+                                {{ session.loginTime | date:'medium' }}
+                            </td>
+                        </ng-container>
+
+                        <!-- Actions Column -->
+                        <ng-container matColumnDef="actions">
+                            <th mat-header-cell *matHeaderCellDef class="bg-gray-50 dark:bg-gray-800 text-center w-20">Actions</th>
+                            <td mat-cell *matCellDef="let session" class="text-center">
+                                <button
+                                    mat-icon-button
+                                    color="warn"
+                                    matTooltip="Kill Session"
+                                    (click)="killSession(session)">
+                                    <mat-icon [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                                </button>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)" class="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"></tr>
+
+                        <!-- Row shown when there is no matching data. -->
+                        <tr class="mat-row" *matNoDataRow>
+                            <td class="mat-cell p-8 text-center" colspan="5">
+                                No sessions found matching "{{ input.value }}"
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <mat-paginator
+                    class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                    [pageSizeOptions]="[5, 10, 25, 100]"
+                    [pageSize]="10"
+                    [showFirstLastButtons]="true"></mat-paginator>
+            </div>
+        </div>
+    </div>
+</div>

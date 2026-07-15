@@ -1,0 +1,122 @@
+<mat-card appearance="outlined" style="width: 100%">
+    <mat-card-content>
+
+        <!-- HEADER -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+            <div>
+                <h2 class="text-2xl font-bold tracking-tight text-slate-900">User Role Entry</h2>
+            </div>
+
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+                <mat-form-field class="fuse-mat-dense w-full sm:w-72" [subscriptSizing]="'dynamic'">
+                    <mat-icon matPrefix [svgIcon]="'heroicons_outline:magnifying-glass'"></mat-icon>
+                    <input matInput [placeholder]="'Search User Role...'" [formControl]="searchControl" />
+                </mat-form-field>
+
+                <button (click)="newRowClicked()" mat-flat-button color="primary" class="rounded-lg">
+                    <mat-icon class="icon-size-5 mr-2" [svgIcon]="'heroicons_solid:plus'"></mat-icon>
+                    Add New Role
+                </button>
+            </div>
+        </div>
+
+        <!-- MAIN TABLE -->
+        <ck-table-grid [properties]="table"></ck-table-grid>
+    </mat-card-content>
+</mat-card>
+
+<!-- ================= DRAWER ================= -->
+<fuse-drawer class="z-999 w-screen min-w-screen sm:w-200 sm:min-w-200 p-2" fixed [mode]="'over'"
+    [name]="'entityFormTpl'" [position]="'right'" #entityFormTpl>
+    <div class="p-4">
+
+        <!-- DRAWER HEADER -->
+        <div class="grid grid-cols-12 gap-4 mb-4 page-header">
+            <div class="col-span-12 sm:col-span-6">
+                <div class="font-semibold text-2xl text-primary">Role Entry</div>
+            </div>
+            <div
+                class="col-span-12 sm:col-span-6 flex flex-col sm:flex-row justify-start sm:justify-end items-start sm:items-center gap-2">
+                <button mat-raised-button color="primary" (click)="onSubmitClicked()" [disabled]="inputForm.invalid"
+                    class="w-full sm:w-auto">
+                    <mat-icon class="mr-1">send</mat-icon>
+                    <span>Submit</span>
+                </button>
+                <button mat-raised-button color="warn" (click)="onCancelClicked()" class="w-full sm:w-auto">
+                    <mat-icon class="mr-1">close</mat-icon>
+                    <span>Cancel</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- FORM -->
+        <form [formGroup]="inputForm" (ngSubmit)="onSubmitClicked()">
+            <div class="grid grid-cols-2 gap-4 mt-4">
+                <div class="col-span-2 sm:col-span-1">
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Group Code</mat-label>
+                        <input matInput formControlName="groupCode" placeholder="Group Code"
+                            [readonly]="recordMode!='C'">
+                        <mat-error util-common-error [fieldCode]="'groupCode'" [inputForm]="inputForm"></mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-span-2 sm:col-span-1">
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Group Name</mat-label>
+                        <input matInput formControlName="groupName" placeholder="Group Name">
+                        <mat-error util-common-error [fieldCode]="'groupName'" [inputForm]="inputForm"></mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-span-2">
+                    <mat-slide-toggle [color]="'primary'" formControlName="isActive">Active ?</mat-slide-toggle>
+                </div>
+            </div>
+
+            <!-- MODULE FILTER + CHECK ALL TOGGLES -->
+            <div class="flex flex-row flex-wrap items-center gap-4 mt-4 mb-2 bg-slate-50 p-4 rounded-lg">
+                <div class="flex-1 min-w-48">
+                    <mat-form-field class="w-full fuse-mat-dense" [subscriptSizing]="'dynamic'">
+                        <mat-label>Choose Module</mat-label>
+                        <mat-select (selectionChange)="onModuleSelectionChanged()" [(ngModel)]="screen.module"
+                            [ngModelOptions]="{standalone: true}">
+                            <mat-option [value]="''">All</mat-option>
+                            @for (item of modulesDropDownItems; track item.id) {
+                            <mat-option [value]="item.id">{{ item.name }}</mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span class="text-xs font-medium mb-1">View All</span>
+                    <mat-slide-toggle color="primary" (change)="onScreenAccessCheckAllClicked('canView')"
+                        [(ngModel)]="screen.canView" [ngModelOptions]="{standalone: true}"></mat-slide-toggle>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span class="text-xs font-medium mb-1">Create All</span>
+                    <mat-slide-toggle color="primary" (change)="onScreenAccessCheckAllClicked('canCreate')"
+                        [(ngModel)]="screen.canCreate" [ngModelOptions]="{standalone: true}"></mat-slide-toggle>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span class="text-xs font-medium mb-1">Edit All</span>
+                    <mat-slide-toggle color="primary" (change)="onScreenAccessCheckAllClicked('canEdit')"
+                        [(ngModel)]="screen.canEdit" [ngModelOptions]="{standalone: true}"></mat-slide-toggle>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span class="text-xs font-medium mb-1">Delete All</span>
+                    <mat-slide-toggle color="primary" (change)="onScreenAccessCheckAllClicked('canDelete')"
+                        [(ngModel)]="screen.canDelete" [ngModelOptions]="{standalone: true}"></mat-slide-toggle>
+                </div>
+            </div>
+
+            <!-- PRIVILEGE TABLE -->
+            <div style="height: 400px; overflow: auto">
+                <ck-table-grid [properties]="rolePrivilegeTable"></ck-table-grid>
+            </div>
+        </form>
+    </div>
+</fuse-drawer>
+
+<ng-template #boolInput let-row="row" let-column="column">
+    <mat-slide-toggle [color]="'primary'" [(ngModel)]="row[column]"
+        [ngModelOptions]="{standalone: true}"></mat-slide-toggle>
+</ng-template>

@@ -1,0 +1,106 @@
+<!-- Loading bar -->
+<fuse-loading-bar></fuse-loading-bar>
+
+<!-- Navigation -->
+@if (isScreenSmall) {
+<fuse-vertical-navigation class="dark bg-gray-900 print:hidden" [mode]="'over'" [name]="'mainNavigation'"
+    [navigation]="navigation.default" [opened]="false">
+    <!-- Navigation header hook -->
+    <ng-container fuseVerticalNavigationContentHeader>
+        <!-- Logo -->
+        <div class="flex h-20 items-center px-8 pt-6">
+            <img class="w-12" src="images/logo/logo.png" alt="Logo image" />
+        </div>
+    </ng-container>
+</fuse-vertical-navigation>
+}
+
+<!-- Wrapper -->
+<div class="flex w-full min-w-0 flex-auto flex-col items-center bg-gray-200 dark:bg-card">
+    <!-- Header -->
+    <div
+        class="relative z-49 flex h-16 w-full flex-0 flex-col justify-center overflow-hidden shadow dark:shadow-none sm:h-20 md:h-36 print:hidden">
+        <!-- Top bar -->
+        <div class="dark relative flex w-full flex-auto justify-center bg-gray-800 px-4 dark:bg-gray-900 md:px-8">
+            <div class="flex h-16 w-full max-w-360 items-center sm:h-20">
+                <!-- Logo -->
+                @if (!isScreenSmall) {
+                <div class="flex items-center">
+                    <img class="w-12" src="images/logo/logo.png" alt="Logo image" />
+                </div>
+                }
+                <!-- Navigation toggle button -->
+                @if (isScreenSmall) {
+                <button mat-icon-button (click)="toggleNavigation('mainNavigation')">
+                    <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
+                </button>
+                }
+                <!-- Components -->
+                <div class="ml-auto flex items-center space-x-0.5 pl-2 sm:space-x-2">
+                    <!-- Font Size Adjuster -->
+                    <div class="flex items-center border border-gray-700 rounded-lg overflow-hidden bg-gray-800/50 h-9 px-1 gap-1 mr-1.5 shadow-sm flex-shrink-0 select-none">
+                        <button type="button" (click)="decreaseFontSize()" matTooltip="Decrease Font Size" class="w-7 h-7 flex items-center justify-center hover:bg-gray-700/50 rounded text-gray-300 focus:outline-none transition-colors">
+                            <mat-icon class="!w-4 !h-4 !text-base">remove</mat-icon>
+                        </button>
+                        <span class="text-xs font-bold px-1 uppercase text-gray-400 tracking-wider">{{ currentFontSize$ | async }}</span>
+                        <button type="button" (click)="increaseFontSize()" matTooltip="Increase Font Size" class="w-7 h-7 flex items-center justify-center hover:bg-gray-700/50 rounded text-gray-300 focus:outline-none transition-colors">
+                            <mat-icon class="!w-4 !h-4 !text-base">add</mat-icon>
+                        </button>
+                    </div>
+                    <!--                    <languages></languages>-->
+                    <fuse-fullscreen class="hidden md:block"></fuse-fullscreen>
+                    <search [appearance]="'bar'"></search>
+                    <shortcuts></shortcuts>
+                    <messages></messages>
+                    <notifications></notifications>
+                    <button class="lg:hidden" mat-icon-button (click)="quickChat.toggle()">
+                        <mat-icon [svgIcon]="
+                                'heroicons_outline:chat-bubble-left-right'
+                            "></mat-icon>
+                    </button>
+                    <mat-select [formControl]="selectedCompany" placeholder="Choose Company"
+                        (selectionChange)="onCompanyChange($event)"
+                        style="width: 200px; min-width: 200px; max-width: 200px;">
+                        @for (company of companyData; track company.companyCode) {
+                        <mat-option [value]="company.companyCode" [matTooltip]="company.companyName">{{
+                            company.companyName }}</mat-option>
+                        }
+                    </mat-select>
+                    <user></user>
+                </div>
+            </div>
+        </div>
+        <!-- Bottom bar -->
+        @if (!isScreenSmall) {
+        <div class="bg-card flex flex-auto justify-center px-4 dark:bg-gray-700 md:px-8">
+            <div class="relative flex h-16 w-full max-w-360 items-center">
+                <fuse-horizontal-navigation class="-mx-4" [name]="'mainNavigation'"
+                    [navigation]="navigation.horizontal"></fuse-horizontal-navigation>
+            </div>
+        </div>
+        }
+    </div>
+    <!-- Content -->
+    <div class="flex w-full flex-auto justify-center sm:p-8 md:p-8">
+        @if (true) {
+        <router-outlet></router-outlet>
+        }
+        <!-- </div> -->
+    </div>
+    <!-- Footer -->
+    <div class="bg-card relative z-49 flex w-full flex-0 justify-center border-t px-6 md:px-8 print:hidden">
+        <div class="flex h-14 w-full max-w-360 items-center gap-3">
+            <div class="flex items-center">
+                <img src="images/logo/cktech.png" alt="Equinio" class="h-6 w-auto" />
+            </div>
+
+            <div class="h-4 w-px bg-border mx-2"></div>
+
+            <span class="text-secondary font-medium text-sm">
+                CK Tech Solutions &copy; {{ currentYear }}
+            </span>
+        </div>
+    </div>
+</div>
+<!-- Quick chat -->
+<quick-chat #quickChat="quickChat"></quick-chat>

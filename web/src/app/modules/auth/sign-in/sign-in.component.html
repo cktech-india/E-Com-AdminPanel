@@ -1,0 +1,252 @@
+<div class="relative min-h-screen bg-slate-950 text-gray-50 flex flex-col md:flex-row min-w-0 flex-auto overflow-hidden">
+    
+    <!-- LEFT SIDE: Marketing / Product Info Panel -->
+    <div class="relative hidden md:flex flex-col justify-between w-1/2 p-12 lg:p-20 overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 border-r border-slate-800">
+        <!-- Ambient subtle professional glow -->
+        <div class="pointer-events-none absolute inset-0 opacity-40">
+            <div class="absolute -top-40 -left-40 h-[500px] w-[500px] rounded-full bg-indigo-500/10 blur-3xl"></div>
+            <div class="absolute -bottom-40 left-1/3 h-[400px] w-[400px] rounded-full bg-fuchsia-500/10 blur-3xl"></div>
+        </div>
+
+        <!-- Upper Info Content -->
+        <div class="relative z-10 w-full max-w-2xl my-auto">
+            <div class="text-5xl lg:text-6xl font-black tracking-tight leading-none text-white">
+                <div>Empower Teams with</div>
+                <div class="mt-2 bg-gradient-to-r from-indigo-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">
+                    No-Code Innovation
+                </div>
+            </div>
+            
+            <p class="mt-6 text-base lg:text-lg leading-relaxed text-slate-400 max-w-xl">
+                Build enterprise-grade solutions without writing syntax. Take full control of your data layer and scale operations instantly with our built-in powerful workflow engine and unified Entity Manager.
+            </p>
+
+            <!-- Image/Dashboard Placeholder Component Mockup -->
+            <div class="mt-10 relative rounded-xl border border-slate-700/60 bg-slate-900/40 p-3 backdrop-blur shadow-2xl">
+                <div class="flex items-center gap-1.5 pb-3 border-b border-slate-800/80 mb-3">
+                    <div class="w-3 h-3 rounded-full bg-rose-500/70"></div>
+                    <div class="w-3 h-3 rounded-full bg-amber-500/70"></div>
+                    <div class="w-3 h-3 rounded-full bg-emerald-500/70"></div>
+                    <span class="text-xs text-slate-500 ml-2 font-mono">workflow-canvas_v2.max</span>
+                </div>
+                <!-- Visual Placeholder Block -->
+                <div class="h-48 lg:h-64 rounded-lg bg-slate-950/60 border border-dashed border-slate-800 flex flex-col items-center justify-center text-slate-600 gap-2">
+                    <mat-icon class="scale-125 opacity-40" [svgIcon]="'heroicons_outline:presentation-chart-bar'"></mat-icon>
+                    <span class="text-xs tracking-wider font-medium uppercase text-slate-500">Visual Workflow & Schema Workspace Preview</span>
+                </div>
+            </div>
+
+            <!-- Core Feature Checklists -->
+            <div class="mt-10 grid grid-cols-1 gap-4 text-slate-300 sm:grid-cols-2">
+                <div class="flex items-center gap-3">
+                    <mat-icon class="text-emerald-400" [svgIcon]="'heroicons_solid:check-circle'"></mat-icon>
+                    <span class="text-sm font-medium">Powerful Visual Workflow Engine</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <mat-icon class="text-emerald-400" [svgIcon]="'heroicons_solid:check-circle'"></mat-icon>
+                    <span class="text-sm font-medium">Dynamic Entity Manager & Mapping</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <mat-icon class="text-emerald-400" [svgIcon]="'heroicons_solid:check-circle'"></mat-icon>
+                    <span class="text-sm font-medium">Enterprise Security Governance</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <mat-icon class="text-emerald-400" [svgIcon]="'heroicons_solid:check-circle'"></mat-icon>
+                    <span class="text-sm font-medium">Instant Hot-Reload Deployments</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Note / Brand Signature -->
+        <div class="relative z-10 text-xs text-slate-500">
+            &copy; 2026 CK-Tech Ecosystem. All rights reserved.
+        </div>
+    </div>
+
+    <!-- RIGHT SIDE: Authentication Panel -->
+    <div class="w-full md:w-1/2 flex items-center justify-center p-6 sm:p-12 lg:p-20 bg-slate-900/20 backdrop-blur-sm">
+        <div class="w-full max-w-md bg-white dark:bg-slate-900/80 border border-gray-200 dark:border-slate-800 p-8 sm:p-10 rounded-2xl shadow-xl transition-all">
+            
+            <!-- Dual Logo Header Block -->
+            <div class="flex items-center justify-between pb-6 mb-6 border-b border-gray-100 dark:border-slate-800">
+                <!-- Client Logo Container -->
+                <div class="flex items-center gap-2">
+                    <img class="h-8 w-auto object-contain" src="images/logo/logo.png" alt="Client Logo"/>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-slate-500">Enterprise Portal</span>
+                </div>
+                <!-- Divider element -->
+                <div class="h-6 w-px bg-gray-200 dark:bg-slate-700"></div>
+                <!-- CK-Tech Engineering Mark -->
+                <div class="flex items-center gap-1.5 opacity-80">
+                    <span class="text-[10px] uppercase font-bold tracking-widest text-slate-400">Powered by</span>
+                    <span class="text-xs font-black tracking-tighter text-indigo-500 dark:text-indigo-400">CK-TECH</span>
+                </div>
+            </div>
+
+            <!-- Title & Signup Anchor -->
+            @if (!showCompanySelect) {
+                <div class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+                    Sign in
+                </div>
+                <div class="mt-2 flex items-baseline text-sm font-medium text-gray-500 dark:text-slate-400">
+                    <div>Don't have an environment instance?</div>
+                    <a class="ml-1 text-indigo-600 dark:text-indigo-400 font-semibold hover:underline" [routerLink]="['/sign-up']">
+                        Sign up
+                    </a>
+                </div>
+            } @else {
+                <div class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+                    Select Company
+                </div>
+                <div class="mt-2 text-sm font-medium text-gray-500 dark:text-slate-400">
+                    Please select your target company workspace to proceed.
+                </div>
+            }
+
+            <!-- Dynamic Alert Messaging Container -->
+            @if (showAlert) {
+                <fuse-alert
+                    class="mt-6"
+                    [appearance]="'outline'"
+                    [showIcon]="false"
+                    [type]="alert.type"
+                    [@shake]="alert.type === 'error'"
+                >
+                    {{ alert.message }}
+                </fuse-alert>
+            }
+
+            @if (!showCompanySelect) {
+                <!-- Secure Authentication Form Form -->
+                <form class="mt-6 space-y-4" [formGroup]="signInForm" #signInNgForm="ngForm">
+                    
+                    <!-- Ident/Email Input Fields Wrapper -->
+                    <mat-form-field class="w-full" appearance="outline" [color]="'primary'">
+                        <mat-label>Username or Work Email</mat-label>
+                        <mat-icon matPrefix class="mr-2 text-gray-400 dark:text-slate-500" [svgIcon]="'heroicons_solid:user'"></mat-icon>
+                        <input
+                            id="email"
+                            matInput
+                            [formControlName]="'userId'"
+                            autocomplete="username"
+                            spellcheck="false"
+                            inputmode="email"
+                            placeholder="username@company.com"
+                        />
+                        @if (signInForm.get('userId').hasError('required')) {
+                            <mat-error>Access identifier string is required</mat-error>
+                        }
+                        @if (signInForm.get('userId').hasError('userId')) {
+                            <mat-error>Please match the format requested</mat-error>
+                        }
+                        <mat-hint>Use your centralized workspace identifier</mat-hint>
+                    </mat-form-field>
+
+                    <!-- Secure Password Inputs -->
+                    <mat-form-field class="w-full" appearance="outline" [color]="'primary'">
+                        <mat-label>Password</mat-label>
+                        <mat-icon matPrefix class="mr-2 text-gray-400 dark:text-slate-500" [svgIcon]="'heroicons_solid:lock-closed'"></mat-icon>
+                        <input
+                            id="password"
+                            matInput
+                            [type]="hidePassword ? 'password' : 'text'"
+                            [formControlName]="'password'"
+                            autocomplete="current-password"
+                            placeholder="••••••••"
+                        />
+                        <button
+                            mat-icon-button
+                            type="button"
+                            (click)="hidePassword = !hidePassword"
+                            matSuffix
+                            aria-label="Toggle password visibility"
+                        >
+                            @if (hidePassword) {
+                                <mat-icon class="text-gray-400" [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                            }
+                            @if (!hidePassword) {
+                                <mat-icon class="text-gray-400" [svgIcon]="'heroicons_solid:eye-slash'"></mat-icon>
+                            }
+                        </button>
+                        @if (signInForm.get('password').hasError('required')) {
+                            <mat-error>Password declaration is missing</mat-error>
+                        }
+                    </mat-form-field>
+
+                    <!-- Session Preference Actions -->
+                    <div class="flex items-center justify-between pt-1">
+                        <mat-checkbox
+                            class="-ml-2 text-sm text-gray-600 dark:text-slate-400"
+                            [color]="'primary'"
+                            [formControlName]="'rememberMe'"
+                        >
+                            Keep session active
+                        </mat-checkbox>
+                        <a class="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline" [routerLink]="['/forgot-password']">
+                            Forgot password?
+                        </a>
+                    </div>
+
+                    <!-- Submit Control Trigger Block -->
+                    <button
+                        class="mt-4 w-full h-11 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md font-medium tracking-wide transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+                        mat-flat-button
+                        [color]="'primary'"
+                        [disabled]="signInForm.disabled"
+                        (click)="signIn()"
+                    >
+                        @if (!signInForm.disabled) {
+                            <span class="text-sm">Authenticate System Access</span>
+                        }
+                        @if (signInForm.disabled) {
+                            <div class="flex justify-center items-center">
+                                <mat-progress-spinner
+                                    [diameter]="20"
+                                    [mode]="'indeterminate'"
+                                ></mat-progress-spinner>
+                            </div>
+                        }
+                    </button>
+                </form>
+            } @else {
+                <!-- Company Selection Form -->
+                <form class="mt-6 space-y-4" [formGroup]="companyForm">
+                    <mat-form-field class="w-full" appearance="outline" [color]="'primary'">
+                        <mat-label>Workspace Company</mat-label>
+                        <mat-icon matPrefix class="mr-2 text-gray-400 dark:text-slate-500" [svgIcon]="'heroicons_solid:building-office-2'"></mat-icon>
+                        <mat-select [formControlName]="'companyCode'" placeholder="Select a company...">
+                            @for (company of userCompanies; track company.companyCode) {
+                                <mat-option [value]="company.companyCode">
+                                    {{ company.companyName || company.companyCode }}
+                                </mat-option>
+                            }
+                        </mat-select>
+                        @if (companyForm.get('companyCode').hasError('required')) {
+                            <mat-error>Company workspace selection is required</mat-error>
+                        }
+                    </mat-form-field>
+
+                    <button
+                        class="mt-4 w-full h-11 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md font-medium tracking-wide transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+                        mat-flat-button
+                        [color]="'primary'"
+                        [disabled]="companyForm.disabled || companyForm.invalid"
+                        (click)="confirmCompanySelection()"
+                    >
+                        @if (!loadingConfig) {
+                            <span class="text-sm">Proceed to Workspace</span>
+                        }
+                        @if (loadingConfig) {
+                            <div class="flex justify-center items-center">
+                                <mat-progress-spinner
+                                    [diameter]="20"
+                                    [mode]="'indeterminate'"
+                                ></mat-progress-spinner>
+                            </div>
+                        }
+                    </button>
+                </form>
+            }
+        </div>
+    </div>
+</div>

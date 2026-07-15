@@ -1,0 +1,115 @@
+<mat-card class="page-card">
+    <mat-card-content>
+
+        <!-- HEADER -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+            <div>
+                <h2 class="text-2xl font-bold tracking-tight text-slate-900">Tenant Companies</h2>
+                <p class="text-xs text-slate-500">Configure multi-tenant company details, domain mappings, and business registrations.</p>
+            </div>
+
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+
+                <!-- SEARCH -->
+                <mat-form-field class="fuse-mat-dense w-full sm:w-72">
+                    <mat-icon matPrefix>search</mat-icon>
+                    <input matInput placeholder="Search Company Name..." [formControl]="searchControl" autocomplete="off" />
+                </mat-form-field>
+
+                <!-- ADD -->
+                <button (click)="newRowClicked()" mat-flat-button color="primary" class="rounded-lg">
+                    <mat-icon class="mr-2">add</mat-icon>
+                    Add Company
+                </button>
+
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="overflow-x-auto">
+            <ck-table-grid [properties]="table"></ck-table-grid>
+        </div>
+
+    </mat-card-content>
+</mat-card>
+
+
+<!-- ================= DRAWER ================= -->
+
+<fuse-drawer class="z-999 w-screen min-w-screen sm:w-100 sm:min-w-100 p-2" fixed [mode]="'over'"
+    [name]="'companyFormTpl'" [position]="'right'" #companyFormTpl>
+    <div class="p-4 flex flex-col h-full overflow-y-auto">
+
+        <!-- HEADER -->
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+            <div>
+                <div class="font-semibold text-2xl text-primary font-bold">{{ recordMode === 'C' ? 'Create Company' : 'Edit Company' }}</div>
+                <p class="text-xs text-slate-400 font-medium">Link domains and billing metrics.</p>
+            </div>
+
+            <div class="flex gap-2">
+                <button mat-raised-button color="primary" (click)="onSubmitClicked()" [disabled]="inputForm.invalid">
+                    <mat-icon class="mr-1">save</mat-icon>
+                    Save
+                </button>
+                <button mat-raised-button color="warn" (click)="onCancelClicked()">
+                    <mat-icon class="mr-1">close</mat-icon>
+                    Cancel
+                </button>
+            </div>
+        </div>
+
+        <!-- FORM -->
+        <form [formGroup]="inputForm" class="flex-grow">
+
+            <div class="grid grid-cols-1 gap-4">
+
+                <!-- COMPANY CODE -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Company Code</mat-label>
+                    <input matInput formControlName="companyCode" [readonly]="recordMode !== 'C'" placeholder="e.g. COMP1">
+                </mat-form-field>
+
+                <!-- COMPANY NAME -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Company Name</mat-label>
+                    <input matInput formControlName="companyName" placeholder="e.g. Sinjay Mart India">
+                </mat-form-field>
+
+                <!-- DOMAIN URL -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Domain URL (Resolves tenant)</mat-label>
+                    <input matInput formControlName="domainUrl" placeholder="e.g. sinjaymart.com">
+                </mat-form-field>
+
+                <!-- GST STATE CODE -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>GST State Code</mat-label>
+                    <input matInput formControlName="gstStateCode" placeholder="e.g. 33">
+                </mat-form-field>
+
+                <!-- GST NO -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>GST Identification No</mat-label>
+                    <input matInput formControlName="gstNo" placeholder="e.g. 33AAAAA0000A1Z1">
+                </mat-form-field>
+
+                <!-- ADDRESS -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Registered Address</mat-label>
+                    <textarea matInput formControlName="companyAddress" rows="4" placeholder="Enter complete corporate address..."></textarea>
+                </mat-form-field>
+
+                <!-- ACTIVE -->
+                <div class="mt-2">
+                    <mat-slide-toggle formControlName="isActive">
+                        Active Company?
+                    </mat-slide-toggle>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</fuse-drawer>

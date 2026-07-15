@@ -1,0 +1,155 @@
+[
+    {
+        "code": "locations",
+        "control": "DROPDOWN",
+        "dataType": "STRING",
+        "label": "Country",
+        "mandatory": false
+    },
+    {
+        "code": "name",
+        "control": "INPUT",
+        "dataType": "STRING",
+        "label": "Name",
+        "mandatory": false
+    },
+    {
+        "code": "loanId",
+        "control": "INPUT",
+        "dataType": "STRING",
+        "label": "Loan Id",
+        "mandatory": false
+    },
+    {
+        "code": "searchValue",
+        "control": "INPUT",
+        "dataType": "STRING",
+        "label": "Search Value",
+        "mandatory": false
+    },
+    {
+        "code": "fromDate",
+        "control": "DATEPICKER",
+        "dataType": "DATE",
+        "label": "From Date",
+        "mandatory": true
+    },
+    {
+        "code": "toDate",
+        "control": "DATEPICKER",
+        "dataType": "DATE",
+        "label": "To Date",
+        "mandatory": true
+    },
+    {
+        "code": "branchCode",
+        "control": "DROPDOWN",
+        "dataType": "STRING",
+        "label": "Choose Branch",
+        "defaultValue": "",
+        "processNameOrQuery": "BRANCH",
+        "dropdownOptions": [],
+        "mandatory": false
+    },
+    {
+        "code": "loanStatus",
+        "control": "DROPDOWN",
+        "dataType": "STRING",
+        "label": "Loan Status",
+        "defaultValue": "",
+        "dropdownOptions": [
+            {
+                "value": "",
+                "label": "All"
+            },
+            {
+                "value": "P",
+                "label": "Pending For Approvel"
+            },
+            {
+                "value": "A",
+                "label": "Approved"
+            },
+            {
+                "value": "R",
+                "label": "Rejected"
+            },
+            {
+                "value": "D",
+                "label": "Disbursed"
+            },
+            {
+                "value": "C",
+                "label": "Closed"
+            }
+        ],
+        "mandatory": false
+    },
+    {
+        "code": "scheme",
+        "control": "DROPDOWN",
+        "dataType": "STRING",
+        "label": "Choose Scheme / Percentage",
+        "defaultValue": "",
+        "dropdownOptions": [],
+        "processNameOrQuery": "scheme_items",
+        "mandatory": false
+    },
+    {
+        "code": "interestRate",
+        "control": "DROPDOWN",
+        "dataType": "STRING",
+        "label": "Interest Rate",
+        "defaultValue": "",
+        "dropdownOptions": [
+            {
+                "value": "",
+                "label": "All"
+            },
+            {
+                "value": 12,
+                "label": "12%"
+            },
+            {
+                "value": 18,
+                "label": "18%"
+            },
+            {
+                "value": 24,
+                "label": "24%"
+            }
+        ],
+        "mandatory": false
+    },
+    {
+        "code": "otherBanksOnly",
+        "control": "SWITCH",
+        "dataType": "BOOLEAN",
+        "label": "Show Only Other Banks",
+        "default": false,
+        "mandatory": false
+    },
+    {
+        "code": "loanType",
+        "control": "DROPDOWN",
+        "dataType": "STRING",
+        "label": "Loan Type",
+        "defaultValue": "ALL",
+        "mandatory": false,
+        "dropdownOptions": [
+            {
+                "value": "ALL",
+                "label": "All"
+            },
+            {
+                "value": "NON_REPLEDGED",
+                "label": "Non Repledged Loans"
+            },
+            {
+                "value": "REPLEDGED",
+                "label": "Repledged Loans"
+            }
+        ]
+    }
+]
+

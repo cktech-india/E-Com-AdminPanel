@@ -16,18 +16,18 @@ import lombok.NoArgsConstructor;
 public class InventoryDTO extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "product_id", nullable = false)
+    private Long productId;
 
-    @Column(name = "product_name", nullable = false)
-    private String productName;
+    @Column(name = "company_code", nullable = false)
+    private String companyCode;
 
-    @Column(nullable = false, unique = true)
-    private String sku;
+    @Column(name = "quantity_on_hand", nullable = false)
+    private Integer quantityOnHand;
 
-    @Column(nullable = false)
-    private Integer quantity;
+    @Column(name = "reserved_quantity", nullable = false)
+    private Integer reservedQuantity;
 
-    @Column(nullable = false)
-    private Double price;
+    @Column(name = "reorder_level")
+    private Integer reorderLevel;
 }

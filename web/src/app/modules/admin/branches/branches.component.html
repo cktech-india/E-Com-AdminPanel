@@ -1,0 +1,103 @@
+<mat-card class="page-card">
+    <mat-card-content>
+
+        <!-- HEADER -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+            <div>
+                <h2 class="text-2xl font-bold tracking-tight text-slate-900">Store Branches</h2>
+                <p class="text-xs text-slate-500">Configure company locations, city codes, phone numbers, and physical addresses.</p>
+            </div>
+
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+
+                <!-- SEARCH -->
+                <mat-form-field class="fuse-mat-dense w-full sm:w-72">
+                    <mat-icon matPrefix>search</mat-icon>
+                    <input matInput placeholder="Search Branch Name..." [formControl]="searchControl" autocomplete="off" />
+                </mat-form-field>
+
+                <!-- ADD -->
+                <button (click)="newRowClicked()" mat-flat-button color="primary" class="rounded-lg">
+                    <mat-icon class="mr-2">add</mat-icon>
+                    Add Branch
+                </button>
+
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="overflow-x-auto">
+            <ck-table-grid [properties]="table"></ck-table-grid>
+        </div>
+
+    </mat-card-content>
+</mat-card>
+
+
+<!-- ================= DRAWER ================= -->
+
+<fuse-drawer class="z-999 w-screen min-w-screen sm:w-100 sm:min-w-100 p-2" fixed [mode]="'over'"
+    [name]="'branchFormTpl'" [position]="'right'" #branchFormTpl>
+    <div class="p-4 flex flex-col h-full overflow-y-auto">
+
+        <!-- HEADER -->
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+            <div>
+                <div class="font-semibold text-2xl text-primary font-bold">{{ recordMode === 'C' ? 'Create Branch' : 'Edit Branch' }}</div>
+                <p class="text-xs text-slate-400">Configure physical locations and contacts.</p>
+            </div>
+
+            <div class="flex gap-2">
+                <button mat-raised-button color="primary" (click)="onSubmitClicked()" [disabled]="inputForm.invalid">
+                    <mat-icon class="mr-1">save</mat-icon>
+                    Save
+                </button>
+                <button mat-raised-button color="warn" (click)="onCancelClicked()">
+                    <mat-icon class="mr-1">close</mat-icon>
+                    Cancel
+                </button>
+            </div>
+        </div>
+
+        <!-- FORM -->
+        <form [formGroup]="inputForm" class="flex-grow">
+
+            <div class="grid grid-cols-1 gap-4">
+
+                <!-- BRANCH NAME -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Branch Name</mat-label>
+                    <input matInput formControlName="branchName" placeholder="e.g. Headquarters / Chennai Branch">
+                </mat-form-field>
+
+                <!-- CITY -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>City</mat-label>
+                    <input matInput formControlName="city" placeholder="e.g. Chennai">
+                </mat-form-field>
+
+                <!-- PHONE NUMBER -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Phone Number</mat-label>
+                    <input matInput formControlName="phoneNumber" placeholder="e.g. +91 44 2824 1234">
+                </mat-form-field>
+
+                <!-- ADDRESS -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Physical Address</mat-label>
+                    <textarea matInput formControlName="address" rows="4" placeholder="Enter complete branch address details..."></textarea>
+                </mat-form-field>
+
+                <!-- ACTIVE -->
+                <div class="mt-2">
+                    <mat-slide-toggle formControlName="isActive">
+                        Active Branch?
+                    </mat-slide-toggle>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</fuse-drawer>

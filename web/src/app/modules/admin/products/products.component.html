@@ -1,0 +1,172 @@
+<mat-card class="page-card">
+    <mat-card-content>
+
+        <!-- HEADER -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+            <div>
+                <h2 class="text-2xl font-bold tracking-tight text-slate-900">Products Catalog</h2>
+                <p class="text-xs text-slate-500">Manage all products, categories, stock, and pricing details.</p>
+            </div>
+
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+
+                <!-- SEARCH -->
+                <mat-form-field class="fuse-mat-dense w-full sm:w-72">
+                    <mat-icon matPrefix>search</mat-icon>
+                    <input matInput placeholder="Search Product..." [formControl]="searchControl" autocomplete="off" />
+                </mat-form-field>
+
+                <!-- ADD -->
+                <button (click)="newRowClicked()" mat-flat-button color="primary" class="rounded-lg">
+                    <mat-icon class="mr-2">add</mat-icon>
+                    Add Product
+                </button>
+
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="overflow-x-auto">
+            <ck-table-grid [properties]="table"></ck-table-grid>
+        </div>
+
+    </mat-card-content>
+</mat-card>
+
+
+<!-- ================= DRAWER ================= -->
+
+<fuse-drawer class="z-999 w-screen min-w-screen sm:w-120 sm:min-w-120 p-2" fixed [mode]="'over'"
+    [name]="'productFormTpl'" [position]="'right'" #productFormTpl>
+    <div class="p-4 flex flex-col h-full overflow-y-auto">
+
+        <!-- HEADER -->
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+            <div>
+                <div class="font-semibold text-2xl text-primary">{{ recordMode === 'C' ? 'Create Product' : 'Edit Product' }}</div>
+                <p class="text-xs text-slate-400">Fill in the product profile details below.</p>
+            </div>
+
+            <div class="flex gap-2">
+                <button mat-raised-button color="primary" (click)="onSubmitClicked()" [disabled]="inputForm.invalid">
+                    <mat-icon class="mr-1">save</mat-icon>
+                    Save
+                </button>
+                <button mat-raised-button color="warn" (click)="onCancelClicked()">
+                    <mat-icon class="mr-1">close</mat-icon>
+                    Cancel
+                </button>
+            </div>
+        </div>
+
+        <!-- FORM -->
+        <form [formGroup]="inputForm" class="flex-grow">
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                <!-- PRODUCT CODE -->
+                <div class="col-span-1 sm:col-span-2">
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Product Code</mat-label>
+                        <input matInput formControlName="productCode" [readonly]="recordMode !== 'C'" placeholder="e.g. PRD001">
+                    </mat-form-field>
+                </div>
+
+                <!-- PRODUCT NAME -->
+                <div class="col-span-1 sm:col-span-2">
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Product Name</mat-label>
+                        <input matInput formControlName="productName" placeholder="e.g. Mandala Art Frame">
+                    </mat-form-field>
+                </div>
+
+                <!-- CATEGORY -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Category</mat-label>
+                    <mat-select formControlName="categoryId">
+                        @for (cat of categories; track $index) {
+                            <mat-option [value]="cat.categoryId">{{ cat.categoryName }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                <!-- PRODUCT TYPE -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Product Type</mat-label>
+                    <mat-select formControlName="productType">
+                        <mat-option value="STANDARD">Standard (Physical)</mat-option>
+                        <mat-option value="DIGITAL">Digital</mat-option>
+                        <mat-option value="SERVICE">Service</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <!-- PRICE -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Price (INR)</mat-label>
+                    <input matInput type="number" formControlName="price" placeholder="0.00">
+                </mat-form-field>
+
+                <!-- STOCK QUANTITY -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Available Stock</mat-label>
+                    <input matInput type="number" formControlName="availableQuantity" placeholder="0">
+                </mat-form-field>
+
+                <!-- DISCOUNT PERCENTAGE -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Discount (%)</mat-label>
+                    <input matInput type="number" formControlName="discountPercentage" placeholder="0">
+                </mat-form-field>
+
+                <!-- HSN CODE -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>HSN Code</mat-label>
+                    <input matInput formControlName="hsnCode" placeholder="e.g. 9701">
+                </mat-form-field>
+
+                <!-- TAX CATEGORY -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Tax Category</mat-label>
+                    <mat-select formControlName="taxCategoryId">
+                        @for (tc of taxCategories; track $index) {
+                            <mat-option [value]="tc.id">{{ tc.name }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                <!-- IMAGE URL -->
+                <div class="col-span-1 sm:col-span-2">
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Product Image URL</mat-label>
+                        <input matInput formControlName="imageUrl" placeholder="e.g. assets/images/product1.jpg">
+                    </mat-form-field>
+                </div>
+
+                <!-- DESCRIPTION -->
+                <div class="col-span-1 sm:col-span-2">
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Description</mat-label>
+                        <textarea matInput formControlName="description" rows="3" placeholder="Describe the product details, materials, and sizes..."></textarea>
+                    </mat-form-field>
+                </div>
+
+                <!-- TAX INCLUSIVE -->
+                <div class="col-span-1">
+                    <mat-slide-toggle formControlName="isTaxInclusive">
+                        Price is Tax Inclusive ?
+                    </mat-slide-toggle>
+                </div>
+
+                <!-- ACTIVE -->
+                <div class="col-span-1">
+                    <mat-slide-toggle formControlName="isActive">
+                        Active Catalog Item?
+                    </mat-slide-toggle>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</fuse-drawer>

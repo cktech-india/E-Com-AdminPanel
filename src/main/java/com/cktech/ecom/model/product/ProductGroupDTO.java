@@ -24,9 +24,6 @@ public class ProductGroupDTO extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "company_code")
-    private String companyCode;
-
     @Column(name = "product_id")
     private Long productId;
 

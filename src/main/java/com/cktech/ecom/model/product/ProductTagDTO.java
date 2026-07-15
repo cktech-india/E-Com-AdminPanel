@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "product_tag_t")
+@Table(name = "product_tags_t")
 @EqualsAndHashCode(callSuper = false)
 public class ProductTagDTO extends Auditable {
 
@@ -31,7 +31,7 @@ public class ProductTagDTO extends Auditable {
     @Column(name = "product_id")
     private Long productId;
 
-    @Column(name = "tag_name")
-    private String tagName;
+    @Column(name = "product_tag")
+    private String productTag;
 
 }

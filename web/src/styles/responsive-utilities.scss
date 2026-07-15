@@ -1,0 +1,179 @@
+/* Responsive Utilities
+   This file contains reusable CSS utility classes for responsive layouts
+   to be used across all modules in the application.
+*/
+
+/* Page Card - Base container for all pages */
+.page-card {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Page Header - Container for page title and actions */
+.page-header {
+  display: flex;
+  flex-direction: column;
+
+  @media (min-width: 640px) {
+    flex-direction: row;
+  }
+}
+
+/* Action Buttons Container */
+.action-buttons-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+
+  @media (min-width: 640px) {
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 0;
+  }
+}
+
+/* Action Button */
+.action-button {
+  width: 100%;
+
+  @media (min-width: 640px) {
+    width: auto;
+  }
+}
+
+/* Form Container */
+.form-container {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+/* Form Field Container */
+.form-field-container {
+  margin-bottom: 1rem;
+}
+
+/* Responsive Table Container */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Responsive Grid - 1 column on mobile, 2 on tablet, 4 on desktop */
+.responsive-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Responsive Grid - 1 column on mobile, 2 on tablet, 3 on desktop */
+.responsive-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Responsive Stepper */
+.stepper-responsive {
+  width: 100%;
+}
+
+/* Alert Messages */
+.alert-message {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+
+  &.success-message {
+    background-color: #d1fae5;
+    color: #065f46;
+  }
+
+  &.error-message {
+    background-color: #fee2e2;
+    color: #b91c1c;
+  }
+
+  mat-icon {
+    margin-right: 0.5rem;
+  }
+}
+
+/* Document List */
+.document-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Document Item */
+.document-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  background-color: #f3f4f6;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #e5e7eb;
+  }
+
+  mat-icon {
+    margin-right: 0.5rem;
+
+    &.download-icon {
+      margin-left: auto;
+      margin-right: 0;
+    }
+  }
+}
+
+/* File Upload Container */
+.file-upload-container {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+/* File Upload Label */
+.file-upload-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+/* File Upload Input */
+.file-upload-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+}

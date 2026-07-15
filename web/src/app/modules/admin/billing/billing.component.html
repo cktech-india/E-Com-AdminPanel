@@ -1,0 +1,160 @@
+<mat-card class="page-card">
+    <mat-card-content>
+
+        <!-- HEADER -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+            <div>
+                <h2 class="text-2xl font-bold tracking-tight text-slate-900">Billing & Invoices</h2>
+                <p class="text-xs text-slate-500">View customer invoice logs, sales billing histories, and tax summary.</p>
+            </div>
+
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+
+                <!-- SEARCH -->
+                <mat-form-field class="fuse-mat-dense w-full sm:w-72">
+                    <mat-icon matPrefix>search</mat-icon>
+                    <input matInput placeholder="Search Customer/Mobile..." [formControl]="searchControl" autocomplete="off" />
+                </mat-form-field>
+
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="overflow-x-auto">
+            <ck-table-grid [properties]="table"></ck-table-grid>
+        </div>
+
+    </mat-card-content>
+</mat-card>
+
+
+<!-- ================= DRAWER ================= -->
+
+<fuse-drawer class="z-999 w-screen min-w-screen sm:w-140 sm:min-w-140 p-2" fixed [mode]="'over'"
+    [name]="'billingFormTpl'" [position]="'right'" #billingFormTpl>
+    <div class="p-4 flex flex-col h-full overflow-y-auto">
+
+        <!-- HEADER -->
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+            <div>
+                <div class="font-semibold text-2xl text-primary">Invoice #{{ inputForm.get('id')?.value }}</div>
+                <p class="text-xs text-slate-400 font-medium">Generated on {{ inputForm.get('createdDate')?.value | date:'dd-MMM-yyyy hh:mm a' }}</p>
+            </div>
+
+            <div class="flex gap-2">
+                <button mat-raised-button color="warn" (click)="onCancelClicked()">
+                    <mat-icon class="mr-1">close</mat-icon>
+                    Close
+                </button>
+            </div>
+        </div>
+
+        <!-- FORM & BILL ITEMS -->
+        <div class="flex-grow flex flex-col gap-6">
+
+            <!-- METADATA FORM -->
+            <form [formGroup]="inputForm">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                    <!-- CUSTOMER -->
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Customer Name</mat-label>
+                        <input matInput formControlName="customerName">
+                    </mat-form-field>
+
+                    <!-- MOBILE -->
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Mobile No</mat-label>
+                        <input matInput formControlName="mobileNo">
+                    </mat-form-field>
+
+                    <!-- STATE -->
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>State</mat-label>
+                        <input matInput formControlName="state">
+                    </mat-form-field>
+
+                    <!-- STATE CODE -->
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>State Code</mat-label>
+                        <input matInput formControlName="stateCode">
+                    </mat-form-field>
+
+                    <!-- TOTAL CGST -->
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>CGST (₹)</mat-label>
+                        <input matInput formControlName="cgst">
+                    </mat-form-field>
+
+                    <!-- TOTAL SGST -->
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>SGST (₹)</mat-label>
+                        <input matInput formControlName="sgst">
+                    </mat-form-field>
+
+                    <!-- TOTAL IGST -->
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>IGST (₹)</mat-label>
+                        <input matInput formControlName="igst">
+                    </mat-form-field>
+
+                    <!-- GRAND TOTAL -->
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Grand Total (₹)</mat-label>
+                        <input matInput formControlName="grandTotal">
+                    </mat-form-field>
+
+                    <!-- CUSTOMER ADDRESS -->
+                    <div class="col-span-1 sm:col-span-2">
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Customer Address</mat-label>
+                            <textarea matInput formControlName="customerAddress" rows="2"></textarea>
+                        </mat-form-field>
+                    </div>
+
+                </div>
+            </form>
+
+            <!-- BILL DETAILS TABLE -->
+            <div class="border border-slate-200 rounded-xl p-4 bg-slate-50/50">
+                <div class="font-bold text-sm text-slate-700 mb-3 flex items-center gap-2">
+                    <mat-icon class="text-slate-500 scale-90">receipt</mat-icon>
+                    Billing Items Details
+                </div>
+
+                <div class="overflow-x-auto border border-slate-100 rounded-lg bg-white">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 font-semibold">
+                                <th class="p-3">Product Name</th>
+                                <th class="p-3 text-center">Qty</th>
+                                <th class="p-3 text-right">Unit Price</th>
+                                <th class="p-3 text-right">GST Amt</th>
+                                <th class="p-3 text-right">Discount</th>
+                                <th class="p-3 text-right">Row Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of selectedBillingItems" class="border-b border-slate-100 text-slate-700 hover:bg-slate-50/40">
+                                <td class="p-3">
+                                    <div class="font-medium">{{ item.productName }}</div>
+                                    <div class="text-[10px] text-slate-400">HSN: {{ item.hsnCode || 'N/A' }}</div>
+                                </td>
+                                <td class="p-3 text-center font-bold">{{ item.quantity }}</td>
+                                <td class="p-3 text-right">₹{{ item.unitPrice | number:'1.2-2' }}</td>
+                                <td class="p-3 text-right">₹{{ item.gstAmount | number:'1.2-2' }}</td>
+                                <td class="p-3 text-right">₹{{ item.discountAmount | number:'1.2-2' }}</td>
+                                <td class="p-3 text-right font-semibold">₹{{ item.rowTotal | number:'1.2-2' }}</td>
+                            </tr>
+                            <tr *ngIf="selectedBillingItems.length === 0">
+                                <td colspan="6" class="p-4 text-center text-slate-400">No items found for this invoice.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</fuse-drawer>
