@@ -31,6 +31,13 @@ const ecomNavigation = [
                 type: 'basic',
                 icon: 'heroicons_outline:squares-2x2',
                 link: '/categories'
+            },
+            {
+                id: 'product-media',
+                title: 'Product Media',
+                type: 'basic',
+                icon: 'heroicons_outline:photo',
+                link: '/product-media'
             }
         ]
     },

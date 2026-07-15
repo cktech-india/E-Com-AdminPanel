@@ -1,0 +1,247 @@
+<div class="flex flex-col w-full min-w-0 bg-gray-50 dark:bg-transparent">
+
+    <!-- HEADER -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 sm:py-8 sm:px-10 border-b bg-card">
+        <div class="flex items-center">
+            <div class="p-3 bg-primary-50 dark:bg-primary-900/20 rounded-xl mr-4">
+                <mat-icon class="icon-size-8 text-primary">photo_library</mat-icon>
+            </div>
+            <div class="flex flex-col">
+                <h2 class="text-3xl font-extrabold tracking-tight leading-none">Catalog Media Manager</h2>
+                <p class="text-xs text-slate-400 mt-1">Upload and organize product images and category covers in Amazon S3 buckets.</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button mat-icon-button (click)="viewMode = 'grid'" [color]="viewMode === 'grid' ? 'primary' : ''" matTooltip="Grid View">
+                <mat-icon>apps</mat-icon>
+            </button>
+            <button mat-icon-button (click)="viewMode = 'list'" [color]="viewMode === 'list' ? 'primary' : ''" matTooltip="List View">
+                <mat-icon>view_list</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <!-- TABS CONFIG -->
+    <div class="p-6 sm:p-10">
+        <mat-tab-group (selectedIndexChange)="onTabChanged($event)">
+
+            <!-- TAB 0: PRODUCT IMAGES -->
+            <mat-tab label="Product Galleries">
+                <div class="py-6 flex flex-col md:flex-row gap-6">
+
+                    <!-- LEFT PANEL: PRODUCT LIST -->
+                    <div class="w-full md:w-80 bg-white border border-slate-200 rounded-2xl p-4 flex flex-col gap-2 max-h-[600px] overflow-y-auto shadow-sm">
+                        <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Products Catalog</div>
+                        @for (prod of products; track prod.id) {
+                            <div class="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors"
+                                 [ngClass]="{'bg-primary-50/50 border border-primary-100': selectedProduct?.id === prod.id}"
+                                 (click)="selectProduct(prod)">
+                                <mat-icon class="text-slate-400">folder</mat-icon>
+                                <div class="flex-grow min-w-0">
+                                    <div class="text-xs font-bold text-slate-800 truncate">{{ prod.productName }}</div>
+                                    <div class="text-[10px] text-slate-400 font-medium">Code: {{ prod.productCode || prod.id }}</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- RIGHT PANEL: GALLERY VIEW -->
+                    <div class="flex-grow bg-white border border-slate-200 rounded-2xl p-6 min-h-[400px] flex flex-col shadow-sm">
+                        @if (selectedProduct) {
+                            
+                            <!-- DEFAULT PRODUCT COVER IMAGE SECTION -->
+                            <div class="border border-slate-100 rounded-2xl p-4 bg-slate-50/50 mb-6 flex flex-col sm:flex-row items-center gap-6">
+                                <div class="relative w-40 aspect-square rounded-xl overflow-hidden border border-slate-200 bg-white flex items-center justify-center flex-shrink-0">
+                                    @if (selectedProduct.imageUrl) {
+                                        <img [src]="selectedProduct.imageUrl" class="w-full h-full object-cover" />
+                                    } @else {
+                                        <mat-icon class="text-slate-300 scale-[2]">image</mat-icon>
+                                    }
+                                    <span class="absolute top-2 left-2 bg-amber-500 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded shadow flex items-center gap-1 select-none">
+                                        <mat-icon class="scale-50 !w-3 !h-3 !text-sm">star</mat-icon>
+                                        DEFAULT COVER
+                                    </span>
+                                </div>
+
+                                <div class="flex-grow text-center sm:text-left">
+                                    <div class="font-bold text-base text-slate-800">Primary Cover Image</div>
+                                    <p class="text-xs text-slate-400 mt-1 mb-4">This image appears as the default display cover on catalogs and PDP screens.</p>
+                                    <div class="flex flex-wrap justify-center sm:justify-start gap-2">
+                                        <button mat-stroked-button color="primary" (click)="defaultUpload.click()">
+                                            <mat-icon class="mr-2">cloud_upload</mat-icon>
+                                            Change Cover
+                                        </button>
+                                        @if (selectedProduct.imageUrl) {
+                                            <button mat-stroked-button (click)="copyToClipboard(selectedProduct.imageUrl)">
+                                                <mat-icon class="mr-2">link</mat-icon>
+                                                Copy Link
+                                            </button>
+                                            <button mat-stroked-button color="warn" (click)="deleteDefaultProductImage()">
+                                                <mat-icon class="mr-2">delete</mat-icon>
+                                                Clear Cover
+                                            </button>
+                                        }
+                                        <input #defaultUpload type="file" (change)="uploadDefaultProductImage($event)" hidden accept="image/*" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- GALLERY HEADER -->
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                                <div>
+                                    <h3 class="text-base font-bold text-slate-900">Additional Product Media</h3>
+                                    <p class="text-[11px] text-slate-400 font-medium">Extra carousel images for the product detail page (stored in <code class="bg-slate-50 px-1 py-0.5 rounded text-primary">product_media_t</code>).</p>
+                                </div>
+                                <button mat-flat-button color="primary" (click)="galleryUpload.click()">
+                                    <mat-icon class="mr-2">add_photo_alternate</mat-icon>
+                                    Add to Gallery
+                                </button>
+                                <input #galleryUpload type="file" (change)="uploadProductFiles($event)" hidden multiple accept="image/*" />
+                            </div>
+
+                            <!-- CAROUSEL IMAGES GRID -->
+                            @if (productMediaList.length > 0) {
+                                @if (viewMode === 'grid') {
+                                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+                                        @for (img of productMediaList; track img.id) {
+                                            <div class="group relative aspect-square border border-slate-100 rounded-2xl overflow-hidden bg-slate-50/50 shadow-sm hover:shadow-md transition-shadow">
+                                                <img [src]="img.mediaUrl" class="w-full h-full object-cover rounded-2xl" />
+                                                <div class="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5">
+                                                    <button mat-mini-fab color="primary" (click)="setDefaultFromGallery(img)" matTooltip="Set as Default Cover">
+                                                        <mat-icon>star</mat-icon>
+                                                    </button>
+                                                    <button mat-mini-fab color="primary" (click)="copyToClipboard(img)" matTooltip="Copy URL">
+                                                        <mat-icon>link</mat-icon>
+                                                    </button>
+                                                    <button mat-mini-fab color="warn" (click)="deleteProductFile(img)" matTooltip="Delete Image">
+                                                        <mat-icon>delete</mat-icon>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                } @else {
+                                    <!-- LIST VIEW -->
+                                    <div class="border border-slate-100 rounded-xl overflow-hidden">
+                                        <table class="w-full text-left text-xs border-collapse">
+                                            <thead>
+                                                <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 font-semibold">
+                                                    <th class="p-3">Preview</th>
+                                                    <th class="p-3">Media URL / Key</th>
+                                                    <th class="p-3 text-right">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @for (img of productMediaList; track img.id) {
+                                                    <tr class="border-b border-slate-100 text-slate-700 hover:bg-slate-50/50">
+                                                        <td class="p-3"><img [src]="img.mediaUrl" class="w-12 h-12 object-cover rounded-lg border border-slate-100" /></td>
+                                                        <td class="p-3 font-medium text-slate-500 truncate max-w-xs">{{ img.mediaUrl }}</td>
+                                                        <td class="p-3 text-right">
+                                                            <div class="flex justify-end gap-1">
+                                                                <button mat-icon-button (click)="setDefaultFromGallery(img)" color="primary" matTooltip="Set as Default Cover"><mat-icon>star</mat-icon></button>
+                                                                <button mat-icon-button (click)="copyToClipboard(img)" color="primary" matTooltip="Copy Link"><mat-icon>link</mat-icon></button>
+                                                                <button mat-icon-button (click)="deleteProductFile(img)" color="warn" matTooltip="Delete"><mat-icon>delete</mat-icon></button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                }
+                            } @else {
+                                <div class="flex-grow flex flex-col items-center justify-center py-16">
+                                    <mat-icon class="icon-size-16 text-slate-300">image_not_supported</mat-icon>
+                                    <h4 class="mt-4 font-semibold text-slate-700">No additional carousel images uploaded.</h4>
+                                    <p class="text-xs text-slate-400">Add slides to build this product's storefront slideshow details.</p>
+                                </div>
+                            }
+                        } @else {
+                            <div class="flex-grow flex flex-col items-center justify-center py-20 text-slate-400">
+                                <mat-icon class="icon-size-16">folder_open</mat-icon>
+                                <h4 class="mt-4 font-semibold">Select a product catalog folder</h4>
+                                <p class="text-xs text-slate-400">Please choose a product from the left side panel to manage its S3 media files.</p>
+                            </div>
+                        }
+                    </div>
+
+                </div>
+            </mat-tab>
+
+            <!-- TAB 1: CATEGORY COVERS -->
+            <mat-tab label="Category Covers">
+                <div class="py-6 flex flex-col md:flex-row gap-6">
+
+                    <!-- LEFT PANEL: CATEGORY LIST -->
+                    <div class="w-full md:w-80 bg-white border border-slate-200 rounded-2xl p-4 flex flex-col gap-2 max-h-[600px] overflow-y-auto shadow-sm">
+                        <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Category Master</div>
+                        @for (cat of categories; track cat.id) {
+                            <div class="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors"
+                                 [ngClass]="{'bg-primary-50/50 border border-primary-100': selectedCategory?.id === cat.id}"
+                                 (click)="selectCategory(cat)">
+                                <mat-icon class="text-slate-400">category</mat-icon>
+                                <div class="flex-grow min-w-0">
+                                    <div class="text-xs font-bold text-slate-800 truncate">{{ cat.categoryName }}</div>
+                                    <div class="text-[10px] text-slate-400 font-medium">ID: {{ cat.categoryId }}</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- RIGHT PANEL: CATEGORY IMAGE VIEW -->
+                    <div class="flex-grow bg-white border border-slate-200 rounded-2xl p-6 min-h-[400px] flex flex-col shadow-sm">
+                        @if (selectedCategory) {
+                            <!-- HEADER -->
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                                <div>
+                                    <h3 class="text-lg font-bold text-slate-900">{{ selectedCategory.categoryName }} Cover</h3>
+                                    <p class="text-xs text-slate-400 font-medium">Path: <code class="bg-slate-50 px-1.5 py-0.5 rounded text-primary">category/{{ selectedCategory.categoryId }}/</code></p>
+                                </div>
+                                <button mat-flat-button color="primary" (click)="catUpload.click()">
+                                    <mat-icon class="mr-2">cloud_upload</mat-icon>
+                                    Change Cover
+                                </button>
+                                <input #catUpload type="file" (change)="uploadCategoryFile($event)" hidden accept="image/*" />
+                            </div>
+
+                            <!-- COVER DISPLAY -->
+                            @if (selectedCategory.imageUrl) {
+                                <div class="flex flex-col items-center gap-6 py-6">
+                                    <div class="relative w-80 aspect-[16/9] rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 shadow-sm flex items-center justify-center">
+                                        <img [src]="selectedCategory.imageUrl" class="w-full h-full object-cover" />
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <button mat-stroked-button (click)="copyToClipboard(selectedCategory.imageUrl)">
+                                            <mat-icon class="mr-2">link</mat-icon>
+                                            Copy Link
+                                        </button>
+                                        <button mat-flat-button color="warn" (click)="deleteCategoryFile()">
+                                            <mat-icon class="mr-2">delete</mat-icon>
+                                            Delete Cover
+                                        </button>
+                                    </div>
+                                </div>
+                            } @else {
+                                <div class="flex-grow flex flex-col items-center justify-center py-20">
+                                    <mat-icon class="icon-size-16 text-slate-300">image_not_supported</mat-icon>
+                                    <h4 class="mt-4 font-semibold text-slate-700">No cover image uploaded for this category yet.</h4>
+                                    <p class="text-xs text-slate-400">Click the button in the top right to upload a single cover image.</p>
+                                </div>
+                            }
+                        } @else {
+                            <div class="flex-grow flex flex-col items-center justify-center py-20 text-slate-400">
+                                <mat-icon class="icon-size-16">folder_open</mat-icon>
+                                <h4 class="mt-4 font-semibold">Select a category folder from sidebar</h4>
+                                <p class="text-xs text-slate-400">Please choose a category from the left side panel to manage its single cover image.</p>
+                            </div>
+                        }
+                    </div>
+
+                </div>
+            </mat-tab>
+
+        </mat-tab-group>
+    </div>
+
+</div>

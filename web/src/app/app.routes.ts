@@ -93,6 +93,7 @@ export const appRoutes: Route[] = [
             { path: 'branches', loadComponent: () => import('app/modules/admin/branches/branches.component').then(m => m.BranchesComponent) },
             { path: 'companies', loadComponent: () => import('app/modules/admin/companies/companies.component').then(m => m.CompaniesComponent) },
             { path: 'tax-config', loadComponent: () => import('app/modules/admin/tax-config/tax-config.component').then(m => m.TaxConfigComponent) },
+            { path: 'product-media', loadComponent: () => import('app/modules/admin/product-media/product-media.component').then(m => m.ProductMediaComponent) },
         ]
     }
 ];
