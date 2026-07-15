@@ -1,0 +1,201 @@
+<mat-card class="page-card">
+    <mat-card-content>
+
+        <!-- HEADER -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+            <div>
+                <h2 class="text-2xl font-bold tracking-tight text-slate-900">Customer Directory</h2>
+                <p class="text-xs text-slate-400 mt-1">View web store customer accounts and their shipping profiles.</p>
+            </div>
+
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+
+                <!-- SEARCH -->
+                <mat-form-field class="fuse-mat-dense w-full sm:w-72">
+                    <mat-icon matPrefix svgIcon="heroicons_outline:magnifying-glass"></mat-icon>
+                    <input matInput placeholder="Search Customer..." [formControl]="searchControl" autocomplete="off" />
+                </mat-form-field>
+
+                <!-- ADD -->
+                <button (click)="newRowClicked()" mat-flat-button color="primary" class="rounded-lg">
+                    <mat-icon class="mr-2" svgIcon="heroicons_solid:plus"></mat-icon>
+                    Add Customer
+                </button>
+
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="overflow-x-auto">
+            <ck-table-grid [properties]="table"></ck-table-grid>
+        </div>
+
+    </mat-card-content>
+</mat-card>
+
+
+<!-- ================= DRAWER ================= -->
+
+<fuse-drawer class="z-999 w-screen min-w-screen sm:w-100 sm:min-w-100 p-2" fixed [mode]="'over'"
+    [name]="'entityFormTpl'" [position]="'right'" #entityFormTpl>
+    <div class="p-4 h-full flex flex-col">
+
+        <!-- HEADER -->
+        <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-4">
+            <div class="font-semibold text-2xl text-primary">{{ recordMode === 'C' ? 'Add Customer' : 'Customer Details' }}</div>
+            <div class="flex gap-2">
+                <button mat-raised-button color="primary" (click)="onSubmitClicked()" [disabled]="inputForm.invalid">
+                    <mat-icon class="mr-1">send</mat-icon>
+                    Submit
+                </button>
+                <button mat-raised-button color="warn" (click)="onCancelClicked()">
+                    <mat-icon class="mr-1">close</mat-icon>
+                    Cancel
+                </button>
+            </div>
+        </div>
+
+        <!-- FORM & ADDRESS SCROLL AREA -->
+        <div class="flex-grow overflow-y-auto pr-1">
+            <form [formGroup]="inputForm">
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                    <!-- FIRST NAME -->
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>First Name</mat-label>
+                        <input matInput formControlName="firstName">
+                    </mat-form-field>
+
+                    <!-- LAST NAME -->
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Last Name</mat-label>
+                        <input matInput formControlName="lastName">
+                    </mat-form-field>
+
+                    <!-- EMAIL -->
+                    <div class="col-span-1 sm:col-span-2">
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Email</mat-label>
+                            <input matInput formControlName="email" type="email">
+                        </mat-form-field>
+                    </div>
+
+                    <!-- PHONE NUMBER -->
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Phone Number</mat-label>
+                        <input matInput formControlName="phoneNumber">
+                    </mat-form-field>
+
+                    <!-- ACTIVE -->
+                    <div class="flex items-center pt-2">
+                        <mat-slide-toggle formControlName="isActive">
+                            Active Account
+                        </mat-slide-toggle>
+                    </div>
+
+                    <!-- PASSWORD (Mandatory on Create only) -->
+                    @if (recordMode === 'C') {
+                        <div class="col-span-1 sm:col-span-2">
+                            <mat-form-field appearance="outline" class="w-full">
+                                <mat-label>Initial Password</mat-label>
+                                <input matInput formControlName="passwordHash" type="password" autocomplete="new-password">
+                            </mat-form-field>
+                        </div>
+                    }
+
+                    <!-- CUSTOMER SAVED ADDRESSES -->
+                    @if (recordMode === 'E') {
+                        <div class="col-span-1 sm:col-span-2 border-t border-slate-100 pt-4 mt-2">
+                            <div class="font-bold text-slate-700 text-sm mb-3">Customer Saved Addresses</div>
+                            
+                            @if (selectedCustomerAddresses.length > 0) {
+                                <div class="grid grid-cols-1 gap-3">
+                                    @for (addr of selectedCustomerAddresses; track addr.id) {
+                                        <div class="border border-slate-200 rounded-xl p-3 bg-slate-50/50 relative shadow-sm hover:shadow transition-shadow">
+                                            <div class="flex items-center justify-between mb-1.5">
+                                                <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                                                    <mat-icon class="scale-75 !w-4 !h-4 !text-slate-500">home</mat-icon>
+                                                    {{ addr.addressName || 'Address' }}
+                                                </span>
+                                                @if (addr.isDefault) {
+                                                    <span class="text-[9px] font-bold bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded shadow-sm">DEFAULT</span>
+                                                }
+                                            </div>
+                                            <div class="text-[11px] text-slate-600 leading-relaxed font-medium">
+                                                <strong class="text-slate-800">{{ addr.fullName }}</strong> ({{ addr.phoneNumber }})<br>
+                                                {{ addr.addressLine1 }}{{ addr.addressLine2 ? ', ' + addr.addressLine2 : '' }}<br>
+                                                {{ addr.city }}, {{ addr.state }} - {{ addr.postalCode }}<br>
+                                                {{ addr.country }}
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            } @else {
+                                <div class="flex flex-col items-center justify-center p-6 border border-dashed border-slate-200 rounded-xl bg-slate-50/30 text-slate-400">
+                                    <mat-icon class="text-slate-300">location_off</mat-icon>
+                                    <span class="text-xs font-medium mt-2">No saved addresses on this customer profile.</span>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</fuse-drawer>
+
+
+<!-- PASSWORD RESET MODAL -->
+<ng-template #resetPasswordTpl let-data>
+    <div class="flex flex-col max-w-md w-full rounded-2xl bg-white p-6 shadow-xl border border-slate-100 overflow-hidden">
+        <!-- Dialog Header -->
+        <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+            <div class="flex items-center gap-3">
+                <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-50 text-blue-600">
+                    <mat-icon>vpn_key</mat-icon>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-slate-800">Password Reset</h3>
+                    <p class="text-xs text-slate-400">Customer: <span class="font-semibold text-slate-600">{{ data.firstName }} {{ data.lastName }}</span></p>
+                </div>
+            </div>
+            <button mat-icon-button (click)="closeResetDialog()" class="text-slate-400 hover:text-slate-600">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+
+        <div class="flex flex-col gap-4">
+            <!-- Manual Reset Card -->
+            <div class="group relative flex flex-col p-4 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-50 transition-all duration-200">
+                <h4 class="text-sm font-bold text-slate-700 mb-1">Set Password Manually</h4>
+                <p class="text-xs text-slate-500 mb-4 font-medium">Enter a new password directly for this customer.</p>
+                
+                <mat-form-field appearance="outline" class="w-full fuse-mat-dense mb-2">
+                    <mat-label>New Password</mat-label>
+                    <input matInput type="password" [formControl]="manualPasswordControl" placeholder="Min. 4 characters" autocomplete="new-password">
+                    @if (manualPasswordControl.hasError('required')) {
+                        <mat-error>Password is required</mat-error>
+                    }
+                    @if (manualPasswordControl.hasError('minlength')) {
+                        <mat-error>Min length is 4 characters</mat-error>
+                    }
+                </mat-form-field>
+                
+                <button mat-flat-button color="primary" class="w-full py-2 rounded-lg font-semibold shadow-sm" (click)="onManualResetSubmit(data)" [disabled]="manualPasswordControl.invalid">
+                    Save New Password
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="flex justify-end items-center mt-6 pt-3 border-t border-slate-100 gap-2">
+            <button mat-stroked-button (click)="closeResetDialog()" class="rounded-lg font-semibold border-slate-200 text-slate-600 hover:bg-slate-50">
+                Close
+            </button>
+        </div>
+    </div>
+</ng-template>

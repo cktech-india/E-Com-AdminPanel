@@ -11,6 +11,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatChipsModule } from '@angular/material/chips';
 
 // Fuse Components
 import { FuseDrawerComponent } from '@fuse/components/drawer';
@@ -29,7 +31,8 @@ import { UiService } from '@services/ui.service';
         MatButtonModule, FormsModule, ReactiveFormsModule,
         MatCardContent, MatCard, MatOptionModule, MatFormFieldModule,
         MatInputModule, MatSelectModule, CommonModule,
-        MatIconModule, FuseAlertComponent, FuseDrawerComponent
+        MatIconModule, FuseAlertComponent, FuseDrawerComponent,
+        MatTooltipModule, MatChipsModule
     ]
 })
 export class OrdersComponent implements OnInit {
@@ -40,28 +43,27 @@ export class OrdersComponent implements OnInit {
     table!: CkTable;
 
     searchControl = new FormControl('');
-    filterValue = {
-        searchValue: ''
-    };
+    statusFilter = new FormControl('ALL');
 
+    allOrders: any[] = [];
     selectedOrderItems: any[] = [];
     allOrderItems: any[] = [];
+
+    // ===== Summary Stats =====
+    stats = { total: 0, pending: 0, processing: 0, shipped: 0, delivered: 0, cancelled: 0 };
+
+    readonly ORDER_STATUSES = ['ALL', 'PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
 
     constructor(
         private _service: EcommerceService,
         protected uiService: UiService
     ) {
         this.searchControl.valueChanges
-            .pipe(
-                startWith(''),
-                debounceTime(400),
-                distinctUntilChanged(),
-                map(v => v || '')
-            )
-            .subscribe(value => {
-                this.filterValue.searchValue = value;
-                this.getGridData();
-            });
+            .pipe(startWith(''), debounceTime(400), distinctUntilChanged(), map(v => v || ''))
+            .subscribe(() => this.applyFilter());
+
+        this.statusFilter.valueChanges
+            .subscribe(() => this.applyFilter());
     }
 
     ngOnInit(): void {
@@ -73,50 +75,63 @@ export class OrdersComponent implements OnInit {
     initializeForm() {
         this.inputForm = new FormGroup({
             id: new FormControl(null),
-            orderNumber: new FormControl({ value: '', disabled: true }),
-            orderDate: new FormControl({ value: '', disabled: true }),
-            userId: new FormControl({ value: '', disabled: true }),
-            grandTotal: new FormControl({ value: '', disabled: true }),
-            shippingAddress: new FormControl({ value: '', disabled: true }),
-            paymentMethod: new FormControl({ value: '', disabled: true }),
-            paymentStatus: new FormControl('', Validators.required),
-            orderStatus: new FormControl('', Validators.required)
+            orderNumber:    new FormControl({ value: '', disabled: true }),
+            orderDate:      new FormControl({ value: '', disabled: true }),
+            userId:         new FormControl({ value: '', disabled: true }),
+            grandTotal:     new FormControl({ value: '', disabled: true }),
+            shippingAddress:new FormControl({ value: '', disabled: true }),
+            paymentMethod:  new FormControl({ value: '', disabled: true }),
+            paymentStatus:  new FormControl('', Validators.required),
+            orderStatus:    new FormControl('', Validators.required)
         });
 
         this.table = {
             gridData: [],
             columns: [
-                { header: 'Order No', column: 'orderNumber' },
-                { 
-                    header: 'Date', 
+                {
+                    header: 'Order No',
+                    column: 'orderNumber',
+                    formatter: (v) => `<span class="font-bold text-slate-700">${v || '—'}</span>`
+                },
+                {
+                    header: 'Date',
                     column: 'orderDate',
-                    formatter: (v) => this.uiService.getDateFormat(v, 'dd-MMM-yyyy hh:mm a') || v
+                    formatter: (v) => `<span class="text-slate-500 text-xs whitespace-nowrap">${this.uiService.getDateFormat(v, 'dd MMM yyyy') || v}</span>`
                 },
-                { 
-                    header: 'Total', 
+                {
+                    header: 'Amount',
                     column: 'grandTotal',
-                    formatter: (v) => `₹${Number(v).toFixed(2)}`
+                    formatter: (v) => `<span class="font-bold text-slate-800">₹${Number(v).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>`
                 },
-                { header: 'Payment Method', column: 'paymentMethod' },
-                { 
-                    header: 'Payment Status', 
+                {
+                    header: 'Payment',
+                    column: 'paymentMethod',
+                    formatter: (v) => `<span class="text-slate-600 text-xs">${v || '—'}</span>`
+                },
+                {
+                    header: 'Payment Status',
                     column: 'paymentStatus',
-                    formatter: (v) => v || 'PENDING'
+                    formatter: (v) => this.formatPaymentBadge(v)
                 },
-                { header: 'Order Status', column: 'orderStatus' }
+                {
+                    header: 'Order Status',
+                    column: 'orderStatus',
+                    formatter: (v) => this.formatOrderBadge(v)
+                }
             ],
             actions: [
                 {
-                    label: 'View / Manage',
-                    icon: 'visibility',
+                    label: 'View & Manage',
+                    icon: 'open_in_new',
                     action: (row) => this.viewOrder(row)
                 },
                 {
-                    label: 'Delete',
+                    label: 'Delete Order',
                     icon: 'delete',
+                    color: 'warn',
                     confirm: true,
                     confirmTitle: 'Delete Order',
-                    confirmMessage: 'Are you sure you want to delete this order record?',
+                    confirmMessage: 'Are you sure you want to permanently delete this order?',
                     action: (row) => this.deleteRow(row)
                 }
             ],
@@ -125,11 +140,32 @@ export class OrdersComponent implements OnInit {
         };
     }
 
+    formatOrderBadge(status: string): string {
+        const map: Record<string, string> = {
+            'PENDING':    'bg-amber-100 text-amber-800 border-amber-200',
+            'PROCESSING': 'bg-blue-100 text-blue-800 border-blue-200',
+            'SHIPPED':    'bg-indigo-100 text-indigo-800 border-indigo-200',
+            'DELIVERED':  'bg-emerald-100 text-emerald-800 border-emerald-200',
+            'CANCELLED':  'bg-rose-100 text-rose-800 border-rose-200',
+        };
+        const cls = map[status] || 'bg-slate-100 text-slate-600 border-slate-200';
+        return `<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold tracking-wide border ${cls}">${status || 'PENDING'}</span>`;
+    }
+
+    formatPaymentBadge(status: string): string {
+        const map: Record<string, string> = {
+            'PAID':     'bg-emerald-100 text-emerald-800 border-emerald-200',
+            'PENDING':  'bg-amber-100 text-amber-800 border-amber-200',
+            'REFUNDED': 'bg-purple-100 text-purple-800 border-purple-200',
+            'FAILED':   'bg-rose-100 text-rose-800 border-rose-200',
+        };
+        const cls = map[status] || 'bg-slate-100 text-slate-600 border-slate-200';
+        return `<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold tracking-wide border ${cls}">${status || 'PENDING'}</span>`;
+    }
+
     loadOrderItems() {
         this._service.getOrderItems().subscribe({
-            next: (res) => {
-                this.allOrderItems = res || [];
-            }
+            next: (res) => { this.allOrderItems = res || []; }
         });
     }
 
@@ -138,20 +174,47 @@ export class OrdersComponent implements OnInit {
         this.table = { ...this.table };
         this._service.getOrders().subscribe({
             next: (res: any[]) => {
-                const search = this.filterValue.searchValue.toLowerCase();
-                this.table.gridData = (res || []).filter(item => 
-                    !search || 
-                    (item.orderNumber && item.orderNumber.toLowerCase().includes(search)) ||
-                    (item.orderStatus && item.orderStatus.toLowerCase().includes(search))
-                );
-                this.table.loading = false;
-                this.table = { ...this.table };
+                this.allOrders = res || [];
+                this.computeStats(this.allOrders);
+                this.applyFilter();
             },
             error: () => {
                 this.table.loading = false;
                 this.table = { ...this.table };
             }
         });
+    }
+
+    applyFilter() {
+        const search = (this.searchControl.value || '').toLowerCase();
+        const statusVal = this.statusFilter.value || 'ALL';
+        this.table.gridData = this.allOrders.filter(item => {
+            const matchSearch = !search ||
+                (item.orderNumber && item.orderNumber.toLowerCase().includes(search)) ||
+                (item.orderStatus && item.orderStatus.toLowerCase().includes(search));
+            const matchStatus = statusVal === 'ALL' || item.orderStatus === statusVal;
+            return matchSearch && matchStatus;
+        });
+        this.table.loading = false;
+        this.table = { ...this.table };
+    }
+
+    computeStats(orders: any[]) {
+        this.stats = { total: orders.length, pending: 0, processing: 0, shipped: 0, delivered: 0, cancelled: 0 };
+        orders.forEach(o => {
+            const s = (o.orderStatus || '').toUpperCase();
+            if (s === 'PENDING')    this.stats.pending++;
+            else if (s === 'PROCESSING') this.stats.processing++;
+            else if (s === 'SHIPPED')    this.stats.shipped++;
+            else if (s === 'DELIVERED')  this.stats.delivered++;
+            else if (s === 'CANCELLED')  this.stats.cancelled++;
+        });
+    }
+
+    get totalRevenue(): number {
+        return this.allOrders
+            .filter(o => o.orderStatus !== 'CANCELLED')
+            .reduce((sum, o) => sum + (Number(o.grandTotal) || 0), 0);
     }
 
     viewOrder(row: any) {
@@ -177,11 +240,8 @@ export class OrdersComponent implements OnInit {
             this.uiService.showToastr('Error', 'Invalid status configuration', 'error');
             return;
         }
-
-        // Get raw value because we want disabled fields too when saving
         const input = this.inputForm.getRawValue();
-        input.recordMode = 'E'; // Editing order status
-
+        input.recordMode = 'E';
         this._service.saveOrder(input).subscribe({
             next: () => {
                 this.drawer.close();
@@ -189,12 +249,21 @@ export class OrdersComponent implements OnInit {
                 this.uiService.showToastr('Success', 'Order status updated successfully', 'success');
             },
             error: () => {
-                this.uiService.showToastr('Error', 'System error occurred while updating order', 'error');
+                this.uiService.showToastr('Error', 'System error while updating order', 'error');
             }
         });
     }
 
     onCancelClicked() {
         this.drawer.close();
+    }
+
+    // Helper for drawer order total items count
+    get orderItemCount(): number {
+        return this.selectedOrderItems.reduce((s, i) => s + (Number(i.quantity) || 0), 0);
+    }
+
+    get orderItemTotal(): number {
+        return this.selectedOrderItems.reduce((s, i) => s + (Number(i.rowTotal) || 0), 0);
     }
 }

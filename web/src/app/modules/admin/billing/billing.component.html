@@ -1,25 +1,77 @@
+<!-- ======================== BILLING MAIN CARD ======================== -->
 <mat-card class="page-card">
     <mat-card-content>
 
-        <!-- HEADER -->
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+        <!-- ===== PAGE HEADER ===== -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div>
                 <h2 class="text-2xl font-bold tracking-tight text-slate-900">Billing & Invoices</h2>
-                <p class="text-xs text-slate-500">View customer invoice logs, sales billing histories, and tax summary.</p>
+                <p class="text-xs text-slate-500 mt-0.5">View billing records, GST breakdowns, and customer invoice history.</p>
             </div>
-
             <div class="flex items-center gap-3 w-full sm:w-auto">
-
-                <!-- SEARCH -->
                 <mat-form-field class="fuse-mat-dense w-full sm:w-72">
                     <mat-icon matPrefix>search</mat-icon>
-                    <input matInput placeholder="Search Customer/Mobile..." [formControl]="searchControl" autocomplete="off" />
+                    <input matInput placeholder="Search customer / mobile..." [formControl]="searchControl" autocomplete="off" />
                 </mat-form-field>
-
             </div>
         </div>
 
-        <!-- TABLE -->
+        <!-- ===== SUMMARY STAT CARDS ===== -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+
+            <!-- Total Invoices -->
+            <div class="flex items-center gap-3 p-4 rounded-2xl border border-slate-100 bg-white shadow-sm">
+                <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-50 flex-shrink-0">
+                    <mat-icon class="text-blue-500">receipt_long</mat-icon>
+                </div>
+                <div>
+                    <div class="text-2xl font-extrabold text-slate-800">{{ stats.totalInvoices }}</div>
+                    <div class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Total Invoices</div>
+                </div>
+            </div>
+
+            <!-- Total Revenue -->
+            <div class="flex items-center gap-3 p-4 rounded-2xl border border-emerald-100 bg-emerald-50/40 shadow-sm">
+                <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-100 flex-shrink-0">
+                    <mat-icon class="text-emerald-600">currency_rupee</mat-icon>
+                </div>
+                <div>
+                    <div class="text-xl font-extrabold text-emerald-700">₹{{ stats.totalRevenue | number:'1.0-0' }}</div>
+                    <div class="text-[11px] font-medium text-emerald-600 uppercase tracking-wider">Gross Revenue</div>
+                </div>
+            </div>
+
+            <!-- Total GST -->
+            <div class="flex items-center gap-3 p-4 rounded-2xl border border-purple-100 bg-purple-50/40 shadow-sm">
+                <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-purple-100 flex-shrink-0">
+                    <mat-icon class="text-purple-600">account_balance</mat-icon>
+                </div>
+                <div>
+                    <div class="text-xl font-extrabold text-purple-700">₹{{ totalGst | number:'1.0-0' }}</div>
+                    <div class="text-[11px] font-medium text-purple-600 uppercase tracking-wider">Total GST</div>
+                </div>
+            </div>
+
+            <!-- GST Breakdown -->
+            <div class="flex flex-col justify-center p-4 rounded-2xl border border-slate-100 bg-white shadow-sm gap-1">
+                <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">GST Breakdown</div>
+                <div class="flex justify-between text-xs">
+                    <span class="text-slate-500 font-semibold">CGST</span>
+                    <span class="font-bold text-slate-700">₹{{ stats.totalCgst | number:'1.0-0' }}</span>
+                </div>
+                <div class="flex justify-between text-xs">
+                    <span class="text-slate-500 font-semibold">SGST</span>
+                    <span class="font-bold text-slate-700">₹{{ stats.totalSgst | number:'1.0-0' }}</span>
+                </div>
+                <div class="flex justify-between text-xs">
+                    <span class="text-slate-500 font-semibold">IGST</span>
+                    <span class="font-bold text-slate-700">₹{{ stats.totalIgst | number:'1.0-0' }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ===== TABLE ===== -->
         <div class="overflow-x-auto">
             <ck-table-grid [properties]="table"></ck-table-grid>
         </div>
@@ -28,133 +80,154 @@
 </mat-card>
 
 
-<!-- ================= DRAWER ================= -->
+<!-- ======================== INVOICE DETAIL DRAWER ======================== -->
 
-<fuse-drawer class="z-999 w-screen min-w-screen sm:w-140 sm:min-w-140 p-2" fixed [mode]="'over'"
+<fuse-drawer class="z-999 w-screen min-w-screen sm:w-160 sm:min-w-160" fixed [mode]="'over'"
     [name]="'billingFormTpl'" [position]="'right'" #billingFormTpl>
-    <div class="p-4 flex flex-col h-full overflow-y-auto">
+    <div class="flex flex-col h-full overflow-hidden bg-slate-50/20">
 
-        <!-- HEADER -->
-        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+        <!-- DRAWER HEADER -->
+        <div class="flex items-start justify-between px-6 py-4 bg-white border-b border-slate-100 flex-shrink-0">
             <div>
-                <div class="font-semibold text-2xl text-primary">Invoice #{{ inputForm.get('id')?.value }}</div>
-                <p class="text-xs text-slate-400 font-medium">Generated on {{ inputForm.get('createdDate')?.value | date:'dd-MMM-yyyy hh:mm a' }}</p>
+                <div class="font-bold text-xl text-slate-800">
+                    Invoice #{{ inputForm.get('id')?.value }}
+                </div>
+                <p class="text-xs text-slate-400 mt-0.5">
+                    Generated: {{ inputForm.get('createdDate')?.value | date:'dd MMM yyyy, hh:mm a' }}
+                </p>
             </div>
-
-            <div class="flex gap-2">
-                <button mat-raised-button color="warn" (click)="onCancelClicked()">
-                    <mat-icon class="mr-1">close</mat-icon>
-                    Close
-                </button>
-            </div>
+            <button mat-raised-button color="warn" (click)="onCancelClicked()">
+                <mat-icon class="scale-90">close</mat-icon>
+                Close
+            </button>
         </div>
 
-        <!-- FORM & BILL ITEMS -->
-        <div class="flex-grow flex flex-col gap-6">
+        <!-- SCROLLABLE BODY -->
+        <div class="flex-grow overflow-y-auto px-6 py-5 flex flex-col gap-5">
 
-            <!-- METADATA FORM -->
-            <form [formGroup]="inputForm">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-                    <!-- CUSTOMER -->
-                    <mat-form-field appearance="outline" class="w-full">
-                        <mat-label>Customer Name</mat-label>
-                        <input matInput formControlName="customerName">
-                    </mat-form-field>
-
-                    <!-- MOBILE -->
-                    <mat-form-field appearance="outline" class="w-full">
-                        <mat-label>Mobile No</mat-label>
-                        <input matInput formControlName="mobileNo">
-                    </mat-form-field>
-
-                    <!-- STATE -->
-                    <mat-form-field appearance="outline" class="w-full">
-                        <mat-label>State</mat-label>
-                        <input matInput formControlName="state">
-                    </mat-form-field>
-
-                    <!-- STATE CODE -->
-                    <mat-form-field appearance="outline" class="w-full">
-                        <mat-label>State Code</mat-label>
-                        <input matInput formControlName="stateCode">
-                    </mat-form-field>
-
-                    <!-- TOTAL CGST -->
-                    <mat-form-field appearance="outline" class="w-full">
-                        <mat-label>CGST (₹)</mat-label>
-                        <input matInput formControlName="cgst">
-                    </mat-form-field>
-
-                    <!-- TOTAL SGST -->
-                    <mat-form-field appearance="outline" class="w-full">
-                        <mat-label>SGST (₹)</mat-label>
-                        <input matInput formControlName="sgst">
-                    </mat-form-field>
-
-                    <!-- TOTAL IGST -->
-                    <mat-form-field appearance="outline" class="w-full">
-                        <mat-label>IGST (₹)</mat-label>
-                        <input matInput formControlName="igst">
-                    </mat-form-field>
-
-                    <!-- GRAND TOTAL -->
-                    <mat-form-field appearance="outline" class="w-full">
-                        <mat-label>Grand Total (₹)</mat-label>
-                        <input matInput formControlName="grandTotal">
-                    </mat-form-field>
-
-                    <!-- CUSTOMER ADDRESS -->
-                    <div class="col-span-1 sm:col-span-2">
-                        <mat-form-field appearance="outline" class="w-full">
-                            <mat-label>Customer Address</mat-label>
-                            <textarea matInput formControlName="customerAddress" rows="2"></textarea>
-                        </mat-form-field>
+            <!-- ===== CUSTOMER INFO CARD ===== -->
+            <div class="border border-slate-200 rounded-2xl p-4 bg-white shadow-sm">
+                <div class="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-3 flex items-center gap-1.5">
+                    <mat-icon class="scale-75 text-slate-400">person</mat-icon>
+                    Bill To
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
+                    <div>
+                        <div class="text-[10px] text-slate-400 font-semibold uppercase mb-0.5">Customer</div>
+                        <div class="font-bold text-slate-800">{{ inputForm.get('customerName')?.value || '—' }}</div>
                     </div>
-
+                    <div>
+                        <div class="text-[10px] text-slate-400 font-semibold uppercase mb-0.5">Mobile</div>
+                        <div class="font-semibold text-slate-700">{{ inputForm.get('mobileNo')?.value || '—' }}</div>
+                    </div>
+                    <div>
+                        <div class="text-[10px] text-slate-400 font-semibold uppercase mb-0.5">State</div>
+                        <div class="font-semibold text-slate-700">
+                            {{ inputForm.get('state')?.value || '—' }}
+                            @if (inputForm.get('stateCode')?.value) {
+                                <span class="ml-1 px-1.5 py-0.5 rounded text-[10px] bg-slate-100 text-slate-500">{{ inputForm.get('stateCode')?.value }}</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <div class="text-[10px] text-slate-400 font-semibold uppercase mb-0.5">Address</div>
+                        <div class="text-slate-600 leading-relaxed">{{ inputForm.get('customerAddress')?.value || '—' }}</div>
+                    </div>
                 </div>
-            </form>
+            </div>
 
-            <!-- BILL DETAILS TABLE -->
-            <div class="border border-slate-200 rounded-xl p-4 bg-slate-50/50">
-                <div class="font-bold text-sm text-slate-700 mb-3 flex items-center gap-2">
-                    <mat-icon class="text-slate-500 scale-90">receipt</mat-icon>
-                    Billing Items Details
+            <!-- ===== TAX SUMMARY CARD ===== -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+
+                <div class="flex flex-col p-3 rounded-xl border border-slate-100 bg-white shadow-sm text-center">
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">CGST</div>
+                    <div class="text-lg font-extrabold text-slate-700">₹{{ inputForm.get('cgst')?.value | number:'1.2-2' }}</div>
                 </div>
 
-                <div class="overflow-x-auto border border-slate-100 rounded-lg bg-white">
+                <div class="flex flex-col p-3 rounded-xl border border-slate-100 bg-white shadow-sm text-center">
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">SGST</div>
+                    <div class="text-lg font-extrabold text-slate-700">₹{{ inputForm.get('sgst')?.value | number:'1.2-2' }}</div>
+                </div>
+
+                <div class="flex flex-col p-3 rounded-xl border border-slate-100 bg-white shadow-sm text-center">
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">IGST</div>
+                    <div class="text-lg font-extrabold text-slate-700">₹{{ inputForm.get('igst')?.value | number:'1.2-2' }}</div>
+                </div>
+
+                <div class="flex flex-col p-3 rounded-xl border border-emerald-200 bg-emerald-50 shadow-sm text-center">
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-emerald-500 mb-1">Grand Total</div>
+                    <div class="text-xl font-extrabold text-emerald-700">₹{{ inputForm.get('grandTotal')?.value | number:'1.2-2' }}</div>
+                </div>
+
+            </div>
+
+            <!-- ===== LINE ITEMS TABLE ===== -->
+            <div class="border border-slate-200 rounded-2xl bg-white shadow-sm overflow-hidden">
+                <div class="flex items-center gap-2 px-4 py-3 border-b border-slate-100 bg-slate-50">
+                    <mat-icon class="text-slate-400 scale-90">receipt</mat-icon>
+                    <span class="font-bold text-sm text-slate-700">Invoice Line Items</span>
+                    <span class="ml-auto text-xs text-slate-400">{{ selectedBillingItems.length }} item(s)</span>
+                </div>
+
+                <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-xs">
-                        <thead>
-                            <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 font-semibold">
-                                <th class="p-3">Product Name</th>
-                                <th class="p-3 text-center">Qty</th>
-                                <th class="p-3 text-right">Unit Price</th>
-                                <th class="p-3 text-right">GST Amt</th>
-                                <th class="p-3 text-right">Discount</th>
-                                <th class="p-3 text-right">Row Total</th>
+                        <thead class="bg-slate-50 border-b border-slate-100 text-slate-500 font-semibold">
+                            <tr>
+                                <th class="px-4 py-2.5">Product</th>
+                                <th class="px-4 py-2.5 text-center">Qty</th>
+                                <th class="px-4 py-2.5 text-right">Unit Price</th>
+                                <th class="px-4 py-2.5 text-right">GST Amt</th>
+                                <th class="px-4 py-2.5 text-right">Discount</th>
+                                <th class="px-4 py-2.5 text-right">Line Total</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let item of selectedBillingItems" class="border-b border-slate-100 text-slate-700 hover:bg-slate-50/40">
-                                <td class="p-3">
-                                    <div class="font-medium">{{ item.productName }}</div>
-                                    <div class="text-[10px] text-slate-400">HSN: {{ item.hsnCode || 'N/A' }}</div>
-                                </td>
-                                <td class="p-3 text-center font-bold">{{ item.quantity }}</td>
-                                <td class="p-3 text-right">₹{{ item.unitPrice | number:'1.2-2' }}</td>
-                                <td class="p-3 text-right">₹{{ item.gstAmount | number:'1.2-2' }}</td>
-                                <td class="p-3 text-right">₹{{ item.discountAmount | number:'1.2-2' }}</td>
-                                <td class="p-3 text-right font-semibold">₹{{ item.rowTotal | number:'1.2-2' }}</td>
-                            </tr>
-                            <tr *ngIf="selectedBillingItems.length === 0">
-                                <td colspan="6" class="p-4 text-center text-slate-400">No items found for this invoice.</td>
-                            </tr>
+                            @for (item of selectedBillingItems; track item.id || $index) {
+                                <tr class="border-b border-slate-50 hover:bg-slate-50/80 transition-colors">
+                                    <td class="px-4 py-3">
+                                        <div class="font-semibold text-slate-800">{{ item.productName }}</div>
+                                        <div class="text-[10px] text-slate-400 mt-0.5">HSN: {{ item.hsnCode || 'N/A' }}</div>
+                                    </td>
+                                    <td class="px-4 py-3 text-center font-bold text-slate-700">{{ item.quantity }}</td>
+                                    <td class="px-4 py-3 text-right text-slate-600">₹{{ item.unitPrice | number:'1.2-2' }}</td>
+                                    <td class="px-4 py-3 text-right text-purple-600 font-semibold">₹{{ item.gstAmount | number:'1.2-2' }}</td>
+                                    <td class="px-4 py-3 text-right text-rose-500">
+                                        @if ((item.discountAmount || 0) > 0) {
+                                            <span>-₹{{ item.discountAmount | number:'1.2-2' }}</span>
+                                        } @else {
+                                            <span class="text-slate-300">—</span>
+                                        }
+                                    </td>
+                                    <td class="px-4 py-3 text-right font-bold text-slate-900">₹{{ item.rowTotal | number:'1.2-2' }}</td>
+                                </tr>
+                            }
+                            @if (selectedBillingItems.length === 0) {
+                                <tr>
+                                    <td colspan="6" class="px-4 py-8 text-center">
+                                        <div class="flex flex-col items-center gap-2 text-slate-400">
+                                            <mat-icon>receipt_long</mat-icon>
+                                            <span class="text-xs">No line items found for this invoice.</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
+                        @if (selectedBillingItems.length > 0) {
+                            <tfoot class="border-t-2 border-slate-200 bg-slate-50">
+                                <tr class="text-xs">
+                                    <td colspan="5" class="px-4 py-3 text-right font-bold text-slate-500">
+                                        Total GST: <span class="text-purple-600">₹{{ drawerGst | number:'1.2-2' }}</span>
+                                    </td>
+                                    <td class="px-4 py-3 text-right font-extrabold text-slate-900 text-sm">
+                                        ₹{{ drawerLineTotal | number:'1.2-2' }}
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        }
                     </table>
                 </div>
             </div>
 
         </div>
-
     </div>
 </fuse-drawer>

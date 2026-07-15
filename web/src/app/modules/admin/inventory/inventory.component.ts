@@ -11,6 +11,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDividerModule } from '@angular/material/divider';
 
 // Fuse Components
 import { FuseDrawerComponent } from '@fuse/components/drawer';
@@ -29,7 +31,8 @@ import { UiService } from '@services/ui.service';
         MatButtonModule, FormsModule, ReactiveFormsModule,
         MatCardContent, MatCard, MatOptionModule, MatFormFieldModule,
         MatInputModule, MatSelectModule, CommonModule,
-        MatIconModule, FuseAlertComponent, FuseDrawerComponent
+        MatIconModule, FuseAlertComponent, FuseDrawerComponent,
+        MatTooltipModule, MatDividerModule
     ]
 })
 export class InventoryComponent implements OnInit {
@@ -41,13 +44,34 @@ export class InventoryComponent implements OnInit {
     recordMode: string = 'E';
 
     searchControl = new FormControl('');
-    filterValue = {
-        searchValue: ''
-    };
+    filterValue = { searchValue: '' };
 
     products: any[] = [];
     stockLogs: any[] = [];
     filteredStockLogs: any[] = [];
+    allInventory: any[] = [];
+
+    // ===== Summary Stats =====
+    stats = {
+        total: 0,
+        inStock: 0,
+        lowStock: 0,
+        outOfStock: 0
+    };
+
+    // ===== Live Preview =====
+    get previewNewQty(): number {
+        const v = this.inputForm?.getRawValue();
+        if (!v) return 0;
+        const adj = Number(v.adjustQty) || 0;
+        const current = Number(v.quantityOnHand) || 0;
+        if (adj <= 0) return current;
+        return v.adjustType === 'ADD' ? current + adj : Math.max(0, current - adj);
+    }
+
+    get previewAvailable(): number {
+        return Math.max(0, this.previewNewQty - (Number(this.inputForm?.getRawValue()?.reservedQuantity) || 0));
+    }
 
     constructor(
         private _service: EcommerceService,
@@ -62,7 +86,7 @@ export class InventoryComponent implements OnInit {
             )
             .subscribe(value => {
                 this.filterValue.searchValue = value;
-                this.getGridData();
+                this.applyFilter();
             });
     }
 
@@ -79,40 +103,68 @@ export class InventoryComponent implements OnInit {
             quantityOnHand: new FormControl(0, [Validators.required, Validators.min(0)]),
             reservedQuantity: new FormControl(0, [Validators.required, Validators.min(0)]),
             reorderLevel: new FormControl(10, [Validators.required, Validators.min(0)]),
-            
-            // For stock log adjustment
             adjustType: new FormControl('ADD'),
-            adjustQty: new FormControl(0),
+            adjustQty: new FormControl(0, [Validators.min(0)]),
             adjustRemarks: new FormControl('')
         });
 
         this.table = {
             gridData: [],
             columns: [
-                { 
-                    header: 'Product Name', 
+                {
+                    header: 'Product Name',
                     column: 'productId',
-                    formatter: (v) => {
+                    formatter: (v, row) => {
                         const prod = this.products.find(p => p.id === v);
-                        return prod ? prod.productName : `Product ID: ${v}`;
+                        const name = prod ? prod.productName : `Product ID: ${v}`;
+                        const avail = row.quantityOnHand - row.reservedQuantity;
+                        if (avail <= 0 || avail <= row.reorderLevel) {
+                            return `<span class="flex items-center gap-1.5 font-semibold text-slate-900">${name}<span class="inline-block w-2 h-2 rounded-full bg-rose-500 animate-pulse flex-shrink-0" title="Needs Reorder"></span></span>`;
+                        }
+                        return `<span class="font-medium text-slate-800">${name}</span>`;
                     }
                 },
-                { header: 'On Hand', column: 'quantityOnHand' },
-                { header: 'Reserved', column: 'reservedQuantity' },
-                { 
-                    header: 'Available', 
-                    column: 'available',
-                    formatter: (v, row) => `${row.quantityOnHand - row.reservedQuantity}`
+                {
+                    header: 'On Hand',
+                    column: 'quantityOnHand',
+                    formatter: (v) => `<span class="font-semibold">${v}</span>`
                 },
-                { header: 'Reorder Point', column: 'reorderLevel' },
+                {
+                    header: 'Reserved',
+                    column: 'reservedQuantity',
+                    formatter: (v) => `<span class="text-slate-500">${v}</span>`
+                },
+                {
+                    header: 'Available',
+                    column: 'available',
+                    formatter: (v, row) => {
+                        const avail = row.quantityOnHand - row.reservedQuantity;
+                        if (avail <= 0) {
+                            return `<strong class="text-rose-600 font-bold">${avail}</strong>`;
+                        }
+                        if (avail <= row.reorderLevel) {
+                            return `<strong class="text-amber-600 font-bold">${avail}</strong>`;
+                        }
+                        return `<span class="text-emerald-700 font-semibold">${avail}</span>`;
+                    }
+                },
+                {
+                    header: 'Reorder Point',
+                    column: 'reorderLevel',
+                    formatter: (v) => `<span class="text-slate-500 text-xs">≤ ${v}</span>`
+                },
                 {
                     header: 'Stock Status',
                     column: 'status',
                     formatter: (v, row) => {
                         const avail = row.quantityOnHand - row.reservedQuantity;
-                        if (avail <= 0) return 'OUT OF STOCK';
-                        if (avail <= row.reorderLevel) return 'LOW STOCK';
-                        return 'IN STOCK';
+                        if (avail <= 0) {
+                            return `<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold tracking-wide bg-rose-100 text-rose-800 border border-rose-200">OUT OF STOCK</span>`;
+                        }
+                        if (avail <= row.reorderLevel) {
+                            return `<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold tracking-wide bg-amber-100 text-amber-800 border border-amber-200">LOW STOCK</span>`;
+                        }
+                        return `<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold tracking-wide bg-emerald-100 text-emerald-800 border border-emerald-200">IN STOCK</span>`;
                     }
                 }
             ],
@@ -150,18 +202,41 @@ export class InventoryComponent implements OnInit {
         this.table = { ...this.table };
         this._service.getInventory().subscribe({
             next: (res: any[]) => {
-                const search = this.filterValue.searchValue.toLowerCase();
-                this.table.gridData = (res || []).filter(item => {
-                    const prod = this.products.find(p => p.id === item.productId);
-                    const prodName = prod ? prod.productName.toLowerCase() : '';
-                    return !search || prodName.includes(search);
-                });
-                this.table.loading = false;
-                this.table = { ...this.table };
+                this.allInventory = res || [];
+                this.computeStats(this.allInventory);
+                this.applyFilter();
             },
             error: () => {
                 this.table.loading = false;
                 this.table = { ...this.table };
+            }
+        });
+    }
+
+    applyFilter() {
+        const search = this.filterValue.searchValue.toLowerCase();
+        this.table.gridData = this.allInventory.filter(item => {
+            const prod = this.products.find(p => p.id === item.productId);
+            const prodName = prod ? prod.productName.toLowerCase() : '';
+            return !search || prodName.includes(search);
+        });
+        this.table.loading = false;
+        this.table = { ...this.table };
+    }
+
+    computeStats(inventory: any[]) {
+        this.stats.total = inventory.length;
+        this.stats.inStock = 0;
+        this.stats.lowStock = 0;
+        this.stats.outOfStock = 0;
+        inventory.forEach(item => {
+            const avail = item.quantityOnHand - item.reservedQuantity;
+            if (avail <= 0) {
+                this.stats.outOfStock++;
+            } else if (avail <= item.reorderLevel) {
+                this.stats.lowStock++;
+            } else {
+                this.stats.inStock++;
             }
         });
     }
@@ -171,10 +246,17 @@ export class InventoryComponent implements OnInit {
         this.inputForm.patchValue(row);
         this.inputForm.get('adjustQty')?.setValue(0);
         this.inputForm.get('adjustRemarks')?.setValue('');
+        this.inputForm.get('adjustType')?.setValue('ADD');
         this.filteredStockLogs = this.stockLogs
             .filter(log => log.productId === row.productId)
             .sort((a, b) => new Date(b.transactionDate).getTime() - new Date(a.transactionDate).getTime());
         this.drawer.open();
+    }
+
+    getSelectedProductName(): string {
+        const id = this.inputForm?.get('productId')?.value;
+        const prod = this.products.find(p => p.id === id);
+        return prod ? prod.productName : '';
     }
 
     onSubmitClicked() {
@@ -184,14 +266,14 @@ export class InventoryComponent implements OnInit {
         }
 
         const formVal = this.inputForm.getRawValue();
-        let finalQty = formVal.quantityOnHand;
+        const adj = Number(formVal.adjustQty) || 0;
+        let finalQty = Number(formVal.quantityOnHand);
 
-        // Perform stock adjustments if adjustQty is specified
-        if (formVal.adjustQty > 0) {
+        if (adj > 0) {
             if (formVal.adjustType === 'ADD') {
-                finalQty += formVal.adjustQty;
+                finalQty += adj;
             } else if (formVal.adjustType === 'SUBTRACT') {
-                finalQty = Math.max(0, finalQty - formVal.adjustQty);
+                finalQty = Math.max(0, finalQty - adj);
             }
         }
 
@@ -205,12 +287,11 @@ export class InventoryComponent implements OnInit {
 
         this._service.saveInventory(input).subscribe({
             next: () => {
-                // If adjusted, create a stock log record on the backend if available
-                if (formVal.adjustQty > 0) {
+                if (adj > 0) {
                     const logRecord = {
                         productId: formVal.productId,
                         transactionType: formVal.adjustType === 'ADD' ? 'RECEIVE' : 'ADJUST_OUT',
-                        quantity: formVal.adjustQty,
+                        quantity: adj,
                         remarks: formVal.adjustRemarks || 'Manual Stock Update',
                         transactionDate: new Date()
                     };
@@ -218,7 +299,6 @@ export class InventoryComponent implements OnInit {
                         next: () => this.loadStockLogs()
                     });
                 }
-
                 this.drawer.close();
                 this.getGridData();
                 this.uiService.showToastr('Success', 'Stock levels updated', 'success');

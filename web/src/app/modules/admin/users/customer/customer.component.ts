@@ -23,8 +23,8 @@ import { UserService } from '../users.service';
 import { UiService } from '@services/ui.service';
 
 @Component({
-    selector: 'app-user',
-    templateUrl: './user.component.html',
+    selector: 'app-customer',
+    templateUrl: './customer.component.html',
     encapsulation: ViewEncapsulation.None,
     standalone: true,
     imports: [
@@ -34,7 +34,7 @@ import { UiService } from '@services/ui.service';
         FuseAlertComponent, FuseDrawerComponent, MatDialogModule
     ]
 })
-export class UserComponent implements OnInit {
+export class CustomerComponent implements OnInit {
 
     // ================= VIEW =================
     @ViewChild('entityFormTpl') drawer!: FuseDrawerComponent;
@@ -50,7 +50,8 @@ export class UserComponent implements OnInit {
     private _dialogRef: any;
 
     searchControl = new FormControl('');
-    rawUsersList: any[] = [];
+    rawCustomersList: any[] = [];
+    selectedCustomerAddresses: any[] = [];
 
     constructor(
         private _userService: UserService,
@@ -83,7 +84,7 @@ export class UserComponent implements OnInit {
             email: new FormControl('', [Validators.required, Validators.email]),
             phoneNumber: new FormControl(''),
             passwordHash: new FormControl(''), // Plain text input here will be hashed by backend on save
-            userType: new FormControl('ADM', Validators.required), // ADM for staff users
+            userType: new FormControl('USR', Validators.required), // USR for customers
             stateCode: new FormControl(''),
             isActive: new FormControl(true),
         });
@@ -93,13 +94,17 @@ export class UserComponent implements OnInit {
             gridData: [],
             columns: [
                 {
-                    header: 'Name',
+                    header: 'Customer Name',
                     column: 'name',
                     formatter: (v, row) => `${row.firstName} ${row.lastName || ''}`
                 },
                 { header: 'Email', column: 'email' },
                 { header: 'Phone', column: 'phoneNumber' },
-                { header: 'Role Type', column: 'userType' },
+                {
+                    header: 'Saved Addresses',
+                    column: 'addresses',
+                    formatter: (v, row) => `${(row.addresses || []).length} Address(es)`
+                },
                 {
                     header: 'Active',
                     column: 'isActive',
@@ -108,7 +113,7 @@ export class UserComponent implements OnInit {
             ],
             actions: [
                 {
-                    label: 'Edit Info',
+                    label: 'View / Edit Info',
                     icon: 'edit',
                     action: (row) => this.editRow(row)
                 },
@@ -122,7 +127,7 @@ export class UserComponent implements OnInit {
                     icon: 'delete',
                     confirm: true,
                     confirmTitle: 'Delete Confirmation',
-                    confirmMessage: 'Are you sure you want to delete this staff user?',
+                    confirmMessage: 'Are you sure you want to delete this customer?',
                     action: (row) => this.deleteRow(row)
                 }
             ],
@@ -138,8 +143,8 @@ export class UserComponent implements OnInit {
         
         this._userService.getList().subscribe({
             next: (res: any[]) => {
-                // Filter only Admin (Staff) users
-                this.rawUsersList = (res || []).filter(u => u.userType === 'ADM');
+                // Filter only USR (Customer) users
+                this.rawCustomersList = (res || []).filter(u => u.userType === 'USR');
                 this.filterGridData(this.searchControl.value || '');
             },
             error: () => {
@@ -152,9 +157,9 @@ export class UserComponent implements OnInit {
     filterGridData(search: string) {
         const cleanSearch = search.toLowerCase().trim();
         if (!cleanSearch) {
-            this.table.gridData = this.rawUsersList;
+            this.table.gridData = this.rawCustomersList;
         } else {
-            this.table.gridData = this.rawUsersList.filter(u => 
+            this.table.gridData = this.rawCustomersList.filter(u => 
                 (u.firstName + ' ' + (u.lastName || '')).toLowerCase().includes(cleanSearch) ||
                 u.email.toLowerCase().includes(cleanSearch) ||
                 (u.phoneNumber || '').includes(cleanSearch)
@@ -166,13 +171,14 @@ export class UserComponent implements OnInit {
 
     newRowClicked() {
         this.recordMode = 'C';
+        this.selectedCustomerAddresses = [];
         this.inputForm.reset({
             companyCode: sessionStorage.getItem('companyCode') || 'COMP1',
-            userType: 'ADM',
+            userType: 'USR',
             isActive: true
         });
         
-        // Make password mandatory for new users
+        // Make password mandatory for new customers
         this.inputForm.get('passwordHash')?.setValidators(Validators.required);
         this.inputForm.get('passwordHash')?.updateValueAndValidity();
         this.drawer.open();
@@ -180,6 +186,7 @@ export class UserComponent implements OnInit {
 
     editRow(row: any) {
         this.recordMode = 'E';
+        this.selectedCustomerAddresses = row.addresses || [];
         this.inputForm.reset();
         this.inputForm.patchValue(row);
 
@@ -193,7 +200,7 @@ export class UserComponent implements OnInit {
         this._userService.delete(row.id).subscribe({
             next: () => {
                 this.getGridData();
-                this.uiService.showToastr('Success', 'Staff deleted successfully', 'success');
+                this.uiService.showToastr('Success', 'Customer deleted successfully', 'success');
             }
         });
     }
@@ -205,14 +212,19 @@ export class UserComponent implements OnInit {
         }
 
         const input = this.inputForm.getRawValue();
+        // Preserve addresses on update
+        if (this.recordMode === 'E') {
+            input.addresses = this.selectedCustomerAddresses;
+        }
+
         this._userService.save(input).subscribe({
             next: () => {
                 this.drawer.close();
                 this.getGridData();
-                this.uiService.showToastr('Success', 'Staff user saved successfully', 'success');
+                this.uiService.showToastr('Success', 'Customer saved successfully', 'success');
             },
             error: () => {
-                this.uiService.showToastr('Error', 'Failed to save staff user', 'error');
+                this.uiService.showToastr('Error', 'Failed to save customer', 'error');
             }
         });
     }

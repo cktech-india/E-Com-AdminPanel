@@ -122,11 +122,18 @@ const ecomNavigation = [
         icon: 'heroicons_outline:users',
         children: [
             {
-                id: 'user-list',
-                title: 'Users List',
+                id: 'staff-list',
+                title: 'Staff Directory',
                 type: 'basic',
                 icon: 'heroicons_outline:user-group',
-                link: '/user/user-list'
+                link: '/user/staff'
+            },
+            {
+                id: 'customer-list',
+                title: 'Customer Directory',
+                type: 'basic',
+                icon: 'heroicons_outline:identification',
+                link: '/user/customer'
             },
             {
                 id: 'role-list',

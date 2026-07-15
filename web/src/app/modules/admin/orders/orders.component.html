@@ -1,25 +1,90 @@
+<!-- ======================== ORDERS MAIN CARD ======================== -->
 <mat-card class="page-card">
     <mat-card-content>
 
-        <!-- HEADER -->
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+        <!-- ===== PAGE HEADER ===== -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div>
                 <h2 class="text-2xl font-bold tracking-tight text-slate-900">Orders Management</h2>
-                <p class="text-xs text-slate-500">Track and fulfill customer orders, modify payment/delivery statuses.</p>
+                <p class="text-xs text-slate-500 mt-0.5">Track, fulfill, and manage all customer orders end-to-end.</p>
             </div>
-
             <div class="flex items-center gap-3 w-full sm:w-auto">
-
-                <!-- SEARCH -->
                 <mat-form-field class="fuse-mat-dense w-full sm:w-72">
                     <mat-icon matPrefix>search</mat-icon>
-                    <input matInput placeholder="Search Order No..." [formControl]="searchControl" autocomplete="off" />
+                    <input matInput placeholder="Search order no..." [formControl]="searchControl" autocomplete="off" />
                 </mat-form-field>
-
             </div>
         </div>
 
-        <!-- TABLE -->
+        <!-- ===== SUMMARY STAT CARDS ===== -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+
+            <div class="flex flex-col p-4 rounded-2xl border border-slate-100 bg-white shadow-sm">
+                <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Total Orders</div>
+                <div class="text-3xl font-extrabold text-slate-800">{{ stats.total }}</div>
+                <div class="text-[10px] text-slate-400 mt-1">₹{{ totalRevenue | number:'1.0-0' }} revenue</div>
+            </div>
+
+            <div class="flex flex-col p-4 rounded-2xl border border-amber-100 bg-amber-50/40 shadow-sm cursor-pointer hover:bg-amber-50 transition-colors"
+                 (click)="statusFilter.setValue('PENDING')">
+                <div class="text-[10px] font-bold uppercase tracking-widest text-amber-500 mb-1">Pending</div>
+                <div class="text-3xl font-extrabold text-amber-700">{{ stats.pending }}</div>
+                <div class="text-[10px] text-amber-400 mt-1">Awaiting action</div>
+            </div>
+
+            <div class="flex flex-col p-4 rounded-2xl border border-blue-100 bg-blue-50/40 shadow-sm cursor-pointer hover:bg-blue-50 transition-colors"
+                 (click)="statusFilter.setValue('PROCESSING')">
+                <div class="text-[10px] font-bold uppercase tracking-widest text-blue-500 mb-1">Processing</div>
+                <div class="text-3xl font-extrabold text-blue-700">{{ stats.processing }}</div>
+                <div class="text-[10px] text-blue-400 mt-1">Being prepared</div>
+            </div>
+
+            <div class="flex flex-col p-4 rounded-2xl border border-indigo-100 bg-indigo-50/40 shadow-sm cursor-pointer hover:bg-indigo-50 transition-colors"
+                 (click)="statusFilter.setValue('SHIPPED')">
+                <div class="text-[10px] font-bold uppercase tracking-widest text-indigo-500 mb-1">Shipped</div>
+                <div class="text-3xl font-extrabold text-indigo-700">{{ stats.shipped }}</div>
+                <div class="text-[10px] text-indigo-400 mt-1">In transit</div>
+            </div>
+
+            <div class="flex flex-col p-4 rounded-2xl border border-emerald-100 bg-emerald-50/40 shadow-sm cursor-pointer hover:bg-emerald-50 transition-colors"
+                 (click)="statusFilter.setValue('DELIVERED')">
+                <div class="text-[10px] font-bold uppercase tracking-widest text-emerald-500 mb-1">Delivered</div>
+                <div class="text-3xl font-extrabold text-emerald-700">{{ stats.delivered }}</div>
+                <div class="text-[10px] text-emerald-400 mt-1">Fulfilled</div>
+            </div>
+
+            <div class="flex flex-col p-4 rounded-2xl border border-rose-100 bg-rose-50/40 shadow-sm cursor-pointer hover:bg-rose-50 transition-colors"
+                 (click)="statusFilter.setValue('CANCELLED')">
+                <div class="text-[10px] font-bold uppercase tracking-widest text-rose-500 mb-1">Cancelled</div>
+                <div class="text-3xl font-extrabold text-rose-700">{{ stats.cancelled }}</div>
+                <div class="text-[10px] text-rose-400 mt-1">Click to filter</div>
+            </div>
+
+        </div>
+
+        <!-- ===== STATUS FILTER CHIPS ===== -->
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            @for (s of ORDER_STATUSES; track s) {
+                <button (click)="statusFilter.setValue(s)" type="button"
+                        class="px-3 py-1 rounded-full text-xs font-semibold border transition-all duration-150"
+                        [class]="statusFilter.value === s
+                            ? 'bg-slate-800 text-white border-slate-800 shadow-sm'
+                            : 'bg-white text-slate-500 border-slate-200 hover:border-slate-400'">
+                    {{ s }}
+                    @if (s !== 'ALL') {
+                        <span class="ml-1 opacity-60">
+                            ({{ s === 'PENDING' ? stats.pending
+                              : s === 'PROCESSING' ? stats.processing
+                              : s === 'SHIPPED' ? stats.shipped
+                              : s === 'DELIVERED' ? stats.delivered
+                              : stats.cancelled }})
+                        </span>
+                    }
+                </button>
+            }
+        </div>
+
+        <!-- ===== TABLE ===== -->
         <div class="overflow-x-auto">
             <ck-table-grid [properties]="table"></ck-table-grid>
         </div>
@@ -28,134 +93,145 @@
 </mat-card>
 
 
-<!-- ================= DRAWER ================= -->
+<!-- ======================== ORDER DETAIL DRAWER ======================== -->
 
-<fuse-drawer class="z-999 w-screen min-w-screen sm:w-140 sm:min-w-140 p-2" fixed [mode]="'over'"
+<fuse-drawer class="z-999 w-screen min-w-screen sm:w-160 sm:min-w-160" fixed [mode]="'over'"
     [name]="'orderFormTpl'" [position]="'right'" #orderFormTpl>
-    <div class="p-4 flex flex-col h-full overflow-y-auto">
+    <div class="flex flex-col h-full overflow-hidden bg-slate-50/20">
 
-        <!-- HEADER -->
-        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+        <!-- DRAWER HEADER -->
+        <div class="flex items-start justify-between px-6 py-4 bg-white border-b border-slate-100 flex-shrink-0">
             <div>
-                <div class="font-semibold text-2xl text-primary">Manage Order</div>
-                <p class="text-xs text-slate-400">View customer profile, invoice breakdown, and shipping details.</p>
+                <div class="font-bold text-xl text-slate-800">
+                    Order #{{ inputForm.get('orderNumber')?.value || '—' }}
+                </div>
+                <p class="text-xs text-slate-400 mt-0.5">
+                    Placed on {{ inputForm.get('orderDate')?.value | date:'dd MMM yyyy, hh:mm a' }}
+                </p>
             </div>
-
-            <div class="flex gap-2">
+            <div class="flex gap-2 mt-1">
                 <button mat-raised-button color="primary" (click)="onSubmitClicked()">
-                    <mat-icon class="mr-1">check</mat-icon>
+                    <mat-icon class="mr-1 scale-90">update</mat-icon>
                     Update Status
                 </button>
                 <button mat-raised-button color="warn" (click)="onCancelClicked()">
-                    <mat-icon class="mr-1">close</mat-icon>
-                    Cancel
+                    <mat-icon class="scale-90">close</mat-icon>
                 </button>
             </div>
         </div>
 
-        <!-- FORM & ORDER LINES -->
-        <div class="flex-grow flex flex-col gap-6">
+        <!-- SCROLLABLE BODY -->
+        <div class="flex-grow overflow-y-auto px-6 py-5 flex flex-col gap-5">
 
-            <!-- METADATA FORM -->
+            <!-- ===== ORDER SUMMARY CHIPS ===== -->
+            <div class="flex flex-wrap gap-3">
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white border border-slate-200 shadow-sm text-xs font-semibold text-slate-700">
+                    <mat-icon class="scale-75 text-slate-400">payments</mat-icon>
+                    {{ inputForm.get('paymentMethod')?.value || 'N/A' }}
+                </div>
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white border border-slate-200 shadow-sm text-xs font-bold text-slate-800">
+                    <mat-icon class="scale-75 text-emerald-500">currency_rupee</mat-icon>
+                    ₹{{ inputForm.get('grandTotal')?.value | number:'1.2-2' }}
+                </div>
+            </div>
+
+            <!-- ===== STATUS CONTROLS (Editable) ===== -->
             <form [formGroup]="inputForm">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="border border-slate-200 rounded-2xl p-4 bg-white shadow-sm">
+                    <div class="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-3">Update Order Status</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-                    <!-- ORDER NO -->
-                    <mat-form-field appearance="outline" class="w-full">
-                        <mat-label>Order Number</mat-label>
-                        <input matInput formControlName="orderNumber">
-                    </mat-form-field>
-
-                    <!-- DATE -->
-                    <mat-form-field appearance="outline" class="w-full">
-                        <mat-label>Order Date</mat-label>
-                        <input matInput formControlName="orderDate">
-                    </mat-form-field>
-
-                    <!-- TOTAL -->
-                    <mat-form-field appearance="outline" class="w-full">
-                        <mat-label>Total Amount (INR)</mat-label>
-                        <input matInput formControlName="grandTotal">
-                    </mat-form-field>
-
-                    <!-- PAYMENT METHOD -->
-                    <mat-form-field appearance="outline" class="w-full">
-                        <mat-label>Payment Method</mat-label>
-                        <input matInput formControlName="paymentMethod">
-                    </mat-form-field>
-
-                    <!-- ORDER STATUS -->
-                    <mat-form-field appearance="outline" class="w-full">
-                        <mat-label>Order Status</mat-label>
-                        <mat-select formControlName="orderStatus">
-                            <mat-option value="PENDING">PENDING</mat-option>
-                            <mat-option value="PROCESSING">PROCESSING</mat-option>
-                            <mat-option value="SHIPPED">SHIPPED</mat-option>
-                            <mat-option value="DELIVERED">DELIVERED</mat-option>
-                            <mat-option value="CANCELLED">CANCELLED</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-
-                    <!-- PAYMENT STATUS -->
-                    <mat-form-field appearance="outline" class="w-full">
-                        <mat-label>Payment Status</mat-label>
-                        <mat-select formControlName="paymentStatus">
-                            <mat-option value="PENDING">PENDING</mat-option>
-                            <mat-option value="PAID">PAID</mat-option>
-                            <mat-option value="REFUNDED">REFUNDED</mat-option>
-                            <mat-option value="FAILED">FAILED</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-
-                    <!-- SHIPPING ADDRESS -->
-                    <div class="col-span-1 sm:col-span-2">
                         <mat-form-field appearance="outline" class="w-full">
-                            <mat-label>Shipping Address</mat-label>
-                            <textarea matInput formControlName="shippingAddress" rows="2"></textarea>
+                            <mat-label>Order Status</mat-label>
+                            <mat-select formControlName="orderStatus">
+                                <mat-option value="PENDING">⏳ PENDING</mat-option>
+                                <mat-option value="PROCESSING">🔄 PROCESSING</mat-option>
+                                <mat-option value="SHIPPED">🚚 SHIPPED</mat-option>
+                                <mat-option value="DELIVERED">✅ DELIVERED</mat-option>
+                                <mat-option value="CANCELLED">❌ CANCELLED</mat-option>
+                            </mat-select>
                         </mat-form-field>
-                    </div>
 
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Payment Status</mat-label>
+                            <mat-select formControlName="paymentStatus">
+                                <mat-option value="PENDING">⏳ PENDING</mat-option>
+                                <mat-option value="PAID">✅ PAID</mat-option>
+                                <mat-option value="REFUNDED">↩️ REFUNDED</mat-option>
+                                <mat-option value="FAILED">❌ FAILED</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                    </div>
+                </div>
+
+                <!-- ===== SHIPPING ADDRESS ===== -->
+                <div class="mt-4 border border-slate-200 rounded-2xl p-4 bg-white shadow-sm">
+                    <div class="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-3 flex items-center gap-1.5">
+                        <mat-icon class="scale-75 text-slate-400">local_shipping</mat-icon>
+                        Shipping Address
+                    </div>
+                    <p class="text-sm text-slate-700 leading-relaxed">
+                        {{ inputForm.get('shippingAddress')?.value || 'No shipping address on record.' }}
+                    </p>
                 </div>
             </form>
 
-            <!-- ORDER ITEMS LIST -->
-            <div class="border border-slate-200 rounded-xl p-4 bg-slate-50/50">
-                <div class="font-bold text-sm text-slate-700 mb-3 flex items-center gap-2">
-                    <mat-icon class="text-slate-500 scale-90">shopping_bag</mat-icon>
-                    Order Items Breakdown
+            <!-- ===== ORDER ITEMS BREAKDOWN ===== -->
+            <div class="border border-slate-200 rounded-2xl bg-white shadow-sm overflow-hidden">
+                <div class="flex items-center gap-2 px-4 py-3 border-b border-slate-100 bg-slate-50">
+                    <mat-icon class="text-slate-400 scale-90">shopping_bag</mat-icon>
+                    <span class="font-bold text-sm text-slate-700">Order Items</span>
+                    <span class="ml-auto text-xs text-slate-400">{{ selectedOrderItems.length }} line(s) · {{ orderItemCount }} unit(s)</span>
                 </div>
 
-                <div class="overflow-x-auto border border-slate-100 rounded-lg bg-white">
+                <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-xs">
-                        <thead>
-                            <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 font-semibold">
-                                <th class="p-3">Product Name</th>
-                                <th class="p-3 text-center">Qty</th>
-                                <th class="p-3 text-right">Unit Price</th>
-                                <th class="p-3 text-right">Taxes (GST)</th>
-                                <th class="p-3 text-right">Row Total</th>
+                        <thead class="bg-slate-50 border-b border-slate-100 text-slate-500 font-semibold">
+                            <tr>
+                                <th class="px-4 py-2.5">Product</th>
+                                <th class="px-4 py-2.5 text-center">Qty</th>
+                                <th class="px-4 py-2.5 text-right">Unit Price</th>
+                                <th class="px-4 py-2.5 text-right">GST</th>
+                                <th class="px-4 py-2.5 text-right">Line Total</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let item of selectedOrderItems" class="border-b border-slate-100 text-slate-700 hover:bg-slate-50/40">
-                                <td class="p-3">
-                                    <div class="font-medium">{{ item.productName }}</div>
-                                    <div class="text-[10px] text-slate-400">HSN: {{ item.hsnCode || 'N/A' }}</div>
-                                </td>
-                                <td class="p-3 text-center font-bold">{{ item.quantity }}</td>
-                                <td class="p-3 text-right">₹{{ item.unitPrice | number:'1.2-2' }}</td>
-                                <td class="p-3 text-right">₹{{ (item.cgst + item.sgst + item.igst) | number:'1.2-2' }}</td>
-                                <td class="p-3 text-right font-semibold">₹{{ item.rowTotal | number:'1.2-2' }}</td>
-                            </tr>
-                            <tr *ngIf="selectedOrderItems.length === 0">
-                                <td colspan="5" class="p-4 text-center text-slate-400">No items found for this order.</td>
-                            </tr>
+                            @for (item of selectedOrderItems; track item.id || $index) {
+                                <tr class="border-b border-slate-50 hover:bg-slate-50/80 transition-colors">
+                                    <td class="px-4 py-3">
+                                        <div class="font-semibold text-slate-800">{{ item.productName }}</div>
+                                        <div class="text-[10px] text-slate-400 mt-0.5">HSN: {{ item.hsnCode || 'N/A' }}</div>
+                                    </td>
+                                    <td class="px-4 py-3 text-center font-bold text-slate-700">{{ item.quantity }}</td>
+                                    <td class="px-4 py-3 text-right text-slate-600">₹{{ item.unitPrice | number:'1.2-2' }}</td>
+                                    <td class="px-4 py-3 text-right text-slate-500">₹{{ (item.cgst + item.sgst + item.igst) | number:'1.2-2' }}</td>
+                                    <td class="px-4 py-3 text-right font-bold text-slate-800">₹{{ item.rowTotal | number:'1.2-2' }}</td>
+                                </tr>
+                            }
+                            @if (selectedOrderItems.length === 0) {
+                                <tr>
+                                    <td colspan="5" class="px-4 py-8 text-center">
+                                        <div class="flex flex-col items-center gap-2 text-slate-400">
+                                            <mat-icon>remove_shopping_cart</mat-icon>
+                                            <span class="text-xs">No items found for this order.</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
+                        @if (selectedOrderItems.length > 0) {
+                            <tfoot class="bg-slate-50 border-t-2 border-slate-200">
+                                <tr>
+                                    <td colspan="4" class="px-4 py-3 text-right font-bold text-slate-600 text-xs">Order Total</td>
+                                    <td class="px-4 py-3 text-right font-extrabold text-slate-900">₹{{ orderItemTotal | number:'1.2-2' }}</td>
+                                </tr>
+                            </tfoot>
+                        }
                     </table>
                 </div>
             </div>
 
         </div>
-
     </div>
 </fuse-drawer>
