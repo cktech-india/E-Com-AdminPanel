@@ -38,7 +38,22 @@ const ecomNavigation = [
                 type: 'basic',
                 icon: 'heroicons_outline:photo',
                 link: '/product-media'
+            },
+            {
+                id: 'product-group',
+                title: 'Product Grouping',
+                type: 'basic',
+                icon: 'heroicons_outline:rectangle-stack',
+                link: '/product-group'
+            },
+            {
+                id: 'product-recommended',
+                title: 'Product Recommended',
+                type: 'basic',
+                icon: 'heroicons_outline:star',
+                link: '/product-recommended'
             }
+
         ]
     },
     {
