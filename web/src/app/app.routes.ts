@@ -98,6 +98,7 @@ export const appRoutes: Route[] = [
             { path: 'product-recommended', loadComponent: () => import('app/modules/admin/products/product-recommended/product-recommended.component').then(m => m.ProductRecommendedComponent) },
             { path: 'product-reviews', loadComponent: () => import('app/modules/admin/products/product-reviews/product-reviews.component').then(m => m.ProductReviewsComponent) },
             { path: 'home-config', loadComponent: () => import('app/modules/admin/home-config/home-config.component').then(m => m.HomeConfigComponent) },
+            { path: 'seo-config', loadComponent: () => import('app/modules/admin/seo-config/seo-config.component').then(m => m.SeoConfigComponent) },
             { path: 'stock-logs', loadComponent: () => import('app/modules/admin/inventory/stock-logs/stock-logs.component').then(m => m.StockLogsComponent) },
             { path: 'carts', loadComponent: () => import('app/modules/admin/orders/carts/carts.component').then(m => m.CartsComponent) },
             { path: 'wishlists', loadComponent: () => import('app/modules/admin/discounts/wishlists/wishlists.component').then(m => m.WishlistsComponent) },

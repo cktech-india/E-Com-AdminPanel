@@ -1,0 +1,124 @@
+<mat-card class="page-card">
+    <mat-card-content>
+
+        <!-- HEADER -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+            <div>
+                <h2 class="text-2xl font-bold tracking-tight text-slate-900">SEO Optimization Directory</h2>
+                <p class="text-xs text-slate-500">Add, edit, or configure custom SEO metadata fields, keywords, and Open Graph properties for pages, products, or links.</p>
+            </div>
+
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+
+                <!-- SEARCH -->
+                <mat-form-field class="fuse-mat-dense w-full sm:w-72">
+                    <mat-icon matPrefix>search</mat-icon>
+                    <input matInput placeholder="Search SEO Meta..." [formControl]="searchControl" autocomplete="off" />
+                </mat-form-field>
+
+                <!-- ADD -->
+                <button (click)="newRowClicked()" mat-flat-button color="primary" class="rounded-lg">
+                    <mat-icon class="mr-2">add</mat-icon>
+                    Add SEO Meta
+                </button>
+
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="overflow-x-auto">
+            <ck-table-grid [properties]="table"></ck-table-grid>
+        </div>
+
+    </mat-card-content>
+</mat-card>
+
+
+<!-- ================= DRAWER ================= -->
+
+<fuse-drawer class="z-999 w-screen min-w-screen sm:w-120 sm:min-w-120 p-2" fixed [mode]="'over'"
+    [name]="'seoFormTpl'" [position]="'right'" #seoFormTpl>
+    <div class="p-4 flex flex-col h-full overflow-y-auto">
+
+        <!-- HEADER -->
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+            <div>
+                <div class="font-semibold text-2xl text-primary">{{ recordMode === 'C' ? 'Create SEO Meta' : 'Edit SEO Meta' }}</div>
+                <p class="text-xs text-slate-400">Configure page descriptions and social sharing details.</p>
+            </div>
+
+            <div class="flex gap-2">
+                <button mat-raised-button color="primary" (click)="onSubmitClicked()" [disabled]="inputForm.invalid">
+                    <mat-icon class="mr-1">save</mat-icon>
+                    Save
+                </button>
+                <button mat-raised-button color="warn" (click)="onCancelClicked()">
+                    <mat-icon class="mr-1">close</mat-icon>
+                    Cancel
+                </button>
+            </div>
+        </div>
+
+        <!-- FORM -->
+        <form [formGroup]="inputForm" class="flex-grow">
+
+            <div class="grid grid-cols-1 gap-4">
+
+                <!-- TARGET TYPE -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Target Type</mat-label>
+                    <mat-select formControlName="targetType">
+                        @for (type of targetTypes; track type.value) {
+                            <mat-option [value]="type.value">{{ type.label }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                <!-- TARGET VALUE -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Target Value</mat-label>
+                    <input matInput formControlName="targetValue" placeholder="e.g. about-us.php or product ID (12)">
+                </mat-form-field>
+
+                <!-- META TITLE -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Meta Title</mat-label>
+                    <input matInput formControlName="metaTitle" placeholder="e.g. About Us - My Store">
+                </mat-form-field>
+
+                <!-- META DESCRIPTION -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Meta Description</mat-label>
+                    <textarea matInput formControlName="metaDescription" rows="3" placeholder="Provide description for search engine listings..."></textarea>
+                </mat-form-field>
+
+                <!-- META KEYWORDS -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Meta Keywords (Comma separated)</mat-label>
+                    <input matInput formControlName="metaKeywords" placeholder="e.g. gifts, decor, online mart">
+                </mat-form-field>
+
+                <!-- OG TITLE -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>OpenGraph Title (Social Media)</mat-label>
+                    <input matInput formControlName="ogTitle" placeholder="e.g. Dynamic Title for Facebook/Twitter Share">
+                </mat-form-field>
+
+                <!-- OG DESCRIPTION -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>OpenGraph Description</mat-label>
+                    <textarea matInput formControlName="ogDescription" rows="2" placeholder="Provide description for social previews..."></textarea>
+                </mat-form-field>
+
+                <!-- OG IMAGE URL -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>OpenGraph Preview Image URL</mat-label>
+                    <input matInput formControlName="ogImageUrl" placeholder="e.g. http://localhost:8000/images/banner.jpg">
+                </mat-form-field>
+
+            </div>
+
+        </form>
+
+    </div>
+</fuse-drawer>

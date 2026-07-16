@@ -343,5 +343,19 @@ export class EcommerceService {
     deleteWishlist(id: number): Observable<any> {
         return this.http.delete<any>(`${this.baseUrl}wishlist/${id}`);
     }
+
+    // ================= SEO METADATA =================
+    getSeoMetadata(): Observable<any[]> {
+        return this.http.get<any[]>(this.baseUrl + 'seo-metadata/list').pipe(
+            map(list => (list || []).filter(item => item.companyCode === this.companyCode))
+        );
+    }
+    saveSeoMetadata(seo: any): Observable<any> {
+        seo.companyCode = this.companyCode;
+        return this.http.post<any>(this.baseUrl + 'seo-metadata', seo);
+    }
+    deleteSeoMetadata(id: number): Observable<any> {
+        return this.http.delete<any>(`${this.baseUrl}seo-metadata/${id}`);
+    }
 }
 

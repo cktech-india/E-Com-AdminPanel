@@ -132,6 +132,13 @@ const ecomNavigation = [
                 type: 'basic',
                 icon: 'heroicons_outline:heart',
                 link: '/wishlists'
+            },
+            {
+                id: 'seo-config',
+                title: 'SEO Optimizer',
+                type: 'basic',
+                icon: 'heroicons_outline:globe-alt',
+                link: '/seo-config'
             }
         ]
     },
