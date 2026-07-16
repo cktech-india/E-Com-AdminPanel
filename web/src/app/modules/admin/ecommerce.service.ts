@@ -290,4 +290,58 @@ export class EcommerceService {
     deleteProductTag(id: number): Observable<any> {
         return this.http.delete<any>(`${this.baseUrl}product-tag/${id}`);
     }
+
+    // ================= PRODUCT REVIEWS =================
+    getProductReviews(): Observable<any[]> {
+        return this.http.get<any[]>(this.baseUrl + 'product-review').pipe(
+            map(list => (list || []).filter(item => item.companyCode === this.companyCode))
+        );
+    }
+    saveProductReview(review: any): Observable<any> {
+        review.companyCode = this.companyCode;
+        return this.http.post<any>(this.baseUrl + 'product-review', review);
+    }
+    deleteProductReview(id: number): Observable<any> {
+        return this.http.delete<any>(`${this.baseUrl}product-review/${id}`);
+    }
+
+    // ================= HOME CONFIGURATION =================
+    getHomeConfigs(): Observable<any[]> {
+        return this.http.get<any[]>(this.baseUrl + 'home-config/list');
+    }
+    saveHomeConfig(config: any): Observable<any> {
+        return this.http.post<any>(this.baseUrl + 'home-config', config);
+    }
+    deleteHomeConfig(id: number): Observable<any> {
+        return this.http.delete<any>(`${this.baseUrl}home-config/${id}`);
+    }
+
+    // ================= CARTS =================
+    getCarts(): Observable<any[]> {
+        return this.http.get<any[]>(this.baseUrl + 'carts').pipe(
+            map(list => (list || []).filter(item => item.companyCode === this.companyCode))
+        );
+    }
+    saveCart(cart: any): Observable<any> {
+        cart.companyCode = this.companyCode;
+        return this.http.post<any>(this.baseUrl + 'carts', cart);
+    }
+    deleteCart(id: number): Observable<any> {
+        return this.http.delete<any>(`${this.baseUrl}carts/${id}`);
+    }
+
+    // ================= WISHLISTS =================
+    getWishlists(): Observable<any[]> {
+        return this.http.get<any[]>(this.baseUrl + 'wishlist').pipe(
+            map(list => (list || []).filter(item => item.companyCode === this.companyCode))
+        );
+    }
+    saveWishlist(wishlist: any): Observable<any> {
+        wishlist.companyCode = this.companyCode;
+        return this.http.post<any>(this.baseUrl + 'wishlist', wishlist);
+    }
+    deleteWishlist(id: number): Observable<any> {
+        return this.http.delete<any>(`${this.baseUrl}wishlist/${id}`);
+    }
 }
+

@@ -1,0 +1,98 @@
+<mat-card class="page-card">
+    <mat-card-content>
+
+        <!-- HEADER -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+            <div>
+                <h2 class="text-2xl font-bold tracking-tight text-slate-900">Abandoned & Active Carts</h2>
+                <p class="text-xs text-slate-500">Monitor active shopping carts and items left behind by users.</p>
+            </div>
+
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+
+                <!-- SEARCH -->
+                <mat-form-field class="fuse-mat-dense w-full sm:w-72">
+                    <mat-icon matPrefix>search</mat-icon>
+                    <input matInput placeholder="Search Carts..." [formControl]="searchControl" autocomplete="off" />
+                </mat-form-field>
+
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="overflow-x-auto">
+            <ck-table-grid [properties]="table"></ck-table-grid>
+        </div>
+
+    </mat-card-content>
+</mat-card>
+
+
+<!-- ================= DRAWER ================= -->
+
+<fuse-drawer class="z-999 w-screen min-w-screen sm:w-120 sm:min-w-120 p-2" fixed [mode]="'over'"
+    [name]="'cartDetailsTpl'" [position]="'right'" #cartDetailsTpl>
+    <div class="p-4 flex flex-col h-full overflow-y-auto">
+
+        <!-- HEADER -->
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+            <div>
+                <div class="font-semibold text-2xl text-primary">Cart Details</div>
+                <p class="text-xs text-slate-400">View items in customer shopping cart.</p>
+            </div>
+
+            <div>
+                <button mat-raised-button color="warn" (click)="onCloseClicked()">
+                    <mat-icon class="mr-1">close</mat-icon>
+                    Close
+                </button>
+            </div>
+        </div>
+
+        <!-- CUSTOMER DETAILS -->
+        @if (selectedCartCustomer) {
+            <div class="bg-slate-50 p-4 rounded-lg mb-6 border border-slate-100">
+                <div class="font-semibold text-slate-900 mb-1">Customer Info</div>
+                <div class="text-sm text-slate-700">Name: {{ selectedCartCustomer.firstName }} {{ selectedCartCustomer.lastName || '' }}</div>
+                <div class="text-sm text-slate-700">Email: {{ selectedCartCustomer.email }}</div>
+                <div class="text-sm text-slate-700">Phone: {{ selectedCartCustomer.phoneNumber || 'N/A' }}</div>
+            </div>
+        }
+
+        <!-- ITEMS LIST -->
+        <div class="flex-grow">
+            <div class="font-semibold text-slate-900 mb-3">Cart Items</div>
+            <div class="border border-slate-100 rounded-lg overflow-hidden">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-100">
+                            <th class="p-3 font-semibold text-slate-700">Product</th>
+                            <th class="p-3 font-semibold text-slate-700 text-center">Qty</th>
+                            <th class="p-3 font-semibold text-slate-700 text-right">Price</th>
+                            <th class="p-3 font-semibold text-slate-700 text-right">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (item of selectedCartItems; track item.id) {
+                            <tr class="border-b border-slate-50 hover:bg-slate-50/50">
+                                <td class="p-3">
+                                    <div class="font-medium text-slate-900">{{ item.productName }}</div>
+                                    <div class="text-xs text-slate-400">Code: {{ item.productCode }}</div>
+                                </td>
+                                <td class="p-3 text-center text-slate-700">{{ item.quantity }}</td>
+                                <td class="p-3 text-right text-slate-700">₹{{ item.price.toFixed(2) }}</td>
+                                <td class="p-3 text-right font-medium text-slate-900">₹{{ (item.price * item.quantity).toFixed(2) }}</td>
+                            </tr>
+                        }
+                        @if (selectedCartItems.length === 0) {
+                            <tr>
+                                <td colspan="4" class="p-4 text-center text-slate-400">No items found in this cart</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</fuse-drawer>

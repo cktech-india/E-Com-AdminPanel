@@ -20,6 +20,7 @@ import { CkTable, FuseAlertComponent } from '@fuse/components/table-grid/table-g
 // Services
 import { EcommerceService } from '../ecommerce.service';
 import { UiService } from '@services/ui.service';
+import { QuillModule } from 'ngx-quill';
 
 @Component({
     selector: 'app-products',
@@ -30,7 +31,7 @@ import { UiService } from '@services/ui.service';
         MatButtonModule, FormsModule, ReactiveFormsModule,
         MatCardContent, MatCard, MatOptionModule, MatFormFieldModule,
         MatInputModule, MatSelectModule, MatSlideToggleModule, MatCheckboxModule,
-        MatIconModule, FuseAlertComponent, FuseDrawerComponent
+        MatIconModule, FuseAlertComponent, FuseDrawerComponent, QuillModule
     ]
 })
 export class ProductsComponent implements OnInit {
@@ -222,6 +223,35 @@ export class ProductsComponent implements OnInit {
                 this.uiService.showToastr('Error', 'System error occurred while saving product', 'error');
             }
         });
+    }
+
+    exportToCSV() {
+        const data = this.table.gridData;
+        if (!data || !data.length) {
+            this.uiService.showToastr('Warning', 'No data to export', 'warning');
+            return;
+        }
+        const headers = ['Product Code', 'Product Name', 'Price', 'Available Quantity', 'Active'];
+        const csvRows = [headers.join(',')];
+        for (const row of data) {
+            const values = [
+                `"${row.productCode || ''}"`,
+                `"${row.productName || ''}"`,
+                row.price || 0,
+                row.availableQuantity || 0,
+                row.isActive ? 'Yes' : 'No'
+            ];
+            csvRows.push(values.join(','));
+        }
+        const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'products_list.csv');
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 
     onCancelClicked() {

@@ -39,9 +39,11 @@ export class CustomerComponent implements OnInit {
     // ================= VIEW =================
     @ViewChild('entityFormTpl') drawer!: FuseDrawerComponent;
     @ViewChild('resetPasswordTpl') resetPasswordTpl!: TemplateRef<any>;
+    @ViewChild('addressFormTpl') addressFormTpl!: TemplateRef<any>;
 
     // ================= FORM =================
     inputForm!: FormGroup;
+    addressForm!: FormGroup;
     manualPasswordControl = new FormControl('', [Validators.required, Validators.minLength(4)]);
 
     // ================= DATA =================
@@ -52,6 +54,7 @@ export class CustomerComponent implements OnInit {
     searchControl = new FormControl('');
     rawCustomersList: any[] = [];
     selectedCustomerAddresses: any[] = [];
+
 
     constructor(
         private _userService: UserService,
@@ -88,6 +91,21 @@ export class CustomerComponent implements OnInit {
             stateCode: new FormControl(''),
             isActive: new FormControl(true),
         });
+
+        this.addressForm = new FormGroup({
+            id: new FormControl(null),
+            addressName: new FormControl('', Validators.required),
+            fullName: new FormControl('', Validators.required),
+            phoneNumber: new FormControl('', Validators.required),
+            addressLine1: new FormControl('', Validators.required),
+            addressLine2: new FormControl(''),
+            city: new FormControl('', Validators.required),
+            state: new FormControl('', Validators.required),
+            postalCode: new FormControl('', Validators.required),
+            country: new FormControl('India', Validators.required),
+            isDefault: new FormControl(false)
+        });
+
 
         // ===== TABLE =====
         this.table = {
@@ -261,6 +279,53 @@ export class CustomerComponent implements OnInit {
                 this.uiService.showToastr('Error', 'Failed to reset password', 'error');
             }
         });
+    }
+
+    openAddressDialog(address?: any) {
+        this.addressForm.reset({
+            country: 'India',
+            isDefault: false
+        });
+        if (address) {
+            this.addressForm.patchValue(address);
+        }
+        this._dialogRef = this._dialog.open(this.addressFormTpl, {
+            data: address,
+            width: '500px'
+        });
+    }
+
+    closeAddressDialog() {
+        if (this._dialogRef) {
+            this._dialogRef.close();
+        }
+    }
+
+    onAddressSubmit(existingAddress?: any) {
+        if (this.addressForm.invalid) {
+            return;
+        }
+        const val = this.addressForm.getRawValue();
+        if (existingAddress) {
+            const index = this.selectedCustomerAddresses.findIndex(a => a.id === existingAddress.id || (a.addressName === existingAddress.addressName && a.fullName === existingAddress.fullName));
+            if (index > -1) {
+                if (val.isDefault) {
+                    this.selectedCustomerAddresses.forEach(a => a.isDefault = false);
+                }
+                this.selectedCustomerAddresses[index] = { ...this.selectedCustomerAddresses[index], ...val };
+            }
+        } else {
+            val.id = val.id || Date.now();
+            if (val.isDefault) {
+                this.selectedCustomerAddresses.forEach(a => a.isDefault = false);
+            }
+            this.selectedCustomerAddresses.push(val);
+        }
+        this.closeAddressDialog();
+    }
+
+    deleteAddress(address: any) {
+        this.selectedCustomerAddresses = this.selectedCustomerAddresses.filter(a => a !== address);
     }
 
     onCancelClicked() {

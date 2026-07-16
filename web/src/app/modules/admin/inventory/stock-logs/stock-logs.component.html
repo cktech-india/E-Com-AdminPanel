@@ -1,0 +1,105 @@
+<mat-card class="page-card">
+    <mat-card-content>
+
+        <!-- HEADER -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+            <div>
+                <h2 class="text-2xl font-bold tracking-tight text-slate-900">Stock Change Logs</h2>
+                <p class="text-xs text-slate-500">Record and audit history transactions of item stock adjustments.</p>
+            </div>
+
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+
+                <!-- SEARCH -->
+                <mat-form-field class="fuse-mat-dense w-full sm:w-72">
+                    <mat-icon matPrefix>search</mat-icon>
+                    <input matInput placeholder="Search Logs..." [formControl]="searchControl" autocomplete="off" />
+                </mat-form-field>
+
+                <!-- ADD -->
+                <button (click)="newRowClicked()" mat-flat-button color="primary" class="rounded-lg">
+                    <mat-icon class="mr-2">add</mat-icon>
+                    Adjust Stock
+                </button>
+
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="overflow-x-auto">
+            <ck-table-grid [properties]="table"></ck-table-grid>
+        </div>
+
+    </mat-card-content>
+</mat-card>
+
+
+<!-- ================= DRAWER ================= -->
+
+<fuse-drawer class="z-999 w-screen min-w-screen sm:w-100 sm:min-w-100 p-2" fixed [mode]="'over'"
+    [name]="'logFormTpl'" [position]="'right'" #logFormTpl>
+    <div class="p-4 flex flex-col h-full overflow-y-auto">
+
+        <!-- HEADER -->
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+            <div>
+                <div class="font-semibold text-2xl text-primary">Record Stock Adjustment</div>
+                <p class="text-xs text-slate-400">Post positive or negative inventory stock logs.</p>
+            </div>
+
+            <div class="flex gap-2">
+                <button mat-raised-button color="primary" (click)="onSubmitClicked()" [disabled]="inputForm.invalid">
+                    <mat-icon class="mr-1">save</mat-icon>
+                    Record
+                </button>
+                <button mat-raised-button color="warn" (click)="onCancelClicked()">
+                    <mat-icon class="mr-1">close</mat-icon>
+                    Cancel
+                </button>
+            </div>
+        </div>
+
+        <!-- FORM -->
+        <form [formGroup]="inputForm" class="flex-grow">
+
+            <div class="grid grid-cols-1 gap-4">
+
+                <!-- PRODUCT -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Product</mat-label>
+                    <mat-select formControlName="productId">
+                        @for (prod of products; track prod.id) {
+                            <mat-option [value]="prod.id">{{ prod.productName }} ({{ prod.productCode }})</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                <!-- CHANGE AMOUNT -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Stock Delta / Change Amount</mat-label>
+                    <input matInput type="number" formControlName="changeAmount" placeholder="e.g. 10 or -5">
+                </mat-form-field>
+
+                <!-- REASON -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Reason</mat-label>
+                    <mat-select formControlName="reason">
+                        <mat-option value="adjustment">Manual Adjustment</mat-option>
+                        <mat-option value="purchase">Purchase / Restock</mat-option>
+                        <mat-option value="sale">Sale Order</mat-option>
+                        <mat-option value="return">Customer Return</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <!-- REFERENCE ID -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Reference ID (Optional)</mat-label>
+                    <input matInput type="number" formControlName="referenceId" placeholder="e.g. Order ID, PO ID">
+                </mat-form-field>
+
+            </div>
+
+        </form>
+
+    </div>
+</fuse-drawer>

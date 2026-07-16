@@ -52,8 +52,14 @@ const ecomNavigation = [
                 type: 'basic',
                 icon: 'heroicons_outline:star',
                 link: '/product-recommended'
+            },
+            {
+                id: 'product-reviews',
+                title: 'Product Reviews',
+                type: 'basic',
+                icon: 'heroicons_outline:chat-bubble-bottom-center-text',
+                link: '/product-reviews'
             }
-
         ]
     },
     {
@@ -68,6 +74,13 @@ const ecomNavigation = [
                 type: 'basic',
                 icon: 'heroicons_outline:document-text',
                 link: '/orders'
+            },
+            {
+                id: 'carts',
+                title: 'Active Carts',
+                type: 'basic',
+                icon: 'heroicons_outline:shopping-cart',
+                link: '/carts'
             },
             {
                 id: 'billing',
@@ -90,6 +103,13 @@ const ecomNavigation = [
                 type: 'basic',
                 icon: 'heroicons_outline:archive-box',
                 link: '/inventory'
+            },
+            {
+                id: 'stock-logs',
+                title: 'Stock Logs',
+                type: 'basic',
+                icon: 'heroicons_outline:clipboard-document-list',
+                link: '/stock-logs'
             }
         ]
     },
@@ -105,6 +125,13 @@ const ecomNavigation = [
                 type: 'basic',
                 icon: 'heroicons_outline:gift',
                 link: '/discounts'
+            },
+            {
+                id: 'wishlists',
+                title: 'Wishlists',
+                type: 'basic',
+                icon: 'heroicons_outline:heart',
+                link: '/wishlists'
             }
         ]
     },
@@ -176,9 +203,24 @@ const ecomNavigation = [
     {
         id: 'settings',
         title: 'Settings',
-        type: 'basic',
+        type: 'collapsable',
         icon: 'heroicons_outline:cog-6-tooth',
-        link: '/tax-config'
+        children: [
+            {
+                id: 'tax-config',
+                title: 'Tax Configuration',
+                type: 'basic',
+                icon: 'heroicons_outline:adjustments-horizontal',
+                link: '/tax-config'
+            },
+            {
+                id: 'home-config',
+                title: 'Homepage Config',
+                type: 'basic',
+                icon: 'heroicons_outline:home',
+                link: '/home-config'
+            }
+        ]
     }
 ];
 

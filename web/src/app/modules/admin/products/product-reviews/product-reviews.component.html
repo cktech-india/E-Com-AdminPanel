@@ -1,0 +1,113 @@
+<mat-card class="page-card">
+    <mat-card-content>
+
+        <!-- HEADER -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+            <div>
+                <h2 class="text-2xl font-bold tracking-tight text-slate-900">Product Reviews</h2>
+                <p class="text-xs text-slate-500">Moderate and approve customer feedback and ratings on products.</p>
+            </div>
+
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+
+                <!-- SEARCH -->
+                <mat-form-field class="fuse-mat-dense w-full sm:w-72">
+                    <mat-icon matPrefix>search</mat-icon>
+                    <input matInput placeholder="Search Reviews..." [formControl]="searchControl" autocomplete="off" />
+                </mat-form-field>
+
+                <!-- ADD -->
+                <button (click)="newRowClicked()" mat-flat-button color="primary" class="rounded-lg">
+                    <mat-icon class="mr-2">add</mat-icon>
+                    Add Review
+                </button>
+
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="overflow-x-auto">
+            <ck-table-grid [properties]="table"></ck-table-grid>
+        </div>
+
+    </mat-card-content>
+</mat-card>
+
+
+<!-- ================= DRAWER ================= -->
+
+<fuse-drawer class="z-999 w-screen min-w-screen sm:w-100 sm:min-w-100 p-2" fixed [mode]="'over'"
+    [name]="'reviewFormTpl'" [position]="'right'" #reviewFormTpl>
+    <div class="p-4 flex flex-col h-full overflow-y-auto">
+
+        <!-- HEADER -->
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+            <div>
+                <div class="font-semibold text-2xl text-primary">{{ recordMode === 'C' ? 'Create Product Review' : 'Edit Product Review' }}</div>
+                <p class="text-xs text-slate-400">Manage review content and star rating details.</p>
+            </div>
+
+            <div class="flex gap-2">
+                <button mat-raised-button color="primary" (click)="onSubmitClicked()" [disabled]="inputForm.invalid">
+                    <mat-icon class="mr-1">save</mat-icon>
+                    Save
+                </button>
+                <button mat-raised-button color="warn" (click)="onCancelClicked()">
+                    <mat-icon class="mr-1">close</mat-icon>
+                    Cancel
+                </button>
+            </div>
+        </div>
+
+        <!-- FORM -->
+        <form [formGroup]="inputForm" class="flex-grow">
+
+            <div class="grid grid-cols-1 gap-4">
+
+                <!-- PRODUCT -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Product</mat-label>
+                    <mat-select formControlName="productId">
+                        @for (prod of products; track prod.id) {
+                            <mat-option [value]="prod.id">{{ prod.productName }} ({{ prod.productCode }})</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                <!-- REVIEWER NAME -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Reviewer Name</mat-label>
+                    <input matInput formControlName="reviewerName" placeholder="e.g. John Doe">
+                </mat-form-field>
+
+                <!-- RATING -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Rating (1 to 5 Stars)</mat-label>
+                    <mat-select formControlName="rating">
+                        <mat-option [value]="5">⭐⭐⭐⭐⭐ (5 Stars)</mat-option>
+                        <mat-option [value]="4">⭐⭐⭐⭐ (4 Stars)</mat-option>
+                        <mat-option [value]="3">⭐⭐⭐ (3 Stars)</mat-option>
+                        <mat-option [value]="2">⭐⭐ (2 Stars)</mat-option>
+                        <mat-option [value]="1">⭐ (1 Star)</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <!-- REVIEW TEXT -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Review Text</mat-label>
+                    <textarea matInput formControlName="reviewText" rows="4" placeholder="Write feedback..."></textarea>
+                </mat-form-field>
+
+                <!-- ACTIVE / APPROVED -->
+                <div class="mt-2">
+                    <mat-slide-toggle formControlName="isActive">
+                        Approved / Active Review?
+                    </mat-slide-toggle>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</fuse-drawer>

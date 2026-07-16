@@ -13,6 +13,10 @@
                     <mat-icon matPrefix>search</mat-icon>
                     <input matInput placeholder="Search order no..." [formControl]="searchControl" autocomplete="off" />
                 </mat-form-field>
+                <button (click)="exportToCSV()" mat-stroked-button color="accent" class="rounded-lg">
+                    <mat-icon class="mr-2">download</mat-icon>
+                    Export
+                </button>
             </div>
         </div>
 
@@ -110,6 +114,10 @@
                 </p>
             </div>
             <div class="flex gap-2 mt-1">
+                <button type="button" mat-raised-button color="accent" (click)="printInvoice()">
+                    <mat-icon class="mr-1 scale-90">print</mat-icon>
+                    Print Invoice
+                </button>
                 <button mat-raised-button color="primary" (click)="onSubmitClicked()">
                     <mat-icon class="mr-1 scale-90">update</mat-icon>
                     Update Status
@@ -122,6 +130,38 @@
 
         <!-- SCROLLABLE BODY -->
         <div class="flex-grow overflow-y-auto px-6 py-5 flex flex-col gap-5">
+
+            <!-- ===== ORDER STATUS TIMELINE ===== -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-3">Order Status Timeline</div>
+                <div class="flex items-center justify-between relative mt-2 px-4">
+                    <div class="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 z-0"></div>
+                    
+                    <div class="flex flex-col items-center z-10">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shadow"
+                             [ngClass]="{'bg-blue-600 text-white': inputForm.get('orderStatus')?.value === 'PENDING' || inputForm.get('orderStatus')?.value === 'PROCESSING' || inputForm.get('orderStatus')?.value === 'SHIPPED' || inputForm.get('orderStatus')?.value === 'DELIVERED', 'bg-slate-100 text-slate-400': inputForm.get('orderStatus')?.value === 'CANCELLED'}">1</div>
+                        <span class="text-[10px] font-bold mt-1 text-slate-600">Pending</span>
+                    </div>
+
+                    <div class="flex flex-col items-center z-10">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shadow"
+                             [ngClass]="{'bg-blue-600 text-white': inputForm.get('orderStatus')?.value === 'PROCESSING' || inputForm.get('orderStatus')?.value === 'SHIPPED' || inputForm.get('orderStatus')?.value === 'DELIVERED', 'bg-slate-100 text-slate-400': inputForm.get('orderStatus')?.value !== 'PROCESSING' && inputForm.get('orderStatus')?.value !== 'SHIPPED' && inputForm.get('orderStatus')?.value !== 'DELIVERED'}">2</div>
+                        <span class="text-[10px] font-bold mt-1 text-slate-600">Processing</span>
+                    </div>
+
+                    <div class="flex flex-col items-center z-10">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shadow"
+                             [ngClass]="{'bg-blue-600 text-white': inputForm.get('orderStatus')?.value === 'SHIPPED' || inputForm.get('orderStatus')?.value === 'DELIVERED', 'bg-slate-100 text-slate-400': inputForm.get('orderStatus')?.value !== 'SHIPPED' && inputForm.get('orderStatus')?.value !== 'DELIVERED'}">3</div>
+                        <span class="text-[10px] font-bold mt-1 text-slate-600">Shipped</span>
+                    </div>
+
+                    <div class="flex flex-col items-center z-10">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shadow"
+                             [ngClass]="{'bg-emerald-600 text-white': inputForm.get('orderStatus')?.value === 'DELIVERED', 'bg-slate-100 text-slate-400': inputForm.get('orderStatus')?.value !== 'DELIVERED'}">4</div>
+                        <span class="text-[10px] font-bold mt-1 text-slate-600">Delivered</span>
+                    </div>
+                </div>
+            </div>
 
             <!-- ===== ORDER SUMMARY CHIPS ===== -->
             <div class="flex flex-wrap gap-3">

@@ -254,6 +254,118 @@ export class OrdersComponent implements OnInit {
         });
     }
 
+    exportToCSV() {
+        const data = this.table.gridData;
+        if (!data || !data.length) {
+            this.uiService.showToastr('Warning', 'No orders to export', 'warning');
+            return;
+        }
+        const headers = ['Order Number', 'Date', 'Amount', 'Payment Method', 'Payment Status', 'Order Status'];
+        const csvRows = [headers.join(',')];
+        for (const row of data) {
+            const values = [
+                `"${row.orderNumber || ''}"`,
+                `"${row.orderDate || ''}"`,
+                row.grandTotal || 0,
+                `"${row.paymentMethod || ''}"`,
+                `"${row.paymentStatus || ''}"`,
+                `"${row.orderStatus || ''}"`
+            ];
+            csvRows.push(values.join(','));
+        }
+        const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'orders_list.csv');
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    printInvoice() {
+        const order = this.inputForm.getRawValue();
+        const itemsHtml = this.selectedOrderItems.map(item => `
+            <tr>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.productName || 'Item'} (ID: ${item.productId})</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: center;">${item.quantity}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">₹${Number(item.price || 0).toFixed(2)}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">₹${Number(item.rowTotal || 0).toFixed(2)}</td>
+            </tr>
+        `).join('');
+
+        const printWindow = window.open('', '_blank');
+        if (!printWindow) return;
+
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>Invoice - ${order.orderNumber}</title>
+                <style>
+                    body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; margin: 40px; }
+                    .invoice-box { max-width: 800px; margin: auto; padding: 30px; border: 1px solid #eee; box-shadow: 0 0 10px rgba(0, 0, 0, .15); }
+                    .title { font-size: 28px; font-weight: bold; color: #1a73e8; }
+                    .header-table, .items-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                    .text-right { text-align: right; }
+                </style>
+            </head>
+            <body>
+                <div class="invoice-box">
+                    <table class="header-table">
+                        <tr>
+                            <td>
+                                <div class="title">SINJAY MART</div>
+                                <div>E-Commerce Platform Invoice</div>
+                            </td>
+                            <td class="text-right">
+                                <strong>Invoice #:</strong> ${order.orderNumber}<br>
+                                <strong>Date:</strong> ${order.orderDate ? order.orderDate.substring(0, 10) : ''}
+                            </td>
+                        </tr>
+                    </table>
+                    <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+                    <table class="header-table">
+                        <tr>
+                            <td>
+                                <strong>Billing To:</strong><br>
+                                Customer ID: ${order.userId}<br>
+                                ${order.shippingAddress || ''}
+                            </td>
+                            <td class="text-right">
+                                <strong>Payment Method:</strong> ${order.paymentMethod || 'COD'}<br>
+                                <strong>Status:</strong> ${order.paymentStatus || 'UNPAID'}
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="items-table" style="margin-top: 30px;">
+                        <thead>
+                            <tr style="background: #f8f9fa; border-bottom: 2px solid #ddd;">
+                                <th style="padding: 8px; text-align: left;">Product</th>
+                                <th style="padding: 8px; text-align: center;">Qty</th>
+                                <th style="padding: 8px; text-align: right;">Unit Price</th>
+                                <th style="padding: 8px; text-align: right;">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${itemsHtml}
+                            <tr>
+                                <td colspan="2"></td>
+                                <td style="padding: 8px; font-weight: bold; text-align: right;">Grand Total:</td>
+                                <td style="padding: 8px; font-weight: bold; text-align: right; color: #1a73e8;">₹${Number(order.grandTotal || 0).toFixed(2)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <script>
+                    window.onload = function() { window.print(); window.close(); }
+                </script>
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+    }
+
     onCancelClicked() {
         this.drawer.close();
     }

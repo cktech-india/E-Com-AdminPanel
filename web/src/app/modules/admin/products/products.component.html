@@ -16,11 +16,18 @@
                     <input matInput placeholder="Search Product..." [formControl]="searchControl" autocomplete="off" />
                 </mat-form-field>
 
+                <!-- EXPORT -->
+                <button (click)="exportToCSV()" mat-stroked-button color="accent" class="rounded-lg">
+                    <mat-icon class="mr-2">download</mat-icon>
+                    Export
+                </button>
+
                 <!-- ADD -->
                 <button (click)="newRowClicked()" mat-flat-button color="primary" class="rounded-lg">
                     <mat-icon class="mr-2">add</mat-icon>
                     Add Product
                 </button>
+
 
             </div>
         </div>
@@ -143,11 +150,9 @@
                 </div>
 
                 <!-- DESCRIPTION -->
-                <div class="col-span-1 sm:col-span-2">
-                    <mat-form-field appearance="outline" class="w-full">
-                        <mat-label>Description</mat-label>
-                        <textarea matInput formControlName="description" rows="3" placeholder="Describe the product details, materials, and sizes..."></textarea>
-                    </mat-form-field>
+                <div class="col-span-1 sm:col-span-2 mb-4">
+                    <div class="text-xs font-semibold text-slate-500 mb-1.5">Description</div>
+                    <quill-editor formControlName="description" placeholder="Describe the product details, materials, and sizes..."></quill-editor>
                 </div>
 
                 <!-- TAX INCLUSIVE -->
