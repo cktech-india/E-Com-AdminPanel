@@ -28,8 +28,24 @@ public class ReportService {
         this.objectMapper = objectMapper;
     }
 
-    public ReportDTO get(String id) {
+    private File getReportFile(String id) {
         File file = new File(REPORTS_DIR_PATH + id + ".json");
+        if (!file.exists()) {
+            file = new File("admin-panel/" + REPORTS_DIR_PATH + id + ".json");
+        }
+        return file;
+    }
+
+    private File getReportsDir() {
+        File dir = new File(REPORTS_DIR_PATH);
+        if (!dir.exists() || !dir.isDirectory()) {
+            dir = new File("admin-panel/" + REPORTS_DIR_PATH);
+        }
+        return dir;
+    }
+
+    public ReportDTO get(String id) {
+        File file = getReportFile(id);
         if (!file.exists()) {
             throw new NoSuchElementException("Report configuration not found with ID: " + id);
         }
@@ -44,7 +60,7 @@ public class ReportService {
     public List<ReportDTO> getActiveList(FilterDTO filter) {
         // Since reports are configuration-driven, we can scan the reports directory and load all active ones
         List<ReportDTO> activeReports = new ArrayList<>();
-        File dir = new File(REPORTS_DIR_PATH);
+        File dir = getReportsDir();
         if (dir.exists() && dir.isDirectory()) {
             File[] files = dir.listFiles((d, name) -> name.endsWith(".json"));
             if (files != null) {
@@ -108,7 +124,7 @@ public class ReportService {
 
     private ReportWidgetDTO loadWidgetConfig(String widgetCode) {
         // Scans reports for the widget matching the widgetCode
-        File dir = new File(REPORTS_DIR_PATH);
+        File dir = getReportsDir();
         if (dir.exists() && dir.isDirectory()) {
             File[] files = dir.listFiles((d, name) -> name.endsWith(".json"));
             if (files != null) {

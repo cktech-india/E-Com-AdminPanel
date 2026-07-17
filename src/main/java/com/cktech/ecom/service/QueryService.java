@@ -1,5 +1,6 @@
 package com.cktech.ecom.service;
 
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -19,16 +20,15 @@ public class QueryService {
     private static final String QUERIES_FILE_PATH = "config/assets/queries.xml";
 
     private final Map<String, String> queryCache = new HashMap<>();
-    private long lastModified = 0;
 
-    private synchronized void loadQueries() {
+    @PostConstruct
+    public synchronized void loadQueries() {
         File file = new File(QUERIES_FILE_PATH);
         if (!file.exists()) {
-            LOG.warn("Queries file not found at: {}", file.getAbsolutePath());
-            return;
+            file = new File("admin-panel/" + QUERIES_FILE_PATH);
         }
-
-        if (file.lastModified() <= lastModified) {
+        if (!file.exists()) {
+            LOG.warn("Queries file not found at: {}", file.getAbsolutePath());
             return;
         }
 
@@ -49,14 +49,12 @@ public class QueryService {
                 String queryText = element.getTextContent().trim();
                 queryCache.put(name, queryText);
             }
-            lastModified = file.lastModified();
         } catch (Exception e) {
             LOG.error("Failed to parse queries.xml", e);
         }
     }
 
     public String getQuery(String queryName) {
-        loadQueries();
         String query = queryCache.get(queryName);
         if (query == null) {
             throw new IllegalArgumentException("Query not found: " + queryName);

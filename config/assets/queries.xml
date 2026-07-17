@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <queries>
-    <!-- ========================================== -->
-    <!-- 1. SALES REPORT QUERIES                    -->
-    <!-- ========================================== -->
     <query name="SELECT_SALES_SUMMARY">
         SELECT CONCAT('$', ROUND(COALESCE(SUM(grand_total), 0), 2)) as value,
                'monetization_on' as icon,
@@ -37,10 +34,6 @@
         FROM orders_t
         GROUP BY payment_method
     </query>
-
-    <!-- ========================================== -->
-    <!-- 2. CUSTOMER REPORT QUERIES                 -->
-    <!-- ========================================== -->
     <query name="SELECT_CUSTOMER_GROWTH">
         SELECT DATE_FORMAT(created_date, '%Y-%m') as categoryValue,
                'New Customers' as seriesValue,
@@ -69,9 +62,6 @@
         GROUP BY state_code
     </query>
 
-    <!-- ========================================== -->
-    <!-- 3. PRODUCT REPORT QUERIES                  -->
-    <!-- ========================================== -->
     <query name="SELECT_TOP_PRODUCTS_BY_REVENUE">
         SELECT p.product_name as productName,
                SUM(oi.quantity) as totalQty,
@@ -88,10 +78,6 @@
         FROM products_t
         GROUP BY category_id
     </query>
-
-    <!-- ========================================== -->
-    <!-- 4. ORDER STATUS REPORT QUERIES             -->
-    <!-- ========================================== -->
     <query name="SELECT_ORDERS_BY_STATUS">
         SELECT status as categoryValue,
                'Orders' as seriesValue,
@@ -108,16 +94,13 @@
         ORDER BY id DESC
     </query>
 
-    <!-- ========================================== -->
-    <!-- 5. INVENTORY & STOCK QUERIES               -->
-    <!-- ========================================== -->
     <query name="SELECT_LOW_STOCK_ALERT">
         SELECT p.product_name as productName,
                i.quantity_on_hand as qtyOnHand,
                i.reorder_level as reorderLevel
         FROM inventory_t i
         JOIN products_t p ON i.product_id = p.id
-        WHERE i.quantity_on_hand <= i.reorder_level
+        WHERE i.quantity_on_hand &lt;= i.reorder_level
     </query>
     <query name="SELECT_STOCK_LOGS_AUDIT">
         SELECT p.product_name as productName,
@@ -129,9 +112,6 @@
         ORDER BY sl.id DESC
     </query>
 
-    <!-- ========================================== -->
-    <!-- 6. PROMOTION & DISCOUNT QUERIES            -->
-    <!-- ========================================== -->
     <query name="SELECT_ACTIVE_PROMOTIONS">
         SELECT p.product_name as productName,
                d.discount_type as discountType,
@@ -143,9 +123,6 @@
         ORDER BY d.id DESC
     </query>
 
-    <!-- ========================================== -->
-    <!-- 7. REVIEWS & RATINGS QUERIES               -->
-    <!-- ========================================== -->
     <query name="SELECT_PRODUCT_RATINGS_SUMMARY">
         SELECT p.product_name as productName,
                ROUND(AVG(pr.rating), 1) as avgRating,
@@ -165,9 +142,6 @@
         ORDER BY pr.id DESC
     </query>
 
-    <!-- ========================================== -->
-    <!-- 8. CART & CHECKOUT QUERIES                 -->
-    <!-- ========================================== -->
     <query name="SELECT_MOST_ADDED_TO_CART">
         SELECT p.product_name as productName,
                CAST(SUM(ci.quantity) AS DOUBLE) as timesAdded
@@ -187,10 +161,6 @@
         WHERE o.id IS NULL
         GROUP BY u.id, u.first_name, u.email
     </query>
-
-    <!-- ========================================== -->
-    <!-- 9. TAX REPORT QUERIES                      -->
-    <!-- ========================================== -->
     <query name="SELECT_TAX_COLLECTED_SUMMARY">
         SELECT CONCAT('$', ROUND(COALESCE(SUM(tax_amount), 0), 2)) as value,
                'payments' as icon,
@@ -205,9 +175,6 @@
         FROM order_items_t
     </query>
 
-    <!-- ========================================== -->
-    <!-- 10. SUPPORT & INQUIRY QUERIES              -->
-    <!-- ========================================== -->
     <query name="SELECT_SUPPORT_TICKETS_SUMMARY">
         SELECT CAST(COUNT(*) AS CHAR) as value,
                'mail' as icon,
@@ -222,7 +189,7 @@
         FROM contact_inquiries_t
     </query>
     <query name="SELECT_PENDING_SUPPORT_TICKETS">
-        SELECT fullName as senderName,
+        SELECT full_name as senderName,
                email as senderEmail,
                subject as subject,
                message as messageContent,
