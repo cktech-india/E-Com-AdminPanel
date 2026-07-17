@@ -21,6 +21,7 @@ import { CkTable, FuseAlertComponent } from '@fuse/components/table-grid/table-g
 import { EcommerceService } from '../ecommerce.service';
 import { UiService } from '@services/ui.service';
 import { QuillModule } from 'ngx-quill';
+import { DataImportExportComponent } from '../../shared/components/data-import-export/data-import-export.component';
 
 @Component({
     selector: 'app-products',
@@ -31,7 +32,8 @@ import { QuillModule } from 'ngx-quill';
         MatButtonModule, FormsModule, ReactiveFormsModule,
         MatCardContent, MatCard, MatOptionModule, MatFormFieldModule,
         MatInputModule, MatSelectModule, MatSlideToggleModule, MatCheckboxModule,
-        MatIconModule, FuseAlertComponent, FuseDrawerComponent, QuillModule
+        MatIconModule, FuseAlertComponent, FuseDrawerComponent, QuillModule,
+        DataImportExportComponent
     ]
 })
 export class ProductsComponent implements OnInit {

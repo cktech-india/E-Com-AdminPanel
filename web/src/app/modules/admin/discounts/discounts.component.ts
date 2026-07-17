@@ -20,6 +20,7 @@ import { CkTable, FuseAlertComponent } from '@fuse/components/table-grid/table-g
 // Services
 import { EcommerceService } from '../ecommerce.service';
 import { UiService } from '@services/ui.service';
+import { DataImportExportComponent } from '../../shared/components/data-import-export/data-import-export.component';
 
 @Component({
     selector: 'app-discounts',
@@ -30,7 +31,8 @@ import { UiService } from '@services/ui.service';
         MatButtonModule, FormsModule, ReactiveFormsModule,
         MatCardContent, MatCard, MatOptionModule, MatFormFieldModule,
         MatInputModule, MatSelectModule, MatSlideToggleModule, CommonModule,
-        MatIconModule, FuseAlertComponent, FuseDrawerComponent
+        MatIconModule, FuseAlertComponent, FuseDrawerComponent,
+        DataImportExportComponent
     ]
 })
 export class DiscountsComponent implements OnInit {

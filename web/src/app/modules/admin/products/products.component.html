@@ -16,11 +16,14 @@
                     <input matInput placeholder="Search Product..." [formControl]="searchControl" autocomplete="off" />
                 </mat-form-field>
 
-                <!-- EXPORT -->
-                <button (click)="exportToCSV()" mat-stroked-button color="accent" class="rounded-lg">
-                    <mat-icon class="mr-2">download</mat-icon>
-                    Export
-                </button>
+                <!-- IMPORT & EXPORT -->
+                <app-data-import-export
+                    [columns]="table.columns"
+                    [data]="table.gridData"
+                    entityName="Product"
+                    entityType="product"
+                    (onImportComplete)="getGridData()">
+                </app-data-import-export>
 
                 <!-- ADD -->
                 <button (click)="newRowClicked()" mat-flat-button color="primary" class="rounded-lg">

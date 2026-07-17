@@ -18,6 +18,7 @@ import { CkTable, FuseAlertComponent } from '@fuse/components/table-grid/table-g
 // Services
 import { EcommerceService } from '../ecommerce.service';
 import { UiService } from '@services/ui.service';
+import { DataImportExportComponent } from '../../shared/components/data-import-export/data-import-export.component';
 
 @Component({
     selector: 'app-tax-config',
@@ -28,7 +29,8 @@ import { UiService } from '@services/ui.service';
         MatButtonModule, FormsModule, ReactiveFormsModule,
         MatCardContent, MatCard, MatOptionModule, MatFormFieldModule,
         MatInputModule, MatSelectModule, MatSlideToggleModule, MatTabsModule,
-        CommonModule, MatIconModule, FuseAlertComponent, FuseDrawerComponent
+        CommonModule, MatIconModule, FuseAlertComponent, FuseDrawerComponent,
+        DataImportExportComponent
     ]
 })
 export class TaxConfigComponent implements OnInit {

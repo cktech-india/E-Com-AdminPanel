@@ -21,6 +21,7 @@ import { CkTable, FuseAlertComponent } from '@fuse/components/table-grid/table-g
 // Services
 import { EcommerceService } from '../ecommerce.service';
 import { UiService } from '@services/ui.service';
+import { DataImportExportComponent } from '../../shared/components/data-import-export/data-import-export.component';
 
 @Component({
     selector: 'app-inventory',
@@ -32,7 +33,7 @@ import { UiService } from '@services/ui.service';
         MatCardContent, MatCard, MatOptionModule, MatFormFieldModule,
         MatInputModule, MatSelectModule, CommonModule,
         MatIconModule, FuseAlertComponent, FuseDrawerComponent,
-        MatTooltipModule, MatDividerModule
+        MatTooltipModule, MatDividerModule, DataImportExportComponent
     ]
 })
 export class InventoryComponent implements OnInit {

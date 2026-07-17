@@ -13,6 +13,15 @@
                     <mat-icon matPrefix>search</mat-icon>
                     <input matInput placeholder="Search product..." [formControl]="searchControl" autocomplete="off" />
                 </mat-form-field>
+
+                <!-- IMPORT & EXPORT -->
+                <app-data-import-export
+                    [columns]="table.columns"
+                    [data]="table.gridData"
+                    entityName="Inventory"
+                    entityType="inventory"
+                    (onImportComplete)="getGridData()">
+                </app-data-import-export>
             </div>
         </div>
 
