@@ -20,13 +20,13 @@ public class SeoMetadataDTO extends Auditable {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "company_code", nullable = false)
+    @Column(name = "company_code", nullable = false, length = 50)
     private String companyCode;
 
-    @Column(name = "target_type", nullable = false)
+    @Column(name = "target_type", nullable = false, length = 20)
     private String targetType;
 
-    @Column(name = "target_value", nullable = false)
+    @Column(name = "target_value", nullable = false, length = 255)
     private String targetValue;
 
     @Column(name = "meta_title")

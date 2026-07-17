@@ -13,6 +13,11 @@ import com.cktech.ecom.model.product.ProductGroupDTO;
 import com.cktech.ecom.model.product.ProductTagDTO;
 import com.cktech.ecom.model.product.ProductMediaDTO;
 
+import com.cktech.ecom.model.country.CountryDTO;
+import com.cktech.ecom.model.tax.TaxCategoryDTO;
+import com.cktech.ecom.model.tax.GstHsnCodeDTO;
+import com.cktech.ecom.model.state.StateDTO;
+
 import com.cktech.ecom.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.poi.ss.usermodel.*;
@@ -47,6 +52,10 @@ public class DataImportExportController {
     private final ProductGroupService productGroupService;
     private final ProductTagService productTagService;
     private final ProductMediaService productMediaService;
+    private final CountryService countryService;
+    private final TaxCategoryService taxCategoryService;
+    private final GstHsnCodeService gstHsnCodeService;
+    private final StateService stateService;
     private final ObjectMapper objectMapper;
 
     public DataImportExportController(
@@ -62,6 +71,10 @@ public class DataImportExportController {
             ProductGroupService productGroupService,
             ProductTagService productTagService,
             ProductMediaService productMediaService,
+            CountryService countryService,
+            TaxCategoryService taxCategoryService,
+            GstHsnCodeService gstHsnCodeService,
+            StateService stateService,
             ObjectMapper objectMapper) {
         this.productService = productService;
         this.categoryService = categoryService;
@@ -75,6 +88,10 @@ public class DataImportExportController {
         this.productGroupService = productGroupService;
         this.productTagService = productTagService;
         this.productMediaService = productMediaService;
+        this.countryService = countryService;
+        this.taxCategoryService = taxCategoryService;
+        this.gstHsnCodeService = gstHsnCodeService;
+        this.stateService = stateService;
         this.objectMapper = objectMapper;
     }
 
@@ -161,6 +178,18 @@ public class DataImportExportController {
             case "product-media":
                 ProductMediaDTO productMedia = objectMapper.convertValue(record, ProductMediaDTO.class);
                 return productMediaService.save(productMedia);
+            case "country":
+                CountryDTO country = objectMapper.convertValue(record, CountryDTO.class);
+                return countryService.save(country);
+            case "tax-category":
+                TaxCategoryDTO taxCategory = objectMapper.convertValue(record, TaxCategoryDTO.class);
+                return taxCategoryService.save(taxCategory);
+            case "gst-hsn-code":
+                GstHsnCodeDTO gstHsnCode = objectMapper.convertValue(record, GstHsnCodeDTO.class);
+                return gstHsnCodeService.save(gstHsnCode);
+            case "state":
+                StateDTO state = objectMapper.convertValue(record, StateDTO.class);
+                return stateService.save(state);
             default:
                 throw new IllegalArgumentException("Unsupported entity type: " + entityType);
         }

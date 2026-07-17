@@ -19,7 +19,7 @@ public class CartDTO extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "company_code", nullable = false)
+    @Column(name = "company_code", nullable = false, length = 50)
     private String companyCode;
 
     @Column(name = "user_id", nullable = false)

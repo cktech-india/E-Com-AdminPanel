@@ -19,13 +19,13 @@ public class CategoryDTO extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "company_code", nullable = false)
+    @Column(name = "company_code", nullable = false, length = 50)
     private String companyCode;
 
-    @Column(name = "category_id", nullable = false)
+    @Column(name = "category_id", nullable = false, length = 50)
     private String categoryId;
 
-    @Column(name = "category_name", nullable = false)
+    @Column(name = "category_name", length = 100)
     private String categoryName;
 
     @Column

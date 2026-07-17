@@ -24,14 +24,14 @@ public class StockLogDTO extends Auditable {
     @Column(name = "product_id", nullable = false)
     private Long productId;
 
-    @Column(name = "company_code", nullable = false)
+    @Column(name = "company_code", nullable = false, length = 50)
     private String companyCode;
 
     @Column(name = "change_amount", nullable = false)
     private Integer changeAmount;
 
     @Column(nullable = false)
-    private String reason;
+    private com.cktech.ecom.common.AppEnum.STOCK_LOG_REASON reason;
 
     @Column(name = "reference_id")
     private Long referenceId;

@@ -21,40 +21,40 @@ public class UserAddressDTO extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "company_code", nullable = false)
+    @Column(name = "company_code", nullable = false, length = 50)
     private String companyCode;
 
-    @Column(name = "address_name")
+    @Column(name = "address_name", length = 50)
     private String addressName;
 
     @Column(name = "is_default")
     private Boolean isDefault;
 
-    @Column(name = "full_name", nullable = false)
+    @Column(name = "full_name", nullable = false, length = 255)
     private String fullName;
 
-    @Column(name = "phone_number")
+    @Column(name = "phone_number", length = 20)
     private String phoneNumber;
 
-    @Column(name = "address_line1", nullable = false)
+    @Column(name = "address_line1", nullable = false, length = 255)
     private String addressLine1;
 
-    @Column(name = "address_line2")
+    @Column(name = "address_line2", length = 255)
     private String addressLine2;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String city;
 
-    @Column(name = "postal_code", nullable = false)
+    @Column(name = "postal_code", nullable = false, length = 20)
     private String postalCode;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private String state;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String country;
 
-    @Column(name = "gst_state_code")
+    @Column(name = "gst_state_code", length = 10)
     private String gstStateCode;
 
     @Column(name = "created_at")
@@ -63,6 +63,6 @@ public class UserAddressDTO extends Auditable {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column()
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 }

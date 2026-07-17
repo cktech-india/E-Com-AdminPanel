@@ -19,7 +19,7 @@ public class OrderItemsDTO extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "company_code", nullable = false)
+    @Column(name = "company_code", nullable = false, length = 50)
     private String companyCode;
 
     @Column(name = "order_id", nullable = false)
@@ -40,13 +40,13 @@ public class OrderItemsDTO extends Auditable {
     @Column(name = "unit_price", nullable = false)
     private Double unitPrice;
 
-    @Column(name = "tax_amount")
+    @Column(name = "tax_amount", nullable = false)
     private Double taxAmount;
 
     @Column(name = "discount_amount")
     private Double discountAmount;
 
-    @Column(name = "row_total")
+    @Column(name = "row_total", nullable = false)
     private Double rowTotal;
 
     @Column(name = "taxable_amount")

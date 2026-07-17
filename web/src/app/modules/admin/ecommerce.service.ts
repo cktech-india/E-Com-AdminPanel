@@ -255,6 +255,16 @@ export class EcommerceService {
         return this.http.delete<any>(`${this.baseUrl}states/${id}`);
     }
 
+    getCountries(): Observable<any[]> {
+        return this.http.get<any[]>(this.baseUrl + 'countries/list');
+    }
+    saveCountry(country: any): Observable<any> {
+        return this.http.post<any>(this.baseUrl + 'countries', country);
+    }
+    deleteCountry(id: number): Observable<any> {
+        return this.http.delete<any>(`${this.baseUrl}countries/${id}`);
+    }
+
     getStockLogs(): Observable<any[]> {
         return this.http.get<any[]>(this.baseUrl + 'stock-log/list').pipe(
             map(list => (list || []).filter(item => item.companyCode === this.companyCode))

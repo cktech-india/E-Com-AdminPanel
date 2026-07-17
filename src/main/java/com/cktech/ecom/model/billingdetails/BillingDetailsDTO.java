@@ -19,7 +19,7 @@ public class BillingDetailsDTO extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "company_code", nullable = false)
+    @Column(name = "company_code", nullable = false, length = 5)
     private String companyCode;
 
     @Column(name = "billing_id", nullable = false)
@@ -34,10 +34,10 @@ public class BillingDetailsDTO extends Auditable {
     @Column(name = "hsn_code")
     private String hsnCode;
 
-    @Column
+    @Column(nullable = false)
     private Double quantity;
 
-    @Column(name = "unit_price")
+    @Column(name = "unit_price", nullable = false)
     private Double unitPrice;
 
     @Column
@@ -55,6 +55,6 @@ public class BillingDetailsDTO extends Auditable {
     @Column(name = "discount_amount")
     private Double discountAmount;
 
-    @Column(name = "row_total")
+    @Column(name = "row_total", nullable = false)
     private Double rowTotal;
 }

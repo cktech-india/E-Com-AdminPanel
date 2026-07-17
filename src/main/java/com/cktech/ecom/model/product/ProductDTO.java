@@ -24,40 +24,40 @@ public class ProductDTO extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "company_code")
+    @Column(name = "company_code", nullable = false, length = 50)
     private String companyCode;
 
-    @Column(name = "product_code")
+    @Column(name = "product_code", nullable = false, length = 50)
     private String productCode;
 
-    @Column(name = "group_code")
+    @Column(name = "group_code", length = 50)
     private String groupCode;
 
-    @Column(name = "group_name")
+    @Column(name = "group_name", length = 255)
     private String groupName;
 
     @Column(name = "parent_product_id")
     private Long parentProductId;
 
-    @Column(name = "category_id")
+    @Column(name = "category_id", length = 50)
     private String categoryId;
 
-    @Column(name = "product_name")
+    @Column(name = "product_name", length = 200)
     private String productName;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 255)
     private String description;
 
     @Column
     private Double price;
 
-    @Column(name = "product_type")
+    @Column(name = "product_type", length = 100)
     private String productType;
 
-    @Column(name = "image_url")
+    @Column(name = "image_url", length = 255)
     private String imageUrl;
 
-    @Column(name = "hsn_code")
+    @Column(name = "hsn_code", length = 255)
     private String hsnCode;
 
     @Column(name = "available_quantity")

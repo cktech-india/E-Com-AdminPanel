@@ -25,13 +25,13 @@ public class ProductTagDTO extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "company_code")
+    @Column(name = "company_code", nullable = false, length = 50)
     private String companyCode;
 
-    @Column(name = "product_id")
+    @Column(name = "product_id", nullable = false)
     private Long productId;
 
-    @Column(name = "product_tag")
+    @Column(name = "product_tag", nullable = false, length = 50)
     private String productTag;
 
 }

@@ -21,22 +21,22 @@ public class BillingDTO extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "company_code", nullable = false)
+    @Column(name = "company_code", nullable = false, length = 50)
     private String companyCode;
 
-    @Column(name = "customer_name", nullable = false)
+    @Column(name = "customer_name", nullable = false, length = 100)
     private String customerName;
 
     @Column(name = "customer_address", nullable = false, length = 1000)
     private String customerAddress;
 
-    @Column(name = "mobile_no", nullable = false)
+    @Column(name = "mobile_no", nullable = false, length = 15)
     private String mobileNo;
 
     @Column(nullable = false)
     private String state;
 
-    @Column(name = "state_code", nullable = false)
+    @Column(name = "state_code", nullable = false, length = 15)
     private String stateCode;
 
     @Column(name = "discount_percentage")

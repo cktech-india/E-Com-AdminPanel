@@ -19,12 +19,12 @@ public class StateDTO extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "state_code", nullable = false, length = 10)
+    @Column(name = "state_code", nullable = false, length = 5)
     private String stateCode;
 
     @Column(name = "state_name", nullable = false, length = 100)
     private String stateName;
 
-    @Column(name = "gst_state_code", length = 10)
+    @Column(name = "gst_state_code", length = 5)
     private String gstStateCode;
 }

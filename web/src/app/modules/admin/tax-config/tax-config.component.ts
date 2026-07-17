@@ -41,6 +41,7 @@ export class TaxConfigComponent implements OnInit {
     @ViewChild('hsnDrawer') hsnDrawer!: FuseDrawerComponent;
     @ViewChild('shippingDrawer') shippingDrawer!: FuseDrawerComponent;
     @ViewChild('stateDrawer') stateDrawer!: FuseDrawerComponent;
+    @ViewChild('countryDrawer') countryDrawer!: FuseDrawerComponent;
 
     // Forms
     taxCategoryForm!: FormGroup;
@@ -48,6 +49,7 @@ export class TaxConfigComponent implements OnInit {
     hsnForm!: FormGroup;
     shippingForm!: FormGroup;
     stateForm!: FormGroup;
+    countryForm!: FormGroup;
 
     // Tables
     taxCategoryTable!: CkTable;
@@ -55,6 +57,7 @@ export class TaxConfigComponent implements OnInit {
     hsnTable!: CkTable;
     shippingTable!: CkTable;
     stateTable!: CkTable;
+    countryTable!: CkTable;
 
     // Active configuration state
     recordMode: string = 'C';
@@ -120,6 +123,13 @@ export class TaxConfigComponent implements OnInit {
             id: new FormControl(null),
             stateName: new FormControl(null, Validators.required),
             stateCode: new FormControl(null, Validators.required),
+            isActive: new FormControl(true)
+        });
+
+        this.countryForm = new FormGroup({
+            id: new FormControl(null),
+            countryName: new FormControl(null, Validators.required),
+            countryId: new FormControl(null, Validators.required),
             isActive: new FormControl(true)
         });
     }
@@ -210,6 +220,21 @@ export class TaxConfigComponent implements OnInit {
             ],
             loading: false
         };
+
+        // Countries Table
+        this.countryTable = {
+            gridData: [],
+            columns: [
+                { header: 'Country ID / Code', column: 'countryId' },
+                { header: 'Country Name', column: 'countryName' },
+                { header: 'Active', column: 'isActive', formatter: (v) => v ? 'Yes' : 'No' }
+            ],
+            actions: [
+                { label: 'Edit', icon: 'edit', action: (row) => this.editCountry(row) },
+                { label: 'Delete', icon: 'delete', confirm: true, action: (row) => this.deleteCountry(row) }
+            ],
+            loading: false
+        };
     }
 
     loadTaxCategories() {
@@ -279,6 +304,14 @@ export class TaxConfigComponent implements OnInit {
                 this.stateTable.gridData = res || [];
                 this.stateTable.loading = false;
                 this.stateTable = { ...this.stateTable };
+            });
+        } else if (this.activeTab === 5) {
+            this.countryTable.loading = true;
+            this.countryTable = { ...this.countryTable };
+            this._service.getCountries().subscribe(res => {
+                this.countryTable.gridData = res || [];
+                this.countryTable.loading = false;
+                this.countryTable = { ...this.countryTable };
             });
         }
     }
@@ -421,6 +454,33 @@ export class TaxConfigComponent implements OnInit {
             this.loadTabData();
             this.loadStates();
             this.uiService.showToastr('Success', 'State saved', 'success');
+        });
+    }
+
+    newCountryClicked() {
+        this.recordMode = 'C';
+        this.countryForm.reset({ isActive: true });
+        this.countryDrawer.open();
+    }
+    editCountry(row: any) {
+        this.recordMode = 'E';
+        this.countryForm.patchValue(row);
+        this.countryDrawer.open();
+    }
+    deleteCountry(row: any) {
+        this._service.deleteCountry(row.id).subscribe(() => {
+            this.loadTabData();
+            this.uiService.showToastr('Success', 'Country deleted', 'success');
+        });
+    }
+    saveCountry() {
+        if (this.countryForm.invalid) return;
+        const input = this.countryForm.getRawValue();
+        input.recordMode = this.recordMode;
+        this._service.saveCountry(input).subscribe(() => {
+            this.countryDrawer.close();
+            this.loadTabData();
+            this.uiService.showToastr('Success', 'Country saved', 'success');
         });
     }
 }

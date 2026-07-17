@@ -26,26 +26,26 @@ public class UserDTO extends Auditable {
     @Column(name = "company_code", nullable = false, length = 5)
     private String companyCode;
 
-    @Column(name = "first_name", nullable = false)
+    @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
 
-    @Column(name = "last_name")
+    @Column(name = "last_name", length = 50)
     private String lastName;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 150)
     private String email;
 
-    @Column(name = "password_hash", nullable = false)
+    @Column(name = "password_hash", nullable = false, length = 255)
     private String passwordHash;
 
-    @Column(name = "phone_number")
+    @Column(name = "phone_number", length = 20)
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "user_type")
     private AppEnum.USER_TYPE userType;
 
-    @Column(name = "state_code")
+    @Column(name = "state_code", length = 50)
     private String stateCode;
 
     @Column(name = "created_at")

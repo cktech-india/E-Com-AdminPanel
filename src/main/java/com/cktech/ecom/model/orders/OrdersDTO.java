@@ -31,7 +31,7 @@ public class OrdersDTO extends Auditable {
     private String orderNumber;
 
     @Column(name = "status")
-    private String status;
+    private com.cktech.ecom.common.AppEnum.ORDER_STATUS status;
 
     @Column(name = "subtotal", nullable = false, precision = 10, scale = 2)
     private BigDecimal subtotal;
@@ -67,7 +67,7 @@ public class OrdersDTO extends Auditable {
     private BigDecimal taxAmountCalculated;
 
     @Column(name = "tax_type")
-    private String taxType;
+    private com.cktech.ecom.common.AppEnum.TAX_TYPE taxType;
 
     @Column(name = "total_cgst", precision = 10, scale = 2)
     private BigDecimal totalCgst;

@@ -19,7 +19,7 @@ public class WishlistDTO extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "company_code", nullable = false)
+    @Column(name = "company_code", nullable = false, length = 5)
     private String companyCode;
 
     @Column(name = "product_id")

@@ -12,6 +12,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+import com.cktech.ecom.common.AppEnum;
 import java.time.LocalDateTime;
 
 @Data
@@ -44,8 +47,9 @@ public class ContactInquiryDTO extends Auditable {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String message;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status = "NEW";
+    private AppEnum.CONTACT_INQUIRY_STATUS status = AppEnum.CONTACT_INQUIRY_STATUS.NEW;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

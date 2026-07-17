@@ -11,6 +11,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+import com.cktech.ecom.common.AppEnum;
 
 @Data
 @Entity
@@ -24,16 +27,17 @@ public class ProductMediaDTO extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "company_code")
+    @Column(name = "company_code", nullable = false, length = 50)
     private String companyCode;
 
-    @Column(name = "product_id")
+    @Column(name = "product_id", nullable = false)
     private Long productId;
 
-    @Column(name = "media_type")
-    private String mediaType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "media_type", nullable = false)
+    private AppEnum.MEDIA_TYPE mediaType;
 
-    @Column(name = "media_url")
+    @Column(name = "media_url", nullable = false, length = 255)
     private String mediaUrl;
 
 }

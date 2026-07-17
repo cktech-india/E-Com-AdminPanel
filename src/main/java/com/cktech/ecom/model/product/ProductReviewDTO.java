@@ -25,19 +25,19 @@ public class ProductReviewDTO extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "company_code")
+    @Column(name = "company_code", nullable = false, length = 50)
     private String companyCode;
 
-    @Column(name = "product_id")
+    @Column(name = "product_id", nullable = false)
     private Long productId;
 
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "rating")
+    @Column(name = "rating", nullable = false)
     private Integer rating;
 
-    @Column(name = "review_title")
+    @Column(name = "review_title", length = 255)
     private String reviewTitle;
 
     @Lob

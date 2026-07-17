@@ -20,7 +20,7 @@ public class FaqDTO extends Auditable {
     @Column(name = "faq_id")
     private Long faqId;
 
-    @Column(name = "company_code")
+    @Column(name = "company_code", nullable = false, length = 5)
     private String companyCode;
 
     @Column(name = "faq_qns", nullable = false)

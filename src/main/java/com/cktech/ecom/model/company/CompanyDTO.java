@@ -19,21 +19,21 @@ import lombok.NoArgsConstructor;
 public class CompanyDTO extends Auditable {
 
     @Id
-    @Column(name = "company_code", nullable = false)
+    @Column(name = "company_code", nullable = false, length = 5)
     private String companyCode;
 
-    @Column(name = "company_name", nullable = false)
+    @Column(name = "company_name", nullable = false, length = 255)
     private String companyName;
 
-    @Column(name = "domain_url", nullable = false)
+    @Column(name = "domain_url", nullable = false, length = 255)
     private String domainUrl;
 
-    @Column(name = "gst_state_code")
+    @Column(name = "gst_state_code", nullable = false, length = 50)
     private String gstStateCode;
 
-    @Column(name = "gst_no")
+    @Column(name = "gst_no", nullable = false, length = 100)
     private String gstNo;
 
-    @Column(name = "company_address")
+    @Column(name = "company_address", nullable = false, columnDefinition = "TEXT")
     private String companyAddress;
 }

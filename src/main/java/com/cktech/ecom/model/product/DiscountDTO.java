@@ -12,6 +12,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
 @Table(name = "discounts_t")
@@ -24,7 +26,7 @@ public class DiscountDTO extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "company_code")
+    @Column(name = "company_code", length = 50)
     private String companyCode;
 
     @Column(name = "product_id")
@@ -37,9 +39,9 @@ public class DiscountDTO extends Auditable {
     private Double value;
 
     @Column(name = "starts_at")
-    private String startsAt;
+    private LocalDateTime startsAt;
 
     @Column(name = "ends_at")
-    private String endsAt;
+    private LocalDateTime endsAt;
 
 }

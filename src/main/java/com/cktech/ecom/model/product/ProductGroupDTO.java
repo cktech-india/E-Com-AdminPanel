@@ -24,13 +24,13 @@ public class ProductGroupDTO extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "product_id")
+    @Column(name = "product_id", nullable = false)
     private Long productId;
 
-    @Column(name = "group_name")
+    @Column(name = "group_name", nullable = false, length = 50)
     private String groupName;
 
-    @Column(name = "group_value")
+    @Column(name = "group_value", nullable = false, length = 50)
     private String groupValue;
 
 }

@@ -19,7 +19,7 @@ public class InventoryDTO extends Auditable {
     @Column(name = "product_id", nullable = false)
     private Long productId;
 
-    @Column(name = "company_code", nullable = false)
+    @Column(name = "company_code", nullable = false, length = 50)
     private String companyCode;
 
     @Column(name = "quantity_on_hand", nullable = false)

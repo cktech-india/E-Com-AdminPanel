@@ -19,18 +19,18 @@ public class BranchDTO extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "company_code")
+    @Column(name = "company_code", nullable = false, length = 5)
     private String companyCode;
 
-    @Column(name = "branch_name")
+    @Column(name = "branch_name", nullable = false, length = 100)
     private String branchName;
 
-    @Column
+    @Column(length = 50)
     private String city;
 
     @Column
     private String address;
 
-    @Column(name = "phone_number")
+    @Column(name = "phone_number", length = 20)
     private String phoneNumber;
 }
