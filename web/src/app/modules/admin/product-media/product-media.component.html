@@ -13,6 +13,15 @@
         </div>
 
         <div class="flex items-center gap-3">
+            <!-- IMPORT & EXPORT -->
+            <app-data-import-export
+                [columns]="mediaColumns"
+                [data]="allMediaList"
+                entityName="Product Media"
+                entityType="product-media"
+                (onImportComplete)="onMediaImportComplete()">
+            </app-data-import-export>
+
             <button mat-icon-button (click)="viewMode = 'grid'" [color]="viewMode === 'grid' ? 'primary' : ''" matTooltip="Grid View">
                 <mat-icon>apps</mat-icon>
             </button>

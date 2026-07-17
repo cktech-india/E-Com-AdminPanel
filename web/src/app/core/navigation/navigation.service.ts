@@ -1,8 +1,8 @@
-import {HttpClient} from '@angular/common/http';
-import {inject, Injectable} from '@angular/core';
-import {Navigation} from 'app/core/navigation/navigation.types';
-import {Observable, ReplaySubject, tap, of} from 'rxjs';
-import {AuthService} from "../auth/auth.service";
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { Navigation } from 'app/core/navigation/navigation.types';
+import { Observable, ReplaySubject, tap, of } from 'rxjs';
+import { AuthService } from "../auth/auth.service";
 
 const ecomNavigation = [
     {
@@ -228,10 +228,17 @@ const ecomNavigation = [
                 link: '/home-config'
             }
         ]
+    },
+    {
+        id: 'reports',
+        title: 'Reports',
+        type: 'basic',
+        icon: 'heroicons_outline:chat-bubble-bottom-center-text',
+        link: '/reports'
     }
 ];
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class NavigationService {
     private _httpClient = inject(HttpClient);
     private _navigation: ReplaySubject<Navigation> =

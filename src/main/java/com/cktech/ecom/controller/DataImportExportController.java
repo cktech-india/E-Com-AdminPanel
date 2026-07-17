@@ -9,6 +9,9 @@ import com.cktech.ecom.model.faq.FaqDTO;
 import com.cktech.ecom.model.product.DiscountDTO;
 import com.cktech.ecom.model.inventory.InventoryDTO;
 import com.cktech.ecom.model.seo.SeoMetadataDTO;
+import com.cktech.ecom.model.product.ProductGroupDTO;
+import com.cktech.ecom.model.product.ProductTagDTO;
+import com.cktech.ecom.model.product.ProductMediaDTO;
 
 import com.cktech.ecom.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,6 +44,9 @@ public class DataImportExportController {
     private final DiscountService discountService;
     private final InventoryService inventoryService;
     private final SeoMetadataService seoMetadataService;
+    private final ProductGroupService productGroupService;
+    private final ProductTagService productTagService;
+    private final ProductMediaService productMediaService;
     private final ObjectMapper objectMapper;
 
     public DataImportExportController(
@@ -53,6 +59,9 @@ public class DataImportExportController {
             DiscountService discountService,
             InventoryService inventoryService,
             SeoMetadataService seoMetadataService,
+            ProductGroupService productGroupService,
+            ProductTagService productTagService,
+            ProductMediaService productMediaService,
             ObjectMapper objectMapper) {
         this.productService = productService;
         this.categoryService = categoryService;
@@ -63,6 +72,9 @@ public class DataImportExportController {
         this.discountService = discountService;
         this.inventoryService = inventoryService;
         this.seoMetadataService = seoMetadataService;
+        this.productGroupService = productGroupService;
+        this.productTagService = productTagService;
+        this.productMediaService = productMediaService;
         this.objectMapper = objectMapper;
     }
 
@@ -140,6 +152,15 @@ public class DataImportExportController {
             case "seo-config":
                 SeoMetadataDTO seo = objectMapper.convertValue(record, SeoMetadataDTO.class);
                 return seoMetadataService.save(seo);
+            case "product-group":
+                ProductGroupDTO productGroup = objectMapper.convertValue(record, ProductGroupDTO.class);
+                return productGroupService.save(productGroup);
+            case "product-tag":
+                ProductTagDTO productTag = objectMapper.convertValue(record, ProductTagDTO.class);
+                return productTagService.save(productTag);
+            case "product-media":
+                ProductMediaDTO productMedia = objectMapper.convertValue(record, ProductMediaDTO.class);
+                return productMediaService.save(productMedia);
             default:
                 throw new IllegalArgumentException("Unsupported entity type: " + entityType);
         }

@@ -11,6 +11,7 @@ import { UiService } from '@services/ui.service';
 import { CkTableColumn } from '@fuse/components/table-grid/table-grid.component';
 import * as ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
+import { AuthService } from 'app/core/auth/auth.service';
 
 @Component({
     selector: 'app-data-import-export',
@@ -47,7 +48,8 @@ export class DataImportExportComponent {
     constructor(
         private _dialog: MatDialog,
         private _http: HttpClient,
-        private _uiService: UiService
+        private _uiService: UiService,
+        private _authService: AuthService
     ) {}
 
     exportData(format: 'CSV' | 'XLSX'): void {
@@ -204,6 +206,7 @@ export class DataImportExportComponent {
         this.isSaving = true;
 
         // Map column headers back to exact entity field keys
+        const companyCode = this._authService.selectedCompany?.companyCode || 'COMP1';
         const mappedRecords = this.previewData.map(row => {
             const mappedRow: any = {};
             this.columns.forEach(col => {
@@ -222,6 +225,7 @@ export class DataImportExportComponent {
                     mappedRow[col.column] = val;
                 }
             });
+            mappedRow['companyCode'] = companyCode;
             return mappedRow;
         });
 

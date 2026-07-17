@@ -16,6 +16,15 @@
                     <input matInput placeholder="Search Recommendation..." [formControl]="searchControl" autocomplete="off" />
                 </mat-form-field>
 
+                <!-- IMPORT & EXPORT -->
+                <app-data-import-export
+                    [columns]="table.columns"
+                    [data]="table.gridData"
+                    entityName="Product Recommendation"
+                    entityType="product-tag"
+                    (onImportComplete)="getGridData()">
+                </app-data-import-export>
+
                 <!-- ADD -->
                 <button (click)="newRowClicked()" mat-flat-button color="primary" class="rounded-lg">
                     <mat-icon class="mr-2">add</mat-icon>

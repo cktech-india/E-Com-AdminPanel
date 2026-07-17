@@ -14,6 +14,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 // Services
 import { EcommerceService } from '../ecommerce.service';
 import { UiService } from '@services/ui.service';
+import { DataImportExportComponent } from '../../shared/components/data-import-export/data-import-export.component';
 
 interface MediaItem {
     id: number;
@@ -29,7 +30,7 @@ interface MediaItem {
     standalone: true,
     imports: [
         CommonModule, FormsModule, MatButtonModule, MatCard, MatCardContent,
-        MatIconModule, MatTabsModule, MatTooltipModule
+        MatIconModule, MatTabsModule, MatTooltipModule, DataImportExportComponent
     ]
 })
 export class ProductMediaComponent implements OnInit {
@@ -46,6 +47,14 @@ export class ProductMediaComponent implements OnInit {
     categories: any[] = [];
     selectedCategory: any = null;
 
+    // Import/Export Columns and Data
+    mediaColumns = [
+        { header: 'Product ID', column: 'productId' },
+        { header: 'Media Type', column: 'mediaType' },
+        { header: 'Media URL', column: 'mediaUrl' }
+    ];
+    allMediaList: any[] = [];
+
     constructor(
         private _service: EcommerceService,
         private _http: HttpClient,
@@ -56,6 +65,23 @@ export class ProductMediaComponent implements OnInit {
     ngOnInit(): void {
         this.loadProducts();
         this.loadCategories();
+        this.loadAllMediaList();
+    }
+
+    loadAllMediaList() {
+        this._http.get<any[]>(sessionStorage.getItem('apiUrl') + 'product-media/active-list', this._ui.httpOptions)
+            .subscribe({
+                next: (res) => {
+                    this.allMediaList = res || [];
+                }
+            });
+    }
+
+    onMediaImportComplete() {
+        this.loadAllMediaList();
+        if (this.selectedProduct) {
+            this.loadProductMedia();
+        }
     }
 
     loadProducts() {
