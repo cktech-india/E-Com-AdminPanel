@@ -1,0 +1,100 @@
+{
+  "reportCode": "HOME",
+  "reportTitle": "Sinjay Mart Admin Dashboard",
+  "reportType": "DASHBOARD",
+  "filterColumns": [],
+  "reportProperties": {},
+  "isActive": true,
+  "isDeleted": false,
+  "reportWidgets": [
+    {
+      "widgetCode": "SALES_OVERVIEW",
+      "widgetTitle": "Overview",
+      "widgetType": "STATUS_COUNT",
+      "widgetSubType": "STATUS_COUNT_MULTI",
+      "widthPercentage": 100.0,
+      "processNameOrQuery": "SALES_OVERVIEW",
+      "dataColumns": [],
+      "filterColumns": [],
+      "widgetProperties": {}
+    },
+    {
+      "widgetCode": "SALES_CHART",
+      "widgetTitle": "Daily Revenue Chart",
+      "widgetType": "CHART",
+      "widgetSubType": "LINE",
+      "widthPercentage": 50.0,
+      "processNameOrQuery": "SALES_CHART",
+      "dataColumns": [],
+      "filterColumns": [],
+      "widgetProperties": {
+        "hasSeries": "true"
+      }
+    },
+    {
+      "widgetCode": "ORDER_STATUS_CHART",
+      "widgetTitle": "Orders by Status",
+      "widgetType": "CHART",
+      "widgetSubType": "PIE",
+      "widthPercentage": 50.0,
+      "processNameOrQuery": "ORDER_STATUS_CHART",
+      "dataColumns": [],
+      "filterColumns": [],
+      "widgetProperties": {
+        "hasSeries": "false"
+      }
+    },
+    {
+      "widgetCode": "TOP_PRODUCTS",
+      "widgetTitle": "Top Selling Products",
+      "widgetType": "GRID",
+      "widgetSubType": "TABLE",
+      "widthPercentage": 50.0,
+      "processNameOrQuery": "TOP_PRODUCTS",
+      "dataColumns": [
+        {
+          "header": "Product Name",
+          "field": "productName"
+        },
+        {
+          "header": "Qty Sold",
+          "field": "totalQty"
+        },
+        {
+          "header": "Revenue",
+          "field": "totalRevenue"
+        }
+      ],
+      "filterColumns": [],
+      "widgetProperties": {}
+    },
+    {
+      "widgetCode": "RECENT_ORDERS",
+      "widgetTitle": "Recent Orders",
+      "widgetType": "GRID",
+      "widgetSubType": "TABLE",
+      "widthPercentage": 50.0,
+      "processNameOrQuery": "RECENT_ORDERS",
+      "dataColumns": [
+        {
+          "header": "Order Number",
+          "field": "orderNumber"
+        },
+        {
+          "header": "Total Amount",
+          "field": "grandTotal"
+        },
+        {
+          "header": "Status",
+          "field": "status"
+        },
+        {
+          "header": "Order Date",
+          "field": "orderDate"
+        }
+      ],
+      "filterColumns": [],
+      "widgetProperties": {}
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "reportCode": "SALES_REPORT",
+  "reportTitle": "Overall Sales Performance",
+  "reportType": "REPORT",
+  "filterColumns": [],
+  "reportProperties": {},
+  "isActive": true,
+  "isDeleted": false,
+  "reportWidgets": [
+    {
+      "widgetCode": "SALES_SUMMARY",
+      "widgetTitle": "Sales Metrics",
+      "widgetType": "STATUS_COUNT",
+      "widgetSubType": "STATUS_COUNT_MULTI",
+      "widthPercentage": 100.0,
+      "processNameOrQuery": "SALES_SUMMARY",
+      "dataColumns": [],
+      "filterColumns": [],
+      "widgetProperties": {}
+    },
+    {
+      "widgetCode": "DAILY_REVENUE",
+      "widgetTitle": "Daily Revenue Trend",
+      "widgetType": "CHART",
+      "widgetSubType": "LINE",
+      "widthPercentage": 50.0,
+      "processNameOrQuery": "DAILY_REVENUE",
+      "dataColumns": [],
+      "filterColumns": [],
+      "widgetProperties": {
+        "hasSeries": "true"
+      }
+    },
+    {
+      "widgetCode": "PAYMENT_METHODS",
+      "widgetTitle": "Payment Method Shares",
+      "widgetType": "CHART",
+      "widgetSubType": "PIE",
+      "widthPercentage": 50.0,
+      "processNameOrQuery": "PAYMENT_METHODS_DISTRIBUTION",
+      "dataColumns": [],
+      "filterColumns": [],
+      "widgetProperties": {
+        "hasSeries": "false"
+      }
+    }
+  ]
+}

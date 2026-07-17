@@ -1,0 +1,22 @@
+{
+  "reportCode": "TAX_REPORT",
+  "reportTitle": "Tax Compliance & Revenue Audit Reports",
+  "reportType": "REPORT",
+  "filterColumns": [],
+  "reportProperties": {},
+  "isActive": true,
+  "isDeleted": false,
+  "reportWidgets": [
+    {
+      "widgetCode": "TAX_COLLECTED_SUMMARY",
+      "widgetTitle": "Tax Revenue Metrics",
+      "widgetType": "STATUS_COUNT",
+      "widgetSubType": "STATUS_COUNT_MULTI",
+      "widthPercentage": 100.0,
+      "processNameOrQuery": "TAX_COLLECTED_SUMMARY",
+      "dataColumns": [],
+      "filterColumns": [],
+      "widgetProperties": {}
+    }
+  ]
+}

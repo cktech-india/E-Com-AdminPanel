@@ -1,0 +1,65 @@
+{
+  "reportCode": "CUSTOMER_REPORT",
+  "reportTitle": "Customer Acquisition & Behavior",
+  "reportType": "REPORT",
+  "filterColumns": [],
+  "reportProperties": {},
+  "isActive": true,
+  "isDeleted": false,
+  "reportWidgets": [
+    {
+      "widgetCode": "CUSTOMER_GROWTH",
+      "widgetTitle": "New Customer Signups",
+      "widgetType": "CHART",
+      "widgetSubType": "LINE",
+      "widthPercentage": 50.0,
+      "processNameOrQuery": "CUSTOMER_GROWTH",
+      "dataColumns": [],
+      "filterColumns": [],
+      "widgetProperties": {
+        "hasSeries": "true"
+      }
+    },
+    {
+      "widgetCode": "CUSTOMER_LOCATION_DISTRIBUTION",
+      "widgetTitle": "Customers by State/Region",
+      "widgetType": "CHART",
+      "widgetSubType": "PIE",
+      "widthPercentage": 50.0,
+      "processNameOrQuery": "CUSTOMER_LOCATION_DISTRIBUTION",
+      "dataColumns": [],
+      "filterColumns": [],
+      "widgetProperties": {
+        "hasSeries": "false"
+      }
+    },
+    {
+      "widgetCode": "TOP_BUYING_CUSTOMERS",
+      "widgetTitle": "Top Valuable Customers",
+      "widgetType": "GRID",
+      "widgetSubType": "TABLE",
+      "widthPercentage": 100.0,
+      "processNameOrQuery": "TOP_BUYING_CUSTOMERS",
+      "dataColumns": [
+        {
+          "header": "Customer Name",
+          "field": "customerName"
+        },
+        {
+          "header": "Email",
+          "field": "customerEmail"
+        },
+        {
+          "header": "Total Orders Placed",
+          "field": "totalOrders"
+        },
+        {
+          "header": "Total Spent ($)",
+          "field": "totalSpent"
+        }
+      ],
+      "filterColumns": [],
+      "widgetProperties": {}
+    }
+  ]
+}

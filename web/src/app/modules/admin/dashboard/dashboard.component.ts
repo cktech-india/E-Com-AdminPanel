@@ -41,6 +41,8 @@ import { UiService } from '../../../ui.service';
 import { ChartService, GridActionButtonModel, WidgetModel } from './chart.service';
 import { ProgressWidgetComponent } from './progress-widget.component';
 import { ScoreCardWidgetComponent } from './score-card-widget.component';
+import { GridWidgetComponent } from './grid-widget.component';
+import { ChartWidgetComponent } from './chart-widget.component';
 
 // ---------------------------------------------------------------------------
 // Utility pipe: extracts the 'field' property from each column definition
@@ -93,6 +95,8 @@ export class ColumnFieldsPipe implements PipeTransform {
         ProgressWidgetComponent,
         UpperCasePipe,
         ScoreCardWidgetComponent,
+        GridWidgetComponent,
+        ChartWidgetComponent,
         JsonPipe,
     ],
     templateUrl: './dashboard.component.html',

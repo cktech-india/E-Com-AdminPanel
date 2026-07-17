@@ -199,56 +199,67 @@
         </mat-expansion-panel>
         } @else {
         @if (!_data?.dashboardInfo?.reportProperties?.hideTitle) {
-        <mat-card>
-            <mat-card-title style="display: flex; align-items: center; gap: 16px; padding: 16px;">
-
-                <span style="white-space: nowrap;">{{ _data.dashboardInfo?.reportTitle }}</span>
-
-                @if(_data.globalFilter.length > 0) {
-                @for (item of _data.globalFilter; track item.code) {
-
-                <div style="width: 180px; flex-shrink: 0;">
-                    @switch (item.control) {
-
-                    @case ('INPUT') {
-                    <mat-form-field appearance="outline" subscriptSizing="dynamic" style="width: 100%;">
-                        <mat-label>{{ item.label }}</mat-label>
-                        <input matInput [placeholder]="'Enter ' + item.label"
-                            (ngModelChange)="onGlobalFilterChanged(item)"
-                            [(ngModel)]="_data.globalFilterValues[item.code]" [required]="item.mandatory">
-                    </mat-form-field>
-                    }
-
-                    @case ('DROPDOWN') {
-                    <mat-form-field appearance="outline" subscriptSizing="dynamic" style="width: 100%;">
-                        <mat-label>{{ item.label }}</mat-label>
-                        <mat-select [(ngModel)]="_data.globalFilterValues[item.code]"
-                            (selectionChange)="onGlobalFilterChanged(item)" [required]="item.mandatory">
-                            <mat-option value="">
-                                <em style="color: rgba(0,0,0,0.6);">All {{ item.label }}</em>
-                            </mat-option>
-                            @for (dropItem of item.dropdownOptions; track dropItem.value) {
-                            <mat-option [value]="dropItem.value">{{ dropItem.label }}</mat-option>
-                            }
-                        </mat-select>
-                    </mat-form-field>
-                    }
-                    @case ('DATEPICKER') {
-                    <mat-form-field appearance="outline" subscriptSizing="dynamic" style="width: 100%;">
-                        <mat-label>{{ item.label }}</mat-label>
-                        <input matInput [matDatepicker]="pickerWidget" [(ngModel)]="_data.globalFilterValues[item.code]"
-                            (dateInput)="onGlobalFilterChanged(item)" [required]="item.mandatory">
-                        <mat-datepicker-toggle matSuffix [for]="pickerWidget"></mat-datepicker-toggle>
-                        <mat-datepicker #pickerWidget></mat-datepicker>
-                    </mat-form-field>
-                    }
-
-                    }
+        <mat-card class="rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_4px_25px_rgba(0,0,0,0.02)] bg-white dark:bg-slate-900 mb-6 overflow-hidden">
+            <div class="px-6 py-5 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                        <mat-icon class="scale-110">dashboard</mat-icon>
+                    </div>
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-800 dark:text-slate-50 m-0">
+                            {{ _data.dashboardInfo?.reportTitle }}
+                        </h1>
+                        <p class="text-xs text-slate-400 dark:text-slate-500 font-medium m-0 mt-0.5">Real-time statistics & business performance</p>
+                    </div>
                 </div>
-                }
-                }
 
-            </mat-card-title>
+                <div class="flex items-center gap-3 ml-auto flex-wrap">
+                    @if(_data.globalFilter.length > 0) {
+                    @for (item of _data.globalFilter; track item.code) {
+                    <div class="w-44 flex-shrink-0">
+                        @switch (item.control) {
+                        @case ('INPUT') {
+                        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-full">
+                            <mat-label>{{ item.label }}</mat-label>
+                            <input matInput [placeholder]="'Enter ' + item.label"
+                                (ngModelChange)="onGlobalFilterChanged(item)"
+                                [(ngModel)]="_data.globalFilterValues[item.code]" [required]="item.mandatory">
+                        </mat-form-field>
+                        }
+                        @case ('DROPDOWN') {
+                        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-full">
+                            <mat-label>{{ item.label }}</mat-label>
+                            <mat-select [(ngModel)]="_data.globalFilterValues[item.code]"
+                                (selectionChange)="onGlobalFilterChanged(item)" [required]="item.mandatory">
+                                <mat-option value="">
+                                    <em class="text-slate-400">All {{ item.label }}</em>
+                                </mat-option>
+                                @for (dropItem of item.dropdownOptions; track dropItem.value) {
+                                <mat-option [value]="dropItem.value">{{ dropItem.label }}</mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+                        }
+                        @case ('DATEPICKER') {
+                        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-full">
+                            <mat-label>{{ item.label }}</mat-label>
+                            <input matInput [matDatepicker]="pickerWidget" [(ngModel)]="_data.globalFilterValues[item.code]"
+                                (dateInput)="onGlobalFilterChanged(item)" [required]="item.mandatory">
+                            <mat-datepicker-toggle matSuffix [for]="pickerWidget"></mat-datepicker-toggle>
+                            <mat-datepicker #pickerWidget></mat-datepicker>
+                        </mat-form-field>
+                        }
+                        }
+                    </div>
+                    }
+                    }
+
+                    <button mat-flat-button color="primary" class="rounded-xl px-4 h-10 font-semibold" (click)="refreshDashboard()">
+                        <mat-icon class="mr-2">sync</mat-icon>
+                        Refresh
+                    </button>
+                </div>
+            </div>
         </mat-card>
         }
         }
@@ -301,120 +312,15 @@
                 <app-dashboard-progress-widget [widget]="item"></app-dashboard-progress-widget>
                 }
                 @case ('GRID') {
-                <div [class]="getGridSpanClass(item.widthPercentage)">
-                    <mat-card
-                        class="rounded-2xl border-0 overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-500 bg-white">
-                        <div
-                            class="h-1.5 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-90">
-                        </div>
-                        <mat-card-header class="pb-2 pt-4 px-6 relative z-10">
-                            <div class="flex w-full items-center justify-between">
-                                <mat-card-title class="text-base font-semibold m-0">
-                                    {{ item.customTitle || item.widgetTitle }}
-                                </mat-card-title>
-                                <div class="flex items-center gap-1">
-                                    @if ((item?.filterColumns?.length ?? 0) > 0) {
-                                    <button mat-icon-button (click)="onWidgetFilterClicked(idx)"
-                                        matTooltip="Filter Data">
-                                        <mat-icon>filter_list</mat-icon>
-                                    </button>
-                                    }
-                                    <button mat-icon-button [matMenuTriggerFor]="widgetMenu" matTooltip="More Options">
-                                        <mat-icon>more_vert</mat-icon>
-                                    </button>
-                                </div>
-                            </div>
-                        </mat-card-header>
-                        <mat-divider class="mx-6 mt-1 opacity-50"></mat-divider>
-                        <mat-card-content class="pt-4 px-6 pb-6 relative z-10">
-                            @if (item.isLoading) {
-                            <div class="flex justify-center items-center py-10">
-                                <mat-icon class="animate-spin text-primary">autorenew</mat-icon>
-                                <span class="ml-2 text-sm text-gray-500">Loading...</span>
-                            </div>
-                            } @else if (item?.data?.length > 0) {
-                            <div class="overflow-auto">
-                                <table mat-table [dataSource]="item.data" class="w-full">
-                                    @for (col of item.dataColumns; track col.field) {
-                                    <ng-container [matColumnDef]="col.field">
-                                        <th mat-header-cell *matHeaderCellDef
-                                            class="font-semibold text-xs uppercase tracking-wide">
-                                            {{ col.header }}
-                                        </th>
-                                        <td mat-cell *matCellDef="let row">
-                                            @if (col.templateReference === 'actionButton') {
-                                            <ng-container [ngTemplateOutlet]="actionButton"
-                                                [ngTemplateOutletContext]="{ $implicit: row, colDef: col }">
-                                            </ng-container>
-                                            } @else {
-                                            {{ row[col.field] }}
-                                            }
-                                        </td>
-                                    </ng-container>
-                                    }
-                                    <tr mat-header-row *matHeaderRowDef="item.dataColumns | columnFields"></tr>
-                                    <tr mat-row *matRowDef="let row; columns: item.dataColumns | columnFields;"></tr>
-                                </table>
-                            </div>
-                            <mat-paginator [length]="item.totalRecords || 0" [pageSize]="item.inputs?.limit || 5"
-                                [pageIndex]="(item.inputs?.limitFrom || 0) / (item.inputs?.limit || 5)"
-                                (page)="onGridNextPageClicked(item, $event)" [pageSizeOptions]="[5, 10, 25, 50]">
-                            </mat-paginator>
-                            } @else {
-                            <div class="flex flex-col items-center justify-center py-12 text-gray-400">
-                                <mat-icon class="text-5xl mb-2">inbox</mat-icon>
-                                <p class="text-sm">No data available. Use the filter to generate the
-                                    report.</p>
-                            </div>
-                            }
-                        </mat-card-content>
-                    </mat-card>
-                </div>
+                <app-dashboard-grid-widget [widget]="item" [idx]="idx"
+                                           (filterClicked)="onWidgetFilterClicked($event)"
+                                           (actionClicked)="onGridActionClicked($event.row, $event.col)"
+                                           (pageClicked)="onGridNextPageClicked($event.widget, $event.event)"
+                                           (reloadClicked)="onGenerateClicked($event, 'RELOAD')">
+                </app-dashboard-grid-widget>
                 }
                 @case ('CHART') {
-                <!-- ── CHART Widget ── -->
-                <div [class]="getGridSpanClass(item.widthPercentage)">
-                    <mat-card
-                        class="rounded-2xl border-0 overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-500 bg-white">
-                        <div class="h-1.5 w-full bg-gradient-to-r from-emerald-400 to-cyan-500 opacity-90"></div>
-                        <mat-card-header class="pb-2 pt-4 px-6 relative z-10">
-                            <div class="flex w-full items-center justify-between">
-                                <mat-card-title class="text-base font-semibold m-0">
-                                    {{ item.customTitle || item.widgetTitle }}
-                                </mat-card-title>
-                                <div class="flex items-center gap-1">
-                                    <button mat-icon-button [matMenuTriggerFor]="widgetMenu" matTooltip="More Options">
-                                        <mat-icon>more_vert</mat-icon>
-                                    </button>
-                                </div>
-                            </div>
-                        </mat-card-header>
-                        <mat-divider class="mx-6 mt-1 opacity-50"></mat-divider>
-                        <mat-card-content class="pt-4 px-6 pb-6 relative z-10">
-                            @if (item.isLoading) {
-                            <div class="flex justify-center items-center py-10">
-                                <mat-icon class="animate-spin text-primary">autorenew</mat-icon>
-                                <span class="ml-2 text-sm text-gray-500">Loading...</span>
-                            </div>
-                            } @else if (item.chartOptions) {
-                            <apx-chart [series]="item.chartOptions.series" [chart]="item.chartOptions.chart"
-                                [labels]="item.chartOptions.labels" [grid]="{show: false}"
-                                [xaxis]="item.chartOptions.xaxis" [yaxis]="item.chartOptions.yaxis"
-                                [plotOptions]="item.chartOptions.plotOptions"
-                                [dataLabels]="item.chartOptions.dataLabels" [stroke]="item.chartOptions.stroke"
-                                [fill]="item.chartOptions.fill" [legend]="item.chartOptions.legend"
-                                [tooltip]="item.chartOptions.tooltip" [responsive]="item.chartOptions.responsive"
-                                [colors]="item.chartOptions.colors" [markers]="item.chartOptions.markers"
-                                [theme]="item.chartOptions.theme"></apx-chart>
-                            } @else {
-                            <div class="flex flex-col items-center justify-center py-12 text-gray-400">
-                                <mat-icon class="text-5xl mb-2">bar_chart</mat-icon>
-                                <p class="text-sm">No chart data available.</p>
-                            </div>
-                            }
-                        </mat-card-content>
-                    </mat-card>
-                </div>
+                <app-dashboard-chart-widget [widget]="item" (reloadClicked)="onGenerateClicked($event, 'RELOAD')"></app-dashboard-chart-widget>
                 }
                 @default {
                 <div [class]="getGridSpanClass(item.widthPercentage)">

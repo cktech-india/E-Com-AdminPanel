@@ -1,0 +1,54 @@
+{
+  "reportCode": "SUPPORT_REPORT",
+  "reportTitle": "Support Ticket & Customer Inquiries",
+  "reportType": "REPORT",
+  "filterColumns": [],
+  "reportProperties": {},
+  "isActive": true,
+  "isDeleted": false,
+  "reportWidgets": [
+    {
+      "widgetCode": "SUPPORT_TICKETS_SUMMARY",
+      "widgetTitle": "Support Inquiries Overview",
+      "widgetType": "STATUS_COUNT",
+      "widgetSubType": "STATUS_COUNT_MULTI",
+      "widthPercentage": 100.0,
+      "processNameOrQuery": "SUPPORT_TICKETS_SUMMARY",
+      "dataColumns": [],
+      "filterColumns": [],
+      "widgetProperties": {}
+    },
+    {
+      "widgetCode": "PENDING_SUPPORT_TICKETS",
+      "widgetTitle": "Active Support Requests List",
+      "widgetType": "GRID",
+      "widgetSubType": "TABLE",
+      "widthPercentage": 100.0,
+      "processNameOrQuery": "PENDING_SUPPORT_TICKETS",
+      "dataColumns": [
+        {
+          "header": "Customer Name",
+          "field": "senderName"
+        },
+        {
+          "header": "Email",
+          "field": "senderEmail"
+        },
+        {
+          "header": "Subject",
+          "field": "subject"
+        },
+        {
+          "header": "Message Content",
+          "field": "messageContent"
+        },
+        {
+          "header": "Status",
+          "field": "status"
+        }
+      ],
+      "filterColumns": [],
+      "widgetProperties": {}
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+<div class="flex min-w-0 flex-auto flex-col p-4 sm:p-6">
+    <!-- Reports Header -->
+    <mat-card class="rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_4px_25px_rgba(0,0,0,0.02)] bg-white dark:bg-slate-900 mb-6 overflow-hidden">
+        <div class="px-6 py-5 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                    <mat-icon class="scale-110">assessment</mat-icon>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-800 dark:text-slate-50 m-0">
+                        Business Reports
+                    </h1>
+                    <p class="text-xs text-slate-400 dark:text-slate-500 font-medium m-0 mt-0.5">Select a report and widget to analyze performance</p>
+                </div>
+            </div>
+
+            <!-- Report and Widget Selector Group -->
+            <div class="flex flex-wrap items-center gap-4 ml-auto">
+                <mat-form-field class="w-64" appearance="outline" subscriptSizing="dynamic">
+                    <mat-label>Select Report</mat-label>
+                    <mat-select [ngModel]="selectedReport" (ngModelChange)="onReportChanged($event)">
+                        @for (rep of reports; track rep.reportCode) {
+                            <mat-option [value]="rep">{{ rep.reportTitle }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                @if (selectedReport?.reportWidgets?.length > 0) {
+                    <mat-form-field class="w-64" appearance="outline" subscriptSizing="dynamic">
+                        <mat-label>Select Widget</mat-label>
+                        <mat-select [(ngModel)]="selectedWidgetCode" (ngModelChange)="onWidgetChanged($event)">
+                            @for (wid of selectedReport.reportWidgets; track wid.widgetCode) {
+                                <mat-option [value]="wid.widgetCode">{{ wid.widgetTitle }}</mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                }
+            </div>
+        </div>
+    </mat-card>
+
+    <!-- Filters and Output Grid -->
+    <div class="grid grid-cols-12 gap-6">
+        <!-- Filter Block -->
+        @if (selectedWidget?.filterColumns?.length > 0) {
+            <div class="col-span-12">
+                <mat-card class="rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_4px_25px_rgba(0,0,0,0.02)] bg-white dark:bg-slate-900 p-6">
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-4">Report Filters</h3>
+                    <div class="flex flex-wrap gap-4 items-end">
+                        @for (item of selectedWidget.filterColumns; track item.code) {
+                            <div class="w-48 flex-shrink-0">
+                                @switch (item.control) {
+                                    @case ('INPUT') {
+                                        <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+                                            <mat-label>{{ item.label }}</mat-label>
+                                            <input matInput [placeholder]="'Enter ' + item.label" [(ngModel)]="item.value">
+                                        </mat-form-field>
+                                    }
+                                    @case ('DROPDOWN') {
+                                        <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+                                            <mat-label>{{ item.label }}</mat-label>
+                                            <mat-select [(ngModel)]="item.value">
+                                                @for (opt of item.dropdownOptions; track opt.value) {
+                                                    <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                                                }
+                                            </mat-select>
+                                        </mat-form-field>
+                                    }
+                                    @case ('DATEPICKER') {
+                                        <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+                                            <mat-label>{{ item.label }}</mat-label>
+                                            <input matInput [matDatepicker]="picker" [(ngModel)]="item.value">
+                                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                            <mat-datepicker #picker></mat-datepicker>
+                                        </mat-form-field>
+                                    }
+                                }
+                            </div>
+                        }
+
+                        <button mat-flat-button color="primary" class="rounded-xl px-5 h-10 font-semibold animate-pulse" (click)="getWidgetData()">
+                            <mat-icon class="mr-2">search</mat-icon>
+                            Run Report
+                        </button>
+                    </div>
+                </mat-card>
+            </div>
+        }
+
+        <!-- Output Render Block -->
+        @if (selectedWidget) {
+            <div class="col-span-12">
+                @switch (selectedWidget.widgetType) {
+                    @case ('STATUS_COUNT') {
+                        <app-dashboard-status-count-widget [widget]="selectedWidget"></app-dashboard-status-count-widget>
+                    }
+                    @case ('PROGRESS') {
+                        <app-dashboard-progress-widget [widget]="selectedWidget"></app-dashboard-progress-widget>
+                    }
+                    @case ('GRID') {
+                        <app-dashboard-grid-widget 
+                            [widget]="selectedWidget"
+                            (pageClicked)="onGridPageChange($event)"
+                            (reloadClicked)="getWidgetData()">
+                        </app-dashboard-grid-widget>
+                    }
+                    @case ('CHART') {
+                        <app-dashboard-chart-widget 
+                            [widget]="selectedWidget"
+                            (reloadClicked)="getWidgetData()">
+                        </app-dashboard-chart-widget>
+                    }
+                }
+            </div>
+        } @else {
+            <div class="col-span-12 flex flex-col items-center justify-center py-20 text-slate-400 dark:text-slate-600">
+                <mat-icon class="text-7xl mb-4">assessment</mat-icon>
+                <h3 class="text-lg font-bold">No Report Selected</h3>
+                <p class="text-sm">Please select a report and a widget from the header above to begin.</p>
+            </div>
+        }
+    </div>
+</div>

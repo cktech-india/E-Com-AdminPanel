@@ -37,8 +37,3 @@ tasks.named('test') {
 bootJar {
 	archiveFileName = 'ecom-admin-service.jar'
 }
-
-jar {
-	archiveFileName = 'ecom-admin-service.jar'
-}
-

@@ -87,47 +87,30 @@ import { ChartService, WidgetModel } from './chart.service';
                 </mat-card-content>
             </mat-card>
         } @else if (widget.widgetSubType === 'STATUS_COUNT_MULTI') {
-            <div class="grid grid-flow-col auto-cols-fr gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
                 @for (item of widget?.data; track item.title) {
-                    <mat-card class="rounded-2xl border-0 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-500 overflow-hidden relative bg-white">
-                        <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl opacity-40 {{ _chart.getColorClass(item.iconColor || 'blue', 'BG') }}"></div>
+                    <mat-card class="rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_4px_25px_rgba(0,0,0,0.03)] hover:shadow-[0_10px_35px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 overflow-hidden relative bg-white dark:bg-slate-900">
+                        <div class="absolute -right-10 -top-10 w-36 h-36 rounded-full blur-3xl opacity-20 {{ _chart.getColorClass(item.iconColor || 'blue', 'BG') }}"></div>
                         <mat-card-content class="relative z-10 p-6">
-                            <div class="flex items-center">
-                                <div class="flex-1">
-                                    <p class="mb-4 text-sm font-semibold uppercase text-slate-400">
+                            <div class="flex items-center justify-between">
+                                <div class="flex-1 min-w-0 pr-3">
+                                    <p class="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 truncate">
                                         {{ item.title || item.customTitle || item.widgetTitle }}
                                     </p>
-                                    <div
-                                        class="text-3xl font-bold mt-1 {{
-                                                _chart.getColorClass(item.valueColor || 'blue', 'TXT')
-                                            }} "
-                                    >
+                                    <div class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-800 dark:text-slate-50">
                                         {{ item.value || '0' }}
                                     </div>
-                                    <div
-                                        class="text-sm text-secondary mt-1 {{
-                                                _chart.getColorClass(item.secondaryValueColor || 'blue', 'TXT')
-                                            }}"
-                                    >
-                                        @if (item.secondaryIcon) {
-                                            <mat-icon
-                                                class="text-sm {{
-                                                        _chart.getColorClass(item.secondaryValueColor || 'blue', 'TXT')
-                                                    }}"
-                                            >{{ item.secondaryIcon }}
-                                            </mat-icon>
-                                        }
-                                        {{ item.secondaryValue }}
-                                    </div>
+                                    @if (item.secondaryValue) {
+                                        <div class="text-xs text-slate-400 dark:text-slate-500 mt-1.5 flex items-center gap-0.5">
+                                            @if (item.secondaryIcon) {
+                                                <mat-icon class="text-xs w-3.5 h-3.5 flex items-center justify-center">{{ item.secondaryIcon }}</mat-icon>
+                                            }
+                                            <span>{{ item.secondaryValue }}</span>
+                                        </div>
+                                    }
                                 </div>
-                                <div
-                                    class="w-12 h-12 rounded-full flex items-center justify-center {{
-                                            _chart.getColorClass(item.iconColor || 'blue', 'BG_LITE')
-                                        }}"
-                                >
-                                    <mat-icon class="{{ _chart.getColorClass(item.iconColor || 'blue', 'TXT') }}"
-                                    >{{ item.icon || 'insights' }}
-                                    </mat-icon>
+                                <div class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 hover:scale-110 shadow-sm {{ _chart.getColorClass(item.iconColor || 'blue', 'BG_LITE') }}">
+                                    <mat-icon class="{{ _chart.getColorClass(item.iconColor || 'blue', 'TXT') }}">{{ item.icon || 'insights' }}</mat-icon>
                                 </div>
                             </div>
                         </mat-card-content>

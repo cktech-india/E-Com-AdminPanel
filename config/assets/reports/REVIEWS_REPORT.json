@@ -1,0 +1,63 @@
+{
+  "reportCode": "REVIEWS_REPORT",
+  "reportTitle": "Product Customer Reviews & Feedback",
+  "reportType": "REPORT",
+  "filterColumns": [],
+  "reportProperties": {},
+  "isActive": true,
+  "isDeleted": false,
+  "reportWidgets": [
+    {
+      "widgetCode": "PRODUCT_RATINGS_SUMMARY",
+      "widgetTitle": "Average Ratings by Product",
+      "widgetType": "GRID",
+      "widgetSubType": "TABLE",
+      "widthPercentage": 50.0,
+      "processNameOrQuery": "PRODUCT_RATINGS_SUMMARY",
+      "dataColumns": [
+        {
+          "header": "Product Name",
+          "field": "productName"
+        },
+        {
+          "header": "Avg Stars (1-5)",
+          "field": "avgRating"
+        },
+        {
+          "header": "Review Count",
+          "field": "reviewCount"
+        }
+      ],
+      "filterColumns": [],
+      "widgetProperties": {}
+    },
+    {
+      "widgetCode": "RECENT_REVIEWS_LOG",
+      "widgetTitle": "Audits of Recently Added Reviews",
+      "widgetType": "GRID",
+      "widgetSubType": "TABLE",
+      "widthPercentage": 50.0,
+      "processNameOrQuery": "RECENT_REVIEWS_LOG",
+      "dataColumns": [
+        {
+          "header": "Product Name",
+          "field": "productName"
+        },
+        {
+          "header": "Stars Given",
+          "field": "stars"
+        },
+        {
+          "header": "Review Title",
+          "field": "title"
+        },
+        {
+          "header": "Review Text",
+          "field": "text"
+        }
+      ],
+      "filterColumns": [],
+      "widgetProperties": {}
+    }
+  ]
+}

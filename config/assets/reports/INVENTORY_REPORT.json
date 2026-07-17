@@ -1,0 +1,63 @@
+{
+  "reportCode": "INVENTORY_REPORT",
+  "reportTitle": "Stock & Warehouse Inventory Report",
+  "reportType": "REPORT",
+  "filterColumns": [],
+  "reportProperties": {},
+  "isActive": true,
+  "isDeleted": false,
+  "reportWidgets": [
+    {
+      "widgetCode": "LOW_STOCK_ALERT",
+      "widgetTitle": "Low Stock Items Alert",
+      "widgetType": "GRID",
+      "widgetSubType": "TABLE",
+      "widthPercentage": 50.0,
+      "processNameOrQuery": "LOW_STOCK_ALERT",
+      "dataColumns": [
+        {
+          "header": "Product Name",
+          "field": "productName"
+        },
+        {
+          "header": "Qty on Hand",
+          "field": "qtyOnHand"
+        },
+        {
+          "header": "Reorder Limit",
+          "field": "reorderLevel"
+        }
+      ],
+      "filterColumns": [],
+      "widgetProperties": {}
+    },
+    {
+      "widgetCode": "STOCK_LOGS_AUDIT",
+      "widgetTitle": "Inbound / Outbound Stock Logs Audit",
+      "widgetType": "GRID",
+      "widgetSubType": "TABLE",
+      "widthPercentage": 50.0,
+      "processNameOrQuery": "STOCK_LOGS_AUDIT",
+      "dataColumns": [
+        {
+          "header": "Product Name",
+          "field": "productName"
+        },
+        {
+          "header": "Change Amount",
+          "field": "changeAmt"
+        },
+        {
+          "header": "Reason / Ref",
+          "field": "reason"
+        },
+        {
+          "header": "Log Date",
+          "field": "logDate"
+        }
+      ],
+      "filterColumns": [],
+      "widgetProperties": {}
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "reportCode": "PRODUCT_REPORT",
+  "reportTitle": "Product Analytics",
+  "reportType": "REPORT",
+  "filterColumns": [],
+  "reportProperties": {},
+  "isActive": true,
+  "isDeleted": false,
+  "reportWidgets": [
+    {
+      "widgetCode": "TOP_PRODUCTS_BY_REVENUE",
+      "widgetTitle": "Top Selling Products",
+      "widgetType": "GRID",
+      "widgetSubType": "TABLE",
+      "widthPercentage": 50.0,
+      "processNameOrQuery": "TOP_PRODUCTS_BY_REVENUE",
+      "dataColumns": [
+        {
+          "header": "Product Name",
+          "field": "productName"
+        },
+        {
+          "header": "Quantity Sold",
+          "field": "totalQty"
+        },
+        {
+          "header": "Revenue ($)",
+          "field": "totalRevenue"
+        }
+      ],
+      "filterColumns": [],
+      "widgetProperties": {}
+    },
+    {
+      "widgetCode": "PRODUCT_CATEGORY_DISTRIBUTION",
+      "widgetTitle": "Products Grouped by Category",
+      "widgetType": "CHART",
+      "widgetSubType": "PIE",
+      "widthPercentage": 50.0,
+      "processNameOrQuery": "PRODUCT_CATEGORY_DISTRIBUTION",
+      "dataColumns": [],
+      "filterColumns": [],
+      "widgetProperties": {
+        "hasSeries": "false"
+      }
+    }
+  ]
+}

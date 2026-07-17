@@ -95,3 +95,10 @@ Values are copied into `sessionStorage` at boot. To point the app at a different
 3. Add/extend an Angular service calling the matching `/api/<entity>` endpoint (follow `ecommerce.service.ts`'s pattern) — append `companyCode` where the backend expects tenant scoping.
 4. On the backend: entity (`model/<domain>/XxxDTO.java` extending `Auditable`) → repository (extending `GenericRepository`) → service → controller under `/api/xxx`. Add the DB column and let `ddl-auto=update` handle the migration in dev.
 5. Use Material + Tailwind for layout, Reactive Forms for input.
+
+## 📊 Adding or Configuring Dynamic Dashboards & Reports
+The dashboard system is fully configuration-driven and does not require writing Java code or modifying database tables to create new dashboards or report widgets:
+1. **JSON Definition**: Define the report and its widgets in a JSON file placed at `config/assets/reports/{REPORT_CODE}.json`. It specifies widgets, types (CHART, GRID, SCORECARD, etc.), width, and column formats.
+2. **SQL Query Definition**: Write the SQL queries used by the widgets in `config/assets/queries.xml`. Use named parameters (e.g. `:userId`, `:startDate`) to filter dynamically based on widget inputs.
+3. **API Access**: The frontend retrieves the dashboard layout via `GET /api/report/id/{REPORT_CODE}` and fetches widget data via `POST /api/report/widget-data`.
+

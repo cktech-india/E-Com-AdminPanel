@@ -1,0 +1,43 @@
+{
+  "reportCode": "DISCOUNT_REPORT",
+  "reportTitle": "Active Promotions & Discounts Report",
+  "reportType": "REPORT",
+  "filterColumns": [],
+  "reportProperties": {},
+  "isActive": true,
+  "isDeleted": false,
+  "reportWidgets": [
+    {
+      "widgetCode": "ACTIVE_PROMOTIONS",
+      "widgetTitle": "Active Storewide Discounts & Sales",
+      "widgetType": "GRID",
+      "widgetSubType": "TABLE",
+      "widthPercentage": 100.0,
+      "processNameOrQuery": "ACTIVE_PROMOTIONS",
+      "dataColumns": [
+        {
+          "header": "Product Name",
+          "field": "productName"
+        },
+        {
+          "header": "Discount Method",
+          "field": "discountType"
+        },
+        {
+          "header": "Value Amount / %",
+          "field": "val"
+        },
+        {
+          "header": "Starts At",
+          "field": "startDate"
+        },
+        {
+          "header": "Ends At",
+          "field": "endDate"
+        }
+      ],
+      "filterColumns": [],
+      "widgetProperties": {}
+    }
+  ]
+}

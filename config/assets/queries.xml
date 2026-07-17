@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queries>
+    <!-- ========================================== -->
+    <!-- 1. SALES REPORT QUERIES                    -->
+    <!-- ========================================== -->
+    <query name="SELECT_SALES_SUMMARY">
+        SELECT CONCAT('$', ROUND(COALESCE(SUM(grand_total), 0), 2)) as value,
+               'monetization_on' as icon,
+               'green' as iconColor,
+               'Total Revenue' as title
+        FROM orders_t
+        UNION ALL
+        SELECT CONCAT('$', ROUND(COALESCE(AVG(grand_total), 0), 2)) as value,
+               'shopping_bag' as icon,
+               'blue' as iconColor,
+               'Avg Order Value' as title
+        FROM orders_t
+        UNION ALL
+        SELECT CAST(COUNT(*) AS CHAR) as value,
+               'shopping_cart' as icon,
+               'orange' as iconColor,
+               'Total Orders' as title
+        FROM orders_t
+    </query>
+    <query name="SELECT_DAILY_REVENUE">
+        SELECT DATE_FORMAT(created_date, '%Y-%m-%d') as categoryValue,
+               'Revenue' as seriesValue,
+               SUM(grand_total) as dataValue
+        FROM orders_t
+        GROUP BY DATE_FORMAT(created_date, '%Y-%m-%d')
+        ORDER BY categoryValue ASC
+    </query>
+    <query name="SELECT_PAYMENT_METHODS_DISTRIBUTION">
+        SELECT COALESCE(payment_method, 'Not Specified') as categoryValue,
+               'Orders' as seriesValue,
+               CAST(COUNT(*) AS DOUBLE) as dataValue
+        FROM orders_t
+        GROUP BY payment_method
+    </query>
+
+    <!-- ========================================== -->
+    <!-- 2. CUSTOMER REPORT QUERIES                 -->
+    <!-- ========================================== -->
+    <query name="SELECT_CUSTOMER_GROWTH">
+        SELECT DATE_FORMAT(created_date, '%Y-%m') as categoryValue,
+               'New Customers' as seriesValue,
+               CAST(COUNT(*) AS DOUBLE) as dataValue
+        FROM users_t
+        WHERE user_type = 'CUSTOMER'
+        GROUP BY DATE_FORMAT(created_date, '%Y-%m')
+        ORDER BY categoryValue ASC
+    </query>
+    <query name="SELECT_TOP_BUYING_CUSTOMERS">
+        SELECT u.first_name as customerName,
+               u.email as customerEmail,
+               COUNT(o.id) as totalOrders,
+               SUM(o.grand_total) as totalSpent
+        FROM orders_t o
+        JOIN users_t u ON o.user_id = u.id
+        GROUP BY u.id, u.first_name, u.email
+        ORDER BY totalSpent DESC
+    </query>
+    <query name="SELECT_CUSTOMER_LOCATION_DISTRIBUTION">
+        SELECT COALESCE(state_code, 'Unknown') as categoryValue,
+               'Customers' as seriesValue,
+               CAST(COUNT(*) AS DOUBLE) as dataValue
+        FROM users_t
+        WHERE user_type = 'CUSTOMER'
+        GROUP BY state_code
+    </query>
+
+    <!-- ========================================== -->
+    <!-- 3. PRODUCT REPORT QUERIES                  -->
+    <!-- ========================================== -->
+    <query name="SELECT_TOP_PRODUCTS_BY_REVENUE">
+        SELECT p.product_name as productName,
+               SUM(oi.quantity) as totalQty,
+               SUM(oi.row_total) as totalRevenue
+        FROM order_items_t oi
+        JOIN products_t p ON oi.product_id = p.id
+        GROUP BY p.id, p.product_name
+        ORDER BY totalRevenue DESC
+    </query>
+    <query name="SELECT_PRODUCT_CATEGORY_DISTRIBUTION">
+        SELECT COALESCE(category_id, 'Uncategorized') as categoryValue,
+               'Products' as seriesValue,
+               CAST(COUNT(*) AS DOUBLE) as dataValue
+        FROM products_t
+        GROUP BY category_id
+    </query>
+
+    <!-- ========================================== -->
+    <!-- 4. ORDER STATUS REPORT QUERIES             -->
+    <!-- ========================================== -->
+    <query name="SELECT_ORDERS_BY_STATUS">
+        SELECT status as categoryValue,
+               'Orders' as seriesValue,
+               CAST(COUNT(*) AS DOUBLE) as dataValue
+        FROM orders_t
+        GROUP BY status
+    </query>
+    <query name="SELECT_RECENT_ORDERS_LOG">
+        SELECT order_number as orderNumber,
+               grand_total as grandTotal,
+               status,
+               DATE_FORMAT(created_date, '%Y-%m-%d %H:%i:%s') as orderDate
+        FROM orders_t
+        ORDER BY id DESC
+    </query>
+
+    <!-- ========================================== -->
+    <!-- 5. INVENTORY & STOCK QUERIES               -->
+    <!-- ========================================== -->
+    <query name="SELECT_LOW_STOCK_ALERT">
+        SELECT p.product_name as productName,
+               i.quantity_on_hand as qtyOnHand,
+               i.reorder_level as reorderLevel
+        FROM inventory_t i
+        JOIN products_t p ON i.product_id = p.id
+        WHERE i.quantity_on_hand <= i.reorder_level
+    </query>
+    <query name="SELECT_STOCK_LOGS_AUDIT">
+        SELECT p.product_name as productName,
+               sl.change_amount as changeAmt,
+               sl.reason as reason,
+               DATE_FORMAT(sl.created_at, '%Y-%m-%d %H:%i:%s') as logDate
+        FROM stock_logs_t sl
+        JOIN products_t p ON sl.product_id = p.id
+        ORDER BY sl.id DESC
+    </query>
+
+    <!-- ========================================== -->
+    <!-- 6. PROMOTION & DISCOUNT QUERIES            -->
+    <!-- ========================================== -->
+    <query name="SELECT_ACTIVE_PROMOTIONS">
+        SELECT p.product_name as productName,
+               d.discount_type as discountType,
+               d.value as val,
+               d.starts_at as startDate,
+               d.ends_at as endDate
+        FROM discounts_t d
+        JOIN products_t p ON d.product_id = p.id
+        ORDER BY d.id DESC
+    </query>
+
+    <!-- ========================================== -->
+    <!-- 7. REVIEWS & RATINGS QUERIES               -->
+    <!-- ========================================== -->
+    <query name="SELECT_PRODUCT_RATINGS_SUMMARY">
+        SELECT p.product_name as productName,
+               ROUND(AVG(pr.rating), 1) as avgRating,
+               COUNT(pr.id) as reviewCount
+        FROM product_reviews_t pr
+        JOIN products_t p ON pr.product_id = p.id
+        GROUP BY p.id, p.product_name
+        ORDER BY avgRating DESC
+    </query>
+    <query name="SELECT_RECENT_REVIEWS_LOG">
+        SELECT p.product_name as productName,
+               pr.rating as stars,
+               pr.review_title as title,
+               pr.review_text as text
+        FROM product_reviews_t pr
+        JOIN products_t p ON pr.product_id = p.id
+        ORDER BY pr.id DESC
+    </query>
+
+    <!-- ========================================== -->
+    <!-- 8. CART & CHECKOUT QUERIES                 -->
+    <!-- ========================================== -->
+    <query name="SELECT_MOST_ADDED_TO_CART">
+        SELECT p.product_name as productName,
+               CAST(SUM(ci.quantity) AS DOUBLE) as timesAdded
+        FROM cart_item_t ci
+        JOIN products_t p ON ci.product_id = p.id
+        GROUP BY p.id, p.product_name
+        ORDER BY timesAdded DESC
+    </query>
+    <query name="SELECT_ABANDONED_CARTS">
+        SELECT u.first_name as customerName,
+               u.email as customerEmail,
+               COUNT(ci.id) as itemsCount
+        FROM cart_t c
+        JOIN users_t u ON c.user_id = u.id
+        JOIN cart_item_t ci ON c.id = ci.cart_id
+        LEFT JOIN orders_t o ON o.user_id = u.id AND DATE(o.created_date) >= DATE(c.created_date)
+        WHERE o.id IS NULL
+        GROUP BY u.id, u.first_name, u.email
+    </query>
+
+    <!-- ========================================== -->
+    <!-- 9. TAX REPORT QUERIES                      -->
+    <!-- ========================================== -->
+    <query name="SELECT_TAX_COLLECTED_SUMMARY">
+        SELECT CONCAT('$', ROUND(COALESCE(SUM(tax_amount), 0), 2)) as value,
+               'payments' as icon,
+               'green' as iconColor,
+               'Total Tax Collected' as title
+        FROM orders_t
+        UNION ALL
+        SELECT CONCAT('$', ROUND(COALESCE(SUM(cgst_amount), 0), 2)) as value,
+               'account_balance' as icon,
+               'blue' as iconColor,
+               'Total CGST Collected' as title
+        FROM order_items_t
+    </query>
+
+    <!-- ========================================== -->
+    <!-- 10. SUPPORT & INQUIRY QUERIES              -->
+    <!-- ========================================== -->
+    <query name="SELECT_SUPPORT_TICKETS_SUMMARY">
+        SELECT CAST(COUNT(*) AS CHAR) as value,
+               'mail' as icon,
+               'blue' as iconColor,
+               'Total Inquiries' as title
+        FROM contact_inquiries_t
+        UNION ALL
+        SELECT CAST(COUNT(CASE WHEN status = 'NEW' THEN 1 END) AS CHAR) as value,
+               'mark_email_unread' as icon,
+               'red' as iconColor,
+               'New Inquiries' as title
+        FROM contact_inquiries_t
+    </query>
+    <query name="SELECT_PENDING_SUPPORT_TICKETS">
+        SELECT fullName as senderName,
+               email as senderEmail,
+               subject as subject,
+               message as messageContent,
+               status
+        FROM contact_inquiries_t
+        WHERE status = 'NEW'
+        ORDER BY id DESC
+    </query>
+</queries>

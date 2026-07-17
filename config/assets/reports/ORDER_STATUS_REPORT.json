@@ -1,0 +1,52 @@
+{
+  "reportCode": "ORDER_STATUS_REPORT",
+  "reportTitle": "Order Processing & Status Reports",
+  "reportType": "REPORT",
+  "filterColumns": [],
+  "reportProperties": {},
+  "isActive": true,
+  "isDeleted": false,
+  "reportWidgets": [
+    {
+      "widgetCode": "ORDERS_BY_STATUS",
+      "widgetTitle": "Orders Breakdown by Status",
+      "widgetType": "CHART",
+      "widgetSubType": "PIE",
+      "widthPercentage": 50.0,
+      "processNameOrQuery": "ORDERS_BY_STATUS",
+      "dataColumns": [],
+      "filterColumns": [],
+      "widgetProperties": {
+        "hasSeries": "false"
+      }
+    },
+    {
+      "widgetCode": "RECENT_ORDERS_LOG",
+      "widgetTitle": "Recent Order List Logs",
+      "widgetType": "GRID",
+      "widgetSubType": "TABLE",
+      "widthPercentage": 50.0,
+      "processNameOrQuery": "RECENT_ORDERS_LOG",
+      "dataColumns": [
+        {
+          "header": "Order Number",
+          "field": "orderNumber"
+        },
+        {
+          "header": "Total",
+          "field": "grandTotal"
+        },
+        {
+          "header": "Status",
+          "field": "status"
+        },
+        {
+          "header": "Date",
+          "field": "orderDate"
+        }
+      ],
+      "filterColumns": [],
+      "widgetProperties": {}
+    }
+  ]
+}

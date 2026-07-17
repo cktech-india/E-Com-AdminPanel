@@ -1,0 +1,55 @@
+{
+  "reportCode": "CART_REPORT",
+  "reportTitle": "Shopping Cart & Abandonment Insights",
+  "reportType": "REPORT",
+  "filterColumns": [],
+  "reportProperties": {},
+  "isActive": true,
+  "isDeleted": false,
+  "reportWidgets": [
+    {
+      "widgetCode": "MOST_ADDED_TO_CART",
+      "widgetTitle": "Most Added to Cart Products",
+      "widgetType": "GRID",
+      "widgetSubType": "TABLE",
+      "widthPercentage": 50.0,
+      "processNameOrQuery": "MOST_ADDED_TO_CART",
+      "dataColumns": [
+        {
+          "header": "Product Name",
+          "field": "productName"
+        },
+        {
+          "header": "Times Added",
+          "field": "timesAdded"
+        }
+      ],
+      "filterColumns": [],
+      "widgetProperties": {}
+    },
+    {
+      "widgetCode": "ABANDONED_CARTS",
+      "widgetTitle": "Abandoned Shopping Carts Log",
+      "widgetType": "GRID",
+      "widgetSubType": "TABLE",
+      "widthPercentage": 50.0,
+      "processNameOrQuery": "ABANDONED_CARTS",
+      "dataColumns": [
+        {
+          "header": "Customer Name",
+          "field": "customerName"
+        },
+        {
+          "header": "Email Address",
+          "field": "customerEmail"
+        },
+        {
+          "header": "Items in Cart",
+          "field": "itemsCount"
+        }
+      ],
+      "filterColumns": [],
+      "widgetProperties": {}
+    }
+  ]
+}
