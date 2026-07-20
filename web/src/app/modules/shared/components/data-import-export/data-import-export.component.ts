@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ViewChild, TemplateRef, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, TemplateRef, ViewEncapsulation, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,7 +28,7 @@ import { AuthService } from 'app/core/auth/auth.service';
         MatProgressSpinnerModule
     ]
 })
-export class DataImportExportComponent {
+export class DataImportExportComponent implements OnInit, OnChanges {
 
     @Input() columns: CkTableColumn[] = [];
     @Input() data: any[] = [];
@@ -44,6 +44,7 @@ export class DataImportExportComponent {
     previewColumns: string[] = [];
     isUploading: boolean = false;
     isSaving: boolean = false;
+    dtoColumns: CkTableColumn[] = [];
 
     constructor(
         private _dialog: MatDialog,
@@ -52,75 +53,61 @@ export class DataImportExportComponent {
         private _authService: AuthService
     ) {}
 
+    ngOnInit(): void {
+        this.loadDtoColumns();
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes['entityType'] || changes['columns']) {
+            this.loadDtoColumns();
+        }
+    }
+
+    loadDtoColumns(): void {
+        if (!this.entityType) {
+            return;
+        }
+        const url = sessionStorage.getItem('apiUrl') + 'data-import/columns/' + this.entityType;
+        this._http.get<CkTableColumn[]>(url).subscribe({
+            next: (res) => {
+                if (res && res.length > 0) {
+                    this.dtoColumns = res.map(dtoCol => {
+                        const matched = this.columns.find(c => c.column === dtoCol.column);
+                        if (matched && matched.formatter) {
+                            dtoCol.formatter = matched.formatter;
+                        }
+                        return dtoCol;
+                    });
+                }
+            },
+            error: (err) => {
+                console.error('Failed to load columns for entity type: ' + this.entityType, err);
+            }
+        });
+    }
+
+    get activeColumns(): CkTableColumn[] {
+        return this.dtoColumns.length > 0 ? this.dtoColumns : this.columns;
+    }
+
     exportData(format: 'CSV' | 'XLSX'): void {
         if (!this.data || this.data.length === 0) {
             this._uiService.showToastr('Warning', 'No data to export', 'warning');
             return;
         }
 
-        const headers = this.columns.map(col => col.header);
-        const keys = this.columns.map(col => col.column);
-
-        if (format === 'CSV') {
-            const csvRows = [headers.join(',')];
-            for (const row of this.data) {
-                const values = this.columns.map(col => {
-                    let val = row[col.column];
-                    if (col.formatter) {
-                        val = col.formatter(val, row);
-                    }
-                    val = val === null || val === undefined ? '' : String(val).replace(/"/g, '""');
-                    return `"${val}"`;
-                });
-                csvRows.push(values.join(','));
-            }
-            const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-            saveAs(blob, `${this.entityName.toLowerCase()}_list.csv`);
-            this._uiService.showToastr('Success', `${this.entityName} exported successfully.`, 'success');
-        } else {
-            const workbook = new ExcelJS.Workbook();
-            const worksheet = workbook.addWorksheet(this.entityName);
-
-            // Add Header Row
-            const headerRow = worksheet.addRow(headers);
-            headerRow.eachCell((cell) => {
-                cell.font = { bold: true, color: { argb: 'FFFFFF' } };
-                cell.fill = {
-                    type: 'pattern',
-                    pattern: 'solid',
-                    fgColor: { argb: '1E293B' } // slate-800
-                };
-                cell.alignment = { vertical: 'middle', horizontal: 'center' };
-            });
-
-            // Add Data Rows
-            for (const row of this.data) {
-                const values = this.columns.map(col => {
-                    let val = row[col.column];
-                    if (col.formatter) {
-                        val = col.formatter(val, row);
-                    }
-                    return val === null || val === undefined ? '' : val;
-                });
-                worksheet.addRow(values);
-            }
-
-            // Adjust Column Widths
-            worksheet.columns.forEach((column) => {
-                let maxLen = 10;
-                column.eachCell!({ includeEmpty: true }, (cell) => {
-                    const len = cell.value ? String(cell.value).length : 0;
-                    if (len > maxLen) maxLen = len;
-                });
-                column.width = maxLen + 4;
-            });
-
-            workbook.xlsx.writeBuffer().then((buffer) => {
-                const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-                saveAs(blob, `${this.entityName.toLowerCase()}_list.xlsx`);
+        const url = sessionStorage.getItem('apiUrl') + 'data-import/export/' + this.entityType + '/' + format.toLowerCase();
+        
+        this._http.post(url, this.data, { responseType: 'blob' }).subscribe({
+            next: (blob) => {
+                const extension = format.toLowerCase();
+                saveAs(blob, `${this.entityName.toLowerCase()}_list.${extension}`);
                 this._uiService.showToastr('Success', `${this.entityName} exported successfully.`, 'success');
-            });
-        }
+            },
+            error: (err) => {
+                this._uiService.showToastr('Error', err.error?.message || 'Failed to export data.', 'error');
+            }
+        });
     }
 
     openImportDialog(): void {
@@ -136,7 +123,7 @@ export class DataImportExportComponent {
     }
 
     downloadTemplate(format: 'CSV' | 'XLSX'): void {
-        const headers = this.columns.map(col => col.header);
+        const headers = this.activeColumns.map(col => col.header);
 
         if (format === 'CSV') {
             const csvContent = headers.join(',');
@@ -209,7 +196,7 @@ export class DataImportExportComponent {
         const companyCode = this._authService.selectedCompany?.companyCode || 'COMP1';
         const mappedRecords = this.previewData.map(row => {
             const mappedRow: any = {};
-            this.columns.forEach(col => {
+            this.activeColumns.forEach(col => {
                 // Find matching key in raw excel/csv row headers (case-insensitive & trim)
                 const excelKey = Object.keys(row).find(
                     k => k.trim().toLowerCase() === col.header.trim().toLowerCase()

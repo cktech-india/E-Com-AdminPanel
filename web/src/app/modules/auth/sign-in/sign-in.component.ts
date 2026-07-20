@@ -154,7 +154,9 @@ export class AuthSignInComponent implements OnInit {
                         next: () => {
                             this.dataService.loadAppConfig().subscribe({
                                 next: () => {
-                                    this.uiService.infoAlert('Default company selected');
+                                    const comp = companies[0];
+                                    const compName = comp.companyName || comp.companyCode || 'Default';
+                                    this.uiService.infoAlert('Selected Company: ' + compName);
                                     this.proceedToRedirect();
                                 },
                                 error: (err) => {
@@ -202,11 +204,14 @@ export class AuthSignInComponent implements OnInit {
         this.loadingConfig = true;
 
         const selectedCode = this.companyForm.controls.companyCode.value;
+        const selectedCompany = this.userCompanies.find(c => c.companyCode === selectedCode);
+        const compName = selectedCompany ? (selectedCompany.companyName || selectedCompany.companyCode) : selectedCode;
 
         this._authService.switchCompany(selectedCode).subscribe({
             next: () => {
                 this.dataService.loadAppConfig().subscribe({
                     next: () => {
+                        this.uiService.infoAlert('Selected Company: ' + compName);
                         this.proceedToRedirect();
                     },
                     error: (err) => {

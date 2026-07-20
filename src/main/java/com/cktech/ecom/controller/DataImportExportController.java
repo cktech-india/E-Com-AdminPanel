@@ -95,6 +95,228 @@ public class DataImportExportController {
         this.objectMapper = objectMapper;
     }
 
+    @GetMapping("/columns/{entityType}")
+    public ResponseEntity<?> getColumns(@PathVariable String entityType) {
+        try {
+            Class<?> clazz = getClassForEntityType(entityType);
+            List<Map<String, String>> columns = getFieldsForClass(clazz);
+            return ResponseEntity.ok(columns);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            LOG.error("Failed to get columns for entity type: {}", entityType, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Failed to retrieve columns: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/export/{entityType}/{format}")
+    public ResponseEntity<byte[]> exportData(
+            @PathVariable String entityType,
+            @PathVariable String format,
+            @RequestBody List<Map<String, Object>> data) {
+        try {
+            Class<?> clazz = getClassForEntityType(entityType);
+            List<Map<String, String>> columns = getFieldsForClass(clazz);
+            
+            byte[] fileBytes;
+            String filename = entityType.toLowerCase() + "_list." + format.toLowerCase();
+            String contentType;
+            
+            if ("csv".equalsIgnoreCase(format)) {
+                fileBytes = generateCsv(columns, data);
+                contentType = "text/csv";
+            } else if ("xlsx".equalsIgnoreCase(format)) {
+                fileBytes = generateExcel(columns, data, entityType);
+                contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            } else {
+                throw new IllegalArgumentException("Unsupported format: " + format);
+            }
+            
+            org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+            headers.setContentDisposition(org.springframework.http.ContentDisposition.attachment().filename(filename).build());
+            headers.setContentType(org.springframework.http.MediaType.parseMediaType(contentType));
+            
+            return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            LOG.error("Error exporting data for: {}", entityType, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    private byte[] generateCsv(List<Map<String, String>> columns, List<Map<String, Object>> data) {
+        StringBuilder sb = new StringBuilder();
+        // Header row
+        for (int i = 0; i < columns.size(); i++) {
+            sb.append(columns.get(i).get("header"));
+            if (i < columns.size() - 1) {
+                sb.append(",");
+            }
+        }
+        sb.append("\n");
+        
+        // Data rows
+        for (Map<String, Object> row : data) {
+            for (int i = 0; i < columns.size(); i++) {
+                String colName = columns.get(i).get("column");
+                Object val = row.get(colName);
+                String valStr = "";
+                if (val != null) {
+                    if (val instanceof Boolean) {
+                        valStr = (Boolean) val ? "Yes" : "No";
+                    } else {
+                        valStr = String.valueOf(val).replace("\"", "\"\"");
+                    }
+                }
+                sb.append("\"").append(valStr).append("\"");
+                if (i < columns.size() - 1) {
+                    sb.append(",");
+                }
+            }
+            sb.append("\n");
+        }
+        return sb.toString().getBytes(StandardCharsets.UTF_8);
+    }
+
+    private byte[] generateExcel(List<Map<String, String>> columns, List<Map<String, Object>> data, String entityName) throws Exception {
+        try (Workbook workbook = new org.apache.poi.xssf.usermodel.XSSFWorkbook();
+             java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream()) {
+             
+            Sheet sheet = workbook.createSheet(entityName);
+            
+            // Header Row
+            Row headerRow = sheet.createRow(0);
+            CellStyle headerStyle = workbook.createCellStyle();
+            Font font = workbook.createFont();
+            font.setBold(true);
+            font.setColor(IndexedColors.WHITE.getIndex());
+            headerStyle.setFont(font);
+            headerStyle.setFillForegroundColor(IndexedColors.GREY_80_PERCENT.getIndex());
+            headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            
+            for (int i = 0; i < columns.size(); i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(columns.get(i).get("header"));
+                cell.setCellStyle(headerStyle);
+            }
+            
+            // Data Rows
+            int rowIdx = 1;
+            for (Map<String, Object> row : data) {
+                Row excelRow = sheet.createRow(rowIdx++);
+                for (int i = 0; i < columns.size(); i++) {
+                    String colName = columns.get(i).get("column");
+                    Object val = row.get(colName);
+                    Cell cell = excelRow.createCell(i);
+                    if (val != null) {
+                        if (val instanceof Number) {
+                            cell.setCellValue(((Number) val).doubleValue());
+                        } else if (val instanceof Boolean) {
+                            cell.setCellValue((Boolean) val ? "Yes" : "No");
+                        } else {
+                            cell.setCellValue(String.valueOf(val));
+                        }
+                    } else {
+                        cell.setCellValue("");
+                    }
+                }
+            }
+            
+            // Auto size columns
+            for (int i = 0; i < columns.size(); i++) {
+                sheet.autoSizeColumn(i);
+            }
+            
+            workbook.write(out);
+            return out.toByteArray();
+        }
+    }
+
+    private Class<?> getClassForEntityType(String entityType) {
+        switch (entityType.toLowerCase()) {
+            case "product": return ProductDTO.class;
+            case "category": return CategoryDTO.class;
+            case "company": return CompanyDTO.class;
+            case "branch": return BranchDTO.class;
+            case "tax-rate": return TaxRateDTO.class;
+            case "faq": return FaqDTO.class;
+            case "discount": return DiscountDTO.class;
+            case "inventory": return InventoryDTO.class;
+            case "seo-config": return SeoMetadataDTO.class;
+            case "product-group": return ProductGroupDTO.class;
+            case "product-tag": return ProductTagDTO.class;
+            case "product-media": return ProductMediaDTO.class;
+            case "country": return CountryDTO.class;
+            case "tax-category": return TaxCategoryDTO.class;
+            case "gst-hsn-code": return GstHsnCodeDTO.class;
+            case "state": return StateDTO.class;
+            default: throw new IllegalArgumentException("Unsupported entity type: " + entityType);
+        }
+    }
+
+    private List<Map<String, String>> getFieldsForClass(Class<?> clazz) {
+        List<Map<String, String>> fieldsList = new ArrayList<>();
+        Set<String> fieldNames = new HashSet<>();
+        
+        Class<?> current = clazz;
+        while (current != null && current != Object.class) {
+            java.lang.reflect.Field[] fields = current.getDeclaredFields();
+            for (java.lang.reflect.Field field : fields) {
+                String name = field.getName();
+                
+                // Skip specific excluded ones
+                if (name.equals("companyCode") || name.equals("createdBy") || name.equals("createdDate") || 
+                    name.equals("modifiedBy") || name.equals("modifiedDate") || name.equals("recordMode") || name.equals("currentUser")) {
+                    continue;
+                }
+                
+                // Skip if already added
+                if (fieldNames.contains(name)) {
+                    continue;
+                }
+                
+                // Keep isDeleted (ignore JSONIgnore/Transient checks for it)
+                if (!name.equals("isDeleted")) {
+                    if (java.lang.reflect.Modifier.isStatic(field.getModifiers()) || 
+                        java.lang.reflect.Modifier.isTransient(field.getModifiers()) ||
+                        field.isAnnotationPresent(jakarta.persistence.Transient.class) ||
+                        field.isAnnotationPresent(com.fasterxml.jackson.annotation.JsonIgnore.class)) {
+                        continue;
+                    }
+                }
+                
+                fieldNames.add(name);
+                
+                Map<String, String> fieldMap = new LinkedHashMap<>();
+                fieldMap.put("column", name);
+                fieldMap.put("header", convertCamelCaseToTitle(name));
+                fieldsList.add(fieldMap);
+            }
+            current = current.getSuperclass();
+        }
+        return fieldsList;
+    }
+
+    private String convertCamelCaseToTitle(String name) {
+        if (name == null || name.isEmpty()) {
+            return "";
+        }
+        if (name.equalsIgnoreCase("id")) {
+            return "ID";
+        }
+        StringBuilder result = new StringBuilder();
+        result.append(Character.toUpperCase(name.charAt(0)));
+        for (int i = 1; i < name.length(); i++) {
+            char ch = name.charAt(i);
+            if (Character.isUpperCase(ch)) {
+                result.append(" ").append(ch);
+            } else {
+                result.append(ch);
+            }
+        }
+        return result.toString();
+    }
+
     @PostMapping("/preview")
     public ResponseEntity<?> previewFile(@RequestParam("file") MultipartFile file) {
         try {

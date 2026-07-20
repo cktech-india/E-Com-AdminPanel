@@ -74,7 +74,7 @@ export const authInterceptor = (
                 // Check if we have a token in storage
                 const token = sessionStorage.getItem('accessToken') || localStorage.getItem('accessToken');
 
-                if (token && isApiRequest) {
+                if (token && isApiRequest && !req.url.includes('data-import')) {
                     // Sign out lazily to avoid circular dependency
                     const authService = injector.get(AuthService);
                     authService.signOut();
