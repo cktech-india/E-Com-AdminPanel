@@ -1,13 +1,8 @@
 package com.cktech.ecom.model.product;
 
+import com.cktech.ecom.config.cache.CacheLookup;
 import com.cktech.ecom.model.dto.Auditable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -43,5 +38,9 @@ public class ProductReviewDTO extends Auditable {
     @Lob
     @Column(name = "review_text")
     private String reviewText;
+
+    @CacheLookup(category = "user", codeField = "userId")
+    @Transient
+    private String reviewerName;
 
 }
