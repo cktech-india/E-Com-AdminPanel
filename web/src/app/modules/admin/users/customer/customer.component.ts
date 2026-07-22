@@ -40,6 +40,8 @@ export class CustomerComponent implements OnInit {
     @ViewChild('entityFormTpl') drawer!: FuseDrawerComponent;
     @ViewChild('resetPasswordTpl') resetPasswordTpl!: TemplateRef<any>;
     @ViewChild('addressFormTpl') addressFormTpl!: TemplateRef<any>;
+    @ViewChild('addressesListTpl') addressesListTpl!: TemplateRef<any>;
+    @ViewChild('addressFormDrawer') addressFormDrawer!: FuseDrawerComponent;
 
     // ================= FORM =================
     inputForm!: FormGroup;
@@ -50,10 +52,12 @@ export class CustomerComponent implements OnInit {
     table!: CkTable;
     recordMode: string = 'C';
     private _dialogRef: any;
+    private _addressListDialogRef: any = null;
 
     searchControl = new FormControl('');
     rawCustomersList: any[] = [];
     selectedCustomerAddresses: any[] = [];
+    currentCustomerForAddressList: any = null;
 
 
     constructor(
@@ -94,6 +98,8 @@ export class CustomerComponent implements OnInit {
 
         this.addressForm = new FormGroup({
             id: new FormControl(null),
+            userId: new FormControl(null),
+            companyCode: new FormControl(''),
             addressName: new FormControl('', Validators.required),
             fullName: new FormControl('', Validators.required),
             phoneNumber: new FormControl('', Validators.required),
@@ -121,7 +127,10 @@ export class CustomerComponent implements OnInit {
                 {
                     header: 'Saved Addresses',
                     column: 'addresses',
-                    formatter: (v, row) => `${(row.addresses || []).length} Address(es)`
+                    formatter: (v, row) => {
+                        const count = (row.addresses || []).length;
+                        return `<span class="text-primary hover:underline font-semibold cursor-pointer">${count} Address(es)</span>`;
+                    }
                 },
                 {
                     header: 'Active',
@@ -149,6 +158,11 @@ export class CustomerComponent implements OnInit {
                     action: (row) => this.deleteRow(row)
                 }
             ],
+            onCellClicked: (column, row) => {
+                if (column.column === 'addresses') {
+                    this.viewAddresses(row);
+                }
+            },
             isShowFilter: true,
             pageSize: 10,
             pageSizeOptions: [5, 10, 20]
@@ -330,5 +344,98 @@ export class CustomerComponent implements OnInit {
 
     onCancelClicked() {
         this.drawer.close();
+    }
+
+    viewAddresses(customer: any) {
+        this.currentCustomerForAddressList = customer;
+        this.selectedCustomerAddresses = [];
+        this._userService.getAddressListByUserId(customer.id).subscribe({
+            next: (res) => {
+                this.selectedCustomerAddresses = res || [];
+                this._addressListDialogRef = this._dialog.open(this.addressesListTpl, {
+                    data: customer,
+                    width: '700px',
+                    disableClose: false
+                });
+            },
+            error: () => {
+                this.uiService.showToastr('Error', 'Failed to load customer addresses', 'error');
+            }
+        });
+    }
+
+    closeAddressListDialog() {
+        if (this._addressListDialogRef) {
+            this._addressListDialogRef.close();
+            this._addressListDialogRef = null;
+        }
+    }
+
+    openAddAddressDrawer(customer: any) {
+        this.recordMode = 'C';
+        this.addressForm.reset({
+            userId: customer.id,
+            companyCode: sessionStorage.getItem('companyCode') || 'COMP1',
+            country: 'India',
+            isDefault: false
+        });
+        this.addressFormDrawer.open();
+    }
+
+    openEditAddressDrawer(address: any) {
+        this.recordMode = 'E';
+        this.addressForm.reset();
+        this.addressForm.patchValue(address);
+        this.addressFormDrawer.open();
+    }
+
+    closeAddressDrawer() {
+        this.addressFormDrawer.close();
+    }
+
+    onAddressDrawerSubmit() {
+        if (this.addressForm.invalid) {
+            return;
+        }
+        const val = this.addressForm.getRawValue();
+        this._userService.saveAddress(val).subscribe({
+            next: (res) => {
+                this.uiService.showToastr('Success', 'Address saved successfully', 'success');
+                this.closeAddressDrawer();
+                // Refresh both the popup list and the main list to reflect count updates
+                if (this.currentCustomerForAddressList) {
+                    this._userService.getAddressListByUserId(this.currentCustomerForAddressList.id).subscribe({
+                        next: (addresses) => {
+                            this.selectedCustomerAddresses = addresses || [];
+                        }
+                    });
+                }
+                this.getGridData();
+            },
+            error: () => {
+                this.uiService.showToastr('Error', 'Failed to save address', 'error');
+            }
+        });
+    }
+
+    deleteAddressInList(address: any) {
+        this._userService.deleteAddress(address.id).subscribe({
+            next: () => {
+                this.uiService.showToastr('Success', 'Address deleted successfully', 'success');
+                this.closeAddressListDialog();
+                // Refresh list
+                if (this.currentCustomerForAddressList) {
+                    this._userService.getAddressListByUserId(this.currentCustomerForAddressList.id).subscribe({
+                        next: (addresses) => {
+                            this.selectedCustomerAddresses = addresses || [];
+                        }
+                    });
+                }
+                this.getGridData();
+            },
+            error: () => {
+                this.uiService.showToastr('Error', 'Failed to delete address', 'error');
+            }
+        });
     }
 }

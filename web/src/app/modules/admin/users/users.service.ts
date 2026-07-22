@@ -35,4 +35,16 @@ export class UserService {
     delete(id: number): Observable<any> {
         return this.httpClient.delete<any>(this.dataService.apiUrl + 'users/' + id);
     }
+
+    getAddressListByUserId(userId: number): Observable<any[]> {
+        return this.httpClient.get<any[]>(`${this.dataService.apiUrl}users/addresses/user/${userId}`);
+    }
+
+    saveAddress(address: any): Observable<any> {
+        return this.httpClient.post<any>(`${this.dataService.apiUrl}users/addresses`, address);
+    }
+
+    deleteAddress(id: number): Observable<any> {
+        return this.httpClient.delete<any>(`${this.dataService.apiUrl}users/addresses/${id}`);
+    }
 }
