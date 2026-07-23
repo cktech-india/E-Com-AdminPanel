@@ -100,6 +100,7 @@ export const appRoutes: Route[] = [
             { path: 'home-config', loadComponent: () => import('app/modules/admin/home-config/home-config.component').then(m => m.HomeConfigComponent) },
             { path: 'seo-config', loadComponent: () => import('app/modules/admin/seo-config/seo-config.component').then(m => m.SeoConfigComponent) },
             { path: 'stock-logs', loadComponent: () => import('app/modules/admin/inventory/stock-logs/stock-logs.component').then(m => m.StockLogsComponent) },
+            { path: 'stock-notify', loadComponent: () => import('app/modules/admin/stock-notify/stock-notify.component').then(m => m.StockNotifyComponent) },
             { path: 'carts', loadComponent: () => import('app/modules/admin/orders/carts/carts.component').then(m => m.CartsComponent) },
             { path: 'wishlists', loadComponent: () => import('app/modules/admin/discounts/wishlists/wishlists.component').then(m => m.WishlistsComponent) },
         ]
