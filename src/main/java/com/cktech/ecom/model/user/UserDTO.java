@@ -1,5 +1,7 @@
 package com.cktech.ecom.model.user;
 import com.cktech.ecom.common.AppEnum;
+import com.cktech.ecom.common.MasterDataEntityListener;
+import com.cktech.ecom.config.MasterCacheConfig;
 import com.cktech.ecom.model.dto.Auditable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,6 +19,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
+@MasterCacheConfig(category = "user", codeField = "id", nameField = "firstName")
+@EntityListeners(MasterDataEntityListener.class)
 public class UserDTO extends Auditable {
 
     @Id

@@ -2,6 +2,7 @@ package com.cktech.ecom.controller;
 
 import com.cktech.ecom.common.AppEnum;
 import com.cktech.ecom.model.user.UserDTO;
+import com.cktech.ecom.model.user.UserAddressDTO;
 import com.cktech.ecom.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -81,5 +82,26 @@ public class UserController {
         } catch (Exception ex) {
             return base;
         }
+    }
+
+    @PostMapping("/addresses")
+    public ResponseEntity<UserAddressDTO> saveAddress(@RequestBody UserAddressDTO address) {
+        return ResponseEntity.ok(userService.saveAddress(address));
+    }
+
+    @GetMapping("/addresses/{id}")
+    public ResponseEntity<UserAddressDTO> getAddressById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getAddress(id));
+    }
+
+    @GetMapping("/addresses/user/{userId}")
+    public ResponseEntity<List<UserAddressDTO>> getAddressesByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok(userService.getAddressListByUserId(userId));
+    }
+
+    @DeleteMapping("/addresses/{id}")
+    public ResponseEntity<Void> deleteAddress(@PathVariable Long id) {
+        userService.deleteAddress(id);
+        return ResponseEntity.ok().build();
     }
 }

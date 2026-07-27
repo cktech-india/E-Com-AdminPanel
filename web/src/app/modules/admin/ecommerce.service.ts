@@ -384,6 +384,16 @@ export class EcommerceService {
     getAppConfigDefinitions(): Observable<any[]> {
         return this.http.get<any[]>('data/app-config-defs.json');
     }
+
+    // ================= STOCK NOTIFICATION =================
+    getStockNotifies(): Observable<any[]> {
+        return this.http.get<any[]>(this.baseUrl + 'stock-notify/list').pipe(
+            map(list => (list || []).filter(item => item.companyCode === this.companyCode))
+        );
+    }
+    deleteStockNotify(id: number): Observable<any> {
+        return this.http.delete<any>(`${this.baseUrl}stock-notify/${id}`);
+    }
 }
 
 

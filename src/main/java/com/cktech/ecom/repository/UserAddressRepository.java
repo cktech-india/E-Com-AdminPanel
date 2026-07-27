@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface UserAddressRepository extends GenericRepository<UserAddressDTO,Long> {
 
     List<UserAddressDTO> findByUserId(Long userId);
+
+    List<UserAddressDTO> findByUserIdAndIsDeletedFalse(Long userId);
 }

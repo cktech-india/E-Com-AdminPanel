@@ -42,7 +42,8 @@
 
         <!-- HEADER -->
         <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-4">
-            <div class="font-semibold text-2xl text-primary">{{ recordMode === 'C' ? 'Add Customer' : 'Customer Details' }}</div>
+            <div class="font-semibold text-2xl text-primary">{{ recordMode === 'C' ? 'Add Customer' : 'Customer Details'
+                }}</div>
             <div class="flex gap-2">
                 <button mat-raised-button color="primary" (click)="onSubmitClicked()" [disabled]="inputForm.invalid">
                     <mat-icon class="mr-1">send</mat-icon>
@@ -96,61 +97,70 @@
 
                     <!-- PASSWORD (Mandatory on Create only) -->
                     @if (recordMode === 'C') {
-                        <div class="col-span-1 sm:col-span-2">
-                            <mat-form-field appearance="outline" class="w-full">
-                                <mat-label>Initial Password</mat-label>
-                                <input matInput formControlName="passwordHash" type="password" autocomplete="new-password">
-                            </mat-form-field>
-                        </div>
+                    <div class="col-span-1 sm:col-span-2">
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Initial Password</mat-label>
+                            <input matInput formControlName="passwordHash" type="password" autocomplete="new-password">
+                        </mat-form-field>
+                    </div>
                     }
 
                     <!-- CUSTOMER SAVED ADDRESSES -->
                     @if (recordMode === 'E') {
-                        <div class="col-span-1 sm:col-span-2 border-t border-slate-100 pt-4 mt-2">
-                            <div class="flex items-center justify-between mb-3">
-                                <div class="font-bold text-slate-700 text-sm">Customer Saved Addresses</div>
-                                <button type="button" mat-stroked-button color="primary" class="scale-90" (click)="openAddressDialog()">
-                                    <mat-icon class="scale-75 -ml-1">add</mat-icon> Add Address
-                                </button>
+                    <div class="col-span-1 sm:col-span-2 border-t border-slate-100 pt-4 mt-2">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="font-bold text-slate-700 text-sm">Customer Saved Addresses</div>
+                            <button type="button" mat-stroked-button color="primary" class="scale-90"
+                                (click)="openAddressDialog()">
+                                <mat-icon class="scale-75 -ml-1">add</mat-icon> Add Address
+                            </button>
+                        </div>
+
+                        @if (selectedCustomerAddresses.length > 0) {
+                        <div class="grid grid-cols-1 gap-3">
+                            @for (addr of selectedCustomerAddresses; track addr.id) {
+                            <div
+                                class="border border-slate-200 rounded-xl p-3 bg-slate-50/50 relative shadow-sm hover:shadow transition-shadow">
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                                        <mat-icon class="scale-75 !w-4 !h-4 !text-slate-500">home</mat-icon>
+                                        {{ addr.addressName || 'Address' }}
+                                    </span>
+                                    <div class="flex items-center gap-2">
+                                        @if (addr.isDefault) {
+                                        <span
+                                            class="text-[9px] font-bold bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded shadow-sm">DEFAULT</span>
+                                        }
+                                        <button type="button" mat-icon-button
+                                            class="!w-6 !h-6 !min-w-6 text-slate-400 hover:text-primary"
+                                            (click)="openAddressDialog(addr)">
+                                            <mat-icon class="scale-75">edit</mat-icon>
+                                        </button>
+                                        <button type="button" mat-icon-button
+                                            class="!w-6 !h-6 !min-w-6 text-slate-400 hover:text-warn"
+                                            (click)="deleteAddress(addr)">
+                                            <mat-icon class="scale-75">delete</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="text-[11px] text-slate-600 leading-relaxed font-medium">
+                                    <strong class="text-slate-800">{{ addr.fullName }}</strong> ({{ addr.phoneNumber
+                                    }})<br>
+                                    {{ addr.addressLine1 }}{{ addr.addressLine2 ? ', ' + addr.addressLine2 : '' }}<br>
+                                    {{ addr.city }}, {{ addr.state }} - {{ addr.postalCode }}<br>
+                                    {{ addr.country }}
+                                </div>
                             </div>
-                            
-                            @if (selectedCustomerAddresses.length > 0) {
-                                <div class="grid grid-cols-1 gap-3">
-                                    @for (addr of selectedCustomerAddresses; track addr.id) {
-                                        <div class="border border-slate-200 rounded-xl p-3 bg-slate-50/50 relative shadow-sm hover:shadow transition-shadow">
-                                            <div class="flex items-center justify-between mb-1.5">
-                                                <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                                                    <mat-icon class="scale-75 !w-4 !h-4 !text-slate-500">home</mat-icon>
-                                                    {{ addr.addressName || 'Address' }}
-                                                </span>
-                                                <div class="flex items-center gap-2">
-                                                    @if (addr.isDefault) {
-                                                        <span class="text-[9px] font-bold bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded shadow-sm">DEFAULT</span>
-                                                    }
-                                                    <button type="button" mat-icon-button class="!w-6 !h-6 !min-w-6 text-slate-400 hover:text-primary" (click)="openAddressDialog(addr)">
-                                                        <mat-icon class="scale-75">edit</mat-icon>
-                                                    </button>
-                                                    <button type="button" mat-icon-button class="!w-6 !h-6 !min-w-6 text-slate-400 hover:text-warn" (click)="deleteAddress(addr)">
-                                                        <mat-icon class="scale-75">delete</mat-icon>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div class="text-[11px] text-slate-600 leading-relaxed font-medium">
-                                                <strong class="text-slate-800">{{ addr.fullName }}</strong> ({{ addr.phoneNumber }})<br>
-                                                {{ addr.addressLine1 }}{{ addr.addressLine2 ? ', ' + addr.addressLine2 : '' }}<br>
-                                                {{ addr.city }}, {{ addr.state }} - {{ addr.postalCode }}<br>
-                                                {{ addr.country }}
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
-                            } @else {
-                                <div class="flex flex-col items-center justify-center p-6 border border-dashed border-slate-200 rounded-xl bg-slate-50/30 text-slate-400">
-                                    <mat-icon class="text-slate-300">location_off</mat-icon>
-                                    <span class="text-xs font-medium mt-2">No saved addresses on this customer profile.</span>
-                                </div>
                             }
                         </div>
+                        } @else {
+                        <div
+                            class="flex flex-col items-center justify-center p-6 border border-dashed border-slate-200 rounded-xl bg-slate-50/30 text-slate-400">
+                            <mat-icon class="text-slate-300">location_off</mat-icon>
+                            <span class="text-xs font-medium mt-2">No saved addresses on this customer profile.</span>
+                        </div>
+                        }
+                    </div>
                     }
 
                 </div>
@@ -164,7 +174,8 @@
 
 <!-- PASSWORD RESET MODAL -->
 <ng-template #resetPasswordTpl let-data>
-    <div class="flex flex-col max-w-md w-full rounded-2xl bg-white p-6 shadow-xl border border-slate-100 overflow-hidden">
+    <div
+        class="flex flex-col max-w-md w-full rounded-2xl bg-white p-6 shadow-xl border border-slate-100 overflow-hidden">
         <!-- Dialog Header -->
         <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
             <div class="flex items-center gap-3">
@@ -173,7 +184,8 @@
                 </div>
                 <div>
                     <h3 class="text-lg font-bold text-slate-800">Password Reset</h3>
-                    <p class="text-xs text-slate-400">Customer: <span class="font-semibold text-slate-600">{{ data.firstName }} {{ data.lastName }}</span></p>
+                    <p class="text-xs text-slate-400">Customer: <span class="font-semibold text-slate-600">{{
+                            data.firstName }} {{ data.lastName }}</span></p>
                 </div>
             </div>
             <button mat-icon-button (click)="closeResetDialog()" class="text-slate-400 hover:text-slate-600">
@@ -183,22 +195,25 @@
 
         <div class="flex flex-col gap-4">
             <!-- Manual Reset Card -->
-            <div class="group relative flex flex-col p-4 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-50 transition-all duration-200">
+            <div
+                class="group relative flex flex-col p-4 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-50 transition-all duration-200">
                 <h4 class="text-sm font-bold text-slate-700 mb-1">Set Password Manually</h4>
                 <p class="text-xs text-slate-500 mb-4 font-medium">Enter a new password directly for this customer.</p>
-                
+
                 <mat-form-field appearance="outline" class="w-full fuse-mat-dense mb-2">
                     <mat-label>New Password</mat-label>
-                    <input matInput type="password" [formControl]="manualPasswordControl" placeholder="Min. 4 characters" autocomplete="new-password">
+                    <input matInput type="password" [formControl]="manualPasswordControl"
+                        placeholder="Min. 4 characters" autocomplete="new-password">
                     @if (manualPasswordControl.hasError('required')) {
-                        <mat-error>Password is required</mat-error>
+                    <mat-error>Password is required</mat-error>
                     }
                     @if (manualPasswordControl.hasError('minlength')) {
-                        <mat-error>Min length is 4 characters</mat-error>
+                    <mat-error>Min length is 4 characters</mat-error>
                     }
                 </mat-form-field>
-                
-                <button mat-flat-button color="primary" class="w-full py-2 rounded-lg font-semibold shadow-sm" (click)="onManualResetSubmit(data)" [disabled]="manualPasswordControl.invalid">
+
+                <button mat-flat-button color="primary" class="w-full py-2 rounded-lg font-semibold shadow-sm"
+                    (click)="onManualResetSubmit(data)" [disabled]="manualPasswordControl.invalid">
                     Save New Password
                 </button>
             </div>
@@ -206,7 +221,8 @@
 
         <!-- Footer Actions -->
         <div class="flex justify-end items-center mt-6 pt-3 border-t border-slate-100 gap-2">
-            <button mat-stroked-button (click)="closeResetDialog()" class="rounded-lg font-semibold border-slate-200 text-slate-600 hover:bg-slate-50">
+            <button mat-stroked-button (click)="closeResetDialog()"
+                class="rounded-lg font-semibold border-slate-200 text-slate-600 hover:bg-slate-50">
                 Close
             </button>
         </div>
@@ -215,10 +231,12 @@
 
 <!-- ADDRESS FORM MODAL -->
 <ng-template #addressFormTpl let-data>
-    <div class="flex flex-col max-w-lg w-full rounded-2xl bg-white p-6 shadow-xl border border-slate-100 overflow-hidden">
+    <div
+        class="flex flex-col max-w-lg w-full rounded-2xl bg-white p-6 shadow-xl border border-slate-100 overflow-hidden">
         <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
             <div>
-                <h3 class="text-lg font-bold text-slate-800">{{ data ? 'Edit Customer Address' : 'Add Customer Address' }}</h3>
+                <h3 class="text-lg font-bold text-slate-800">{{ data ? 'Edit Customer Address' : 'Add Customer Address'
+                    }}</h3>
                 <p class="text-xs text-slate-400">Specify delivery details and default options.</p>
             </div>
             <button mat-icon-button (click)="closeAddressDialog()" class="text-slate-400 hover:text-slate-600">
@@ -269,10 +287,153 @@
                 </div>
             </div>
             <div class="flex justify-end items-center mt-6 pt-3 border-t border-slate-100 gap-2">
-                <button type="button" mat-stroked-button (click)="closeAddressDialog()" class="rounded-lg font-semibold text-slate-600 hover:bg-slate-50">Cancel</button>
-                <button type="submit" mat-flat-button color="primary" [disabled]="addressForm.invalid" class="rounded-lg font-semibold shadow-sm">Save Address</button>
+                <button type="button" mat-stroked-button (click)="closeAddressDialog()"
+                    class="rounded-lg font-semibold text-slate-600 hover:bg-slate-50">Cancel</button>
+                <button type="submit" mat-flat-button color="primary" [disabled]="addressForm.invalid"
+                    class="rounded-lg font-semibold shadow-sm">Save Address</button>
             </div>
         </form>
     </div>
 </ng-template>
 
+<!-- ADDRESSES LIST MODAL -->
+<ng-template #addressesListTpl let-customer>
+    <div
+        class="flex flex-col max-w-4xl w-full rounded-2xl bg-white p-6 shadow-xl border border-slate-100 overflow-hidden">
+        <!-- Header with Add Address button -->
+        <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+            <div>
+                <h3 class="text-lg font-bold text-slate-800">Saved Addresses</h3>
+                <p class="text-xs text-slate-400">Customer: <span class="font-semibold text-slate-600">{{
+                        customer.firstName }} {{ customer.lastName || '' }}</span></p>
+            </div>
+            <div class="flex items-center gap-2">
+                <button mat-flat-button color="primary" class="rounded-lg scale-90"
+                    (click)="openAddAddressDrawer(customer)">
+                    <mat-icon class="mr-1">add</mat-icon> Add Address
+                </button>
+                <button mat-icon-button (click)="closeAddressListDialog()" class="text-slate-400 hover:text-slate-600">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+        </div>
+
+        <!-- List of Addresses -->
+        <div class="max-h-96 overflow-y-auto pr-1">
+            @if (selectedCustomerAddresses.length > 0) {
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @for (addr of selectedCustomerAddresses; track addr.id) {
+                <div
+                    class="border border-slate-200 rounded-xl p-4 bg-slate-50/50 relative shadow-sm hover:shadow transition-all duration-200">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                            <mat-icon class="scale-75 !w-4 !h-4 !text-slate-500">home</mat-icon>
+                            {{ addr.addressName || 'Address' }}
+                        </span>
+                        <div class="flex items-center gap-1">
+                            @if (addr.isDefault) {
+                            <span
+                                class="text-[9px] font-bold bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded shadow-sm mr-1">DEFAULT</span>
+                            }
+                            <button type="button" mat-icon-button
+                                class="!w-7 !h-7 !min-w-7 text-slate-400 hover:text-primary"
+                                (click)="openEditAddressDrawer(addr)">
+                                <mat-icon class="scale-75">edit</mat-icon>
+                            </button>
+                            <button type="button" mat-icon-button
+                                class="!w-7 !h-7 !min-w-7 text-slate-400 hover:text-warn"
+                                (click)="deleteAddressInList(addr)">
+                                <mat-icon class="scale-75">delete</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-600 leading-relaxed font-medium">
+                        <strong class="text-slate-800">{{ addr.fullName }}</strong> ({{ addr.phoneNumber }})<br>
+                        {{ addr.addressLine1 }}{{ addr.addressLine2 ? ', ' + addr.addressLine2 : '' }}<br>
+                        {{ addr.city }}, {{ addr.state }} - {{ addr.postalCode }}<br>
+                        {{ addr.country }}
+                    </div>
+                </div>
+                }
+            </div>
+            } @else {
+            <div
+                class="flex flex-col items-center justify-center p-12 border border-dashed border-slate-200 rounded-xl bg-slate-50/30 text-slate-400">
+                <mat-icon class="text-slate-300 scale-[1.5] mb-2">location_off</mat-icon>
+                <span class="text-sm font-medium">No saved addresses on this customer profile.</span>
+            </div>
+            }
+        </div>
+    </div>
+</ng-template>
+
+<!-- ADDRESS FORM DRAWER -->
+<fuse-drawer class="z-[1100] w-screen min-w-screen sm:w-100 sm:min-w-100 p-2" fixed [mode]="'over'"
+    [name]="'addressFormDrawer'" [position]="'right'" #addressFormDrawer>
+    <div class="p-4 h-full flex flex-col">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-4">
+            <div class="font-semibold text-2xl text-primary">{{ recordMode === 'C' ? 'Add Address' : 'Edit Address' }}
+            </div>
+            <div class="flex gap-2">
+                <button mat-raised-button color="primary" (click)="onAddressDrawerSubmit()"
+                    [disabled]="addressForm.invalid">
+                    <mat-icon class="mr-1">send</mat-icon>
+                    Submit
+                </button>
+                <button mat-raised-button color="warn" (click)="closeAddressDrawer()">
+                    <mat-icon class="mr-1">close</mat-icon>
+                    Cancel
+                </button>
+            </div>
+        </div>
+
+        <!-- Form Scroll Area -->
+        <div class="flex-grow overflow-y-auto pr-1">
+            <form [formGroup]="addressForm" (ngSubmit)="onAddressDrawerSubmit()">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <mat-form-field appearance="outline" class="w-full sm:col-span-2">
+                        <mat-label>Address Label (e.g. Home, Office)</mat-label>
+                        <input matInput formControlName="addressName">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Contact Person Full Name</mat-label>
+                        <input matInput formControlName="fullName">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Contact Phone Number</mat-label>
+                        <input matInput formControlName="phoneNumber">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="w-full sm:col-span-2">
+                        <mat-label>Address Line 1</mat-label>
+                        <input matInput formControlName="addressLine1">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="w-full sm:col-span-2">
+                        <mat-label>Address Line 2 (Optional)</mat-label>
+                        <input matInput formControlName="addressLine2">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>City</mat-label>
+                        <input matInput formControlName="city">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>State</mat-label>
+                        <input matInput formControlName="state">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Postal Code / ZIP</mat-label>
+                        <input matInput formControlName="postalCode">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Country</mat-label>
+                        <input matInput formControlName="country">
+                    </mat-form-field>
+                    <div class="sm:col-span-2 pt-2">
+                        <mat-slide-toggle formControlName="isDefault">Set as Default Delivery
+                            Address?</mat-slide-toggle>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</fuse-drawer>

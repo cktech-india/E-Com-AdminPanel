@@ -110,6 +110,13 @@ const ecomNavigation = [
                 type: 'basic',
                 icon: 'heroicons_outline:clipboard-document-list',
                 link: '/stock-logs'
+            },
+            {
+                id: 'stock-notify',
+                title: 'Restock Notifications',
+                type: 'basic',
+                icon: 'heroicons_outline:bell',
+                link: '/stock-notify'
             }
         ]
     },

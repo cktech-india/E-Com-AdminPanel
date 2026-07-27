@@ -1,5 +1,6 @@
 package com.cktech.ecom.service;
 
+import com.cktech.ecom.model.dto.Auditable;
 import com.cktech.ecom.model.user.UserAddressDTO;
 import com.cktech.ecom.model.user.UserDTO;
 import com.cktech.ecom.repository.UserAddressRepository;
@@ -33,14 +34,14 @@ public class UserService {
 
     public UserDTO get(Long id) {
         var user = userRepository.findById(id).orElseThrow();
-        user.setAddresses(userAddressRepository.findByUserId(user.getId()));
+        user.setAddresses(userAddressRepository.findByUserIdAndIsDeletedFalse(user.getId()));
         return user;
     }
 
     public List<UserDTO> getList() {
         var user = userRepository.findByIsDeletedFalse();
         for (UserDTO userDTO : user) {
-            var address = userAddressRepository.findByUserId(userDTO.getId());
+            var address = userAddressRepository.findByUserIdAndIsDeletedFalse(userDTO.getId());
             if (address != null) {
                 userDTO.setAddresses(address);
             }
@@ -51,7 +52,7 @@ public class UserService {
     public List<UserDTO> getActiveUserList() {
         var user = userRepository.findByIsDeletedFalseAndIsActiveTrue();
         for (UserDTO userDTO : user) {
-            var address = userAddressRepository.findByUserId(userDTO.getId());
+            var address = userAddressRepository.findByUserIdAndIsDeletedFalse(userDTO.getId());
             if (address != null) {
                 userDTO.setAddresses(address);
             }
@@ -69,5 +70,42 @@ public class UserService {
             address.setIsDeleted(true);
         }
         userAddressRepository.saveAll(addressData);
+    }
+
+    public List<UserAddressDTO> getAddressListByUserId(Long userId) {
+        return userAddressRepository.findByUserIdAndIsDeletedFalse(userId);
+    }
+
+    public UserAddressDTO getAddress(Long id) {
+        return userAddressRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User Address not found with ID: " + id));
+    }
+
+    @Transactional
+    public UserAddressDTO saveAddress(UserAddressDTO address) {
+        if (address.getIsDeleted() == null) {
+            address.setIsDeleted(false);
+        }
+        if (address.getIsActive() == null) {
+            address.setIsActive(true);
+        }
+        if (Boolean.TRUE.equals(address.getIsDefault())) {
+            List<UserAddressDTO> others = userAddressRepository.findByUserIdAndIsDeletedFalse(address.getUserId());
+            for (UserAddressDTO other : others) {
+                if ((address.getId() == null || !other.getId().equals(address.getId())) && Boolean.TRUE.equals(other.getIsDefault())) {
+                    other.setIsDefault(false);
+                    userAddressRepository.save(other);
+                }
+            }
+        }
+        return userAddressRepository.save(address);
+    }
+
+    @Transactional
+    public Auditable deleteAddress(Long id) {
+        UserAddressDTO address = userAddressRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User Address not found with ID: " + id));
+        address.setIsDeleted(true);
+         return userAddressRepository.save(address);
     }
 }
