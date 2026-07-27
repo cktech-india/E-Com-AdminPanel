@@ -367,5 +367,23 @@ export class EcommerceService {
     deleteSeoMetadata(id: number): Observable<any> {
         return this.http.delete<any>(`${this.baseUrl}seo-metadata/${id}`);
     }
+
+    // ================= APP CONFIG =================
+    getAppConfig(): Observable<any[]> {
+        return this.http.get<any[]>(this.baseUrl + 'app-config/list').pipe(
+            map(list => (list || []).filter(item => item.companyCode === this.companyCode))
+        );
+    }
+    saveAppConfig(config: any): Observable<any> {
+        config.companyCode = this.companyCode;
+        return this.http.post<any>(this.baseUrl + 'app-config', config);
+    }
+    deleteAppConfig(id: number): Observable<any> {
+        return this.http.delete<any>(`${this.baseUrl}app-config/${id}`);
+    }
+    getAppConfigDefinitions(): Observable<any[]> {
+        return this.http.get<any[]>('data/app-config-defs.json');
+    }
 }
+
 

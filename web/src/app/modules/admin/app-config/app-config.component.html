@@ -1,0 +1,230 @@
+<mat-card class="page-card shadow-sm border border-slate-100 rounded-2xl overflow-hidden">
+    <mat-card-content class="p-4">
+
+        <!-- HEADER -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
+            <div>
+                <h2 class="text-xl font-bold tracking-tight text-slate-900">App Configurations</h2>
+                <p class="text-[11px] text-slate-500">Manage internal application configurations, key-value pairs, and group-wise settings inline.</p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
+
+                <!-- SEARCH -->
+                <mat-form-field class="fuse-mat-dense w-full sm:w-56" appearance="outline">
+                    <mat-icon matPrefix class="icon-size-5">search</mat-icon>
+                    <input matInput placeholder="Search Config..." [formControl]="searchControl" autocomplete="off" />
+                </mat-form-field>
+
+                <!-- GROUP FILTER -->
+                <mat-form-field class="fuse-mat-dense w-full sm:w-40" appearance="outline">
+                    <mat-label>Filter Group</mat-label>
+                    <mat-select [formControl]="selectedGroupControl">
+                        @for (group of configGroups; track group) {
+                            <mat-option [value]="group">{{ group }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                <!-- IMPORT & EXPORT -->
+                <app-data-import-export
+                    [columns]="[
+                        { header: 'Config Code', column: 'configCode' },
+                        { header: 'Config Name', column: 'configName' },
+                        { header: 'Config Group', column: 'configGroup' },
+                        { header: 'Config Value', column: 'configValue' }
+                    ]"
+                    [data]="table.gridData"
+                    [isImportAllowed]="false"
+                    entityName="App Config"
+                    entityType="app-config"
+                    (onImportComplete)="getGridData()">
+                </app-data-import-export>
+
+                <!-- MISSING CONFIGS ALERT BUTTON -->
+                @if (missingConfigs.length > 0) {
+                    <button (click)="openMissingConfigsDialog()" mat-flat-button color="warn" class="rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-semibold shadow-sm transition-colors duration-150 h-9">
+                        <mat-icon class="mr-1.5 icon-size-5">warning</mat-icon>
+                        {{ missingConfigs.length }} Missing
+                    </button>
+                }
+
+            </div>
+        </div>
+
+        <!-- LOADER -->
+        @if (table.loading) {
+            <div class="flex items-center justify-center p-12">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+        } @else {
+            <!-- COMPACT INLINE EDIT TABLE -->
+            <div class="overflow-x-auto bg-white border border-slate-150 rounded-lg shadow-sm">
+                <table class="min-w-full divide-y divide-slate-100 table-fixed">
+                    <thead class="bg-slate-50">
+                        <tr>
+                            <th scope="col" class="w-1/4 px-4 py-2.5 text-left text-sm font-bold uppercase tracking-wider text-slate-500">Config Code</th>
+                            <th scope="col" class="w-1/3 px-4 py-2.5 text-left text-sm font-bold uppercase tracking-wider text-slate-500">Config Name</th>
+                            <th scope="col" class="w-1/6 px-4 py-2.5 text-left text-sm font-bold uppercase tracking-wider text-slate-500">Config Group</th>
+                            <th scope="col" class="w-1/3 px-4 py-2.5 text-left text-sm font-bold uppercase tracking-wider text-slate-500">Config Value</th>
+                            <th scope="col" class="w-24 px-4 py-2.5 text-center text-sm font-bold uppercase tracking-wider text-slate-500">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 bg-white">
+                        @for (row of table.gridData; track row.id) {
+                            <tr class="hover:bg-slate-50/50 transition-colors duration-150">
+                                <!-- Config Code -->
+                                <td class="px-4 py-1.5 text-sm font-mono font-bold text-slate-800 break-all">
+                                    {{ row.configCode }}
+                                </td>
+                                <!-- Config Name -->
+                                <td class="px-4 py-1.5 text-sm text-slate-600 font-medium break-words">
+                                    {{ row.configName }}
+                                </td>
+                                <!-- Config Group -->
+                                <td class="px-4 py-1.5 text-sm text-slate-500 font-medium">
+                                    {{ row.configGroup }}
+                                </td>
+                                <!-- Config Value -->
+                                <td class="px-4 py-1">
+                                    @if (row.controlType === 'bool') {
+                                        <select [(ngModel)]="row.configValue" class="w-full bg-white border border-slate-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary h-8">
+                                            <option value="true">True</option>
+                                            <option value="false">False</option>
+                                        </select>
+                                    } @else if (row.controlType === 'input') {
+                                        <input [(ngModel)]="row.configValue" class="w-full bg-white border border-slate-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary h-8" placeholder="Enter value" />
+                                    } @else {
+                                        <textarea [(ngModel)]="row.configValue" rows="1" class="w-full bg-white border border-slate-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary resize-y min-h-8 py-1" placeholder="Enter value"></textarea>
+                                    }
+                                </td>
+                                <!-- Actions -->
+                                <td class="px-4 py-1.5 whitespace-nowrap text-center text-sm font-medium">
+                                    <div class="flex items-center justify-center gap-0.5">
+                                        <!-- Save inline row -->
+                                        <button mat-icon-button color="primary" class="rounded-lg text-primary icon-button-dense" matTooltip="Save changes" (click)="saveInlineRow(row)">
+                                            <mat-icon class="icon-size-5">save</mat-icon>
+                                        </button>
+                                        <!-- Delete row -->
+                                        <button mat-icon-button color="warn" class="rounded-lg text-warn icon-button-dense" matTooltip="Delete configuration" (click)="deleteInlineRow(row)">
+                                            <mat-icon class="icon-size-5">delete</mat-icon>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        } @empty {
+                            <tr>
+                                <td colspan="5" class="px-4 py-12 text-center text-slate-400 text-xs">
+                                    <mat-icon class="text-4xl mb-2 text-slate-300">settings_suggest</mat-icon>
+                                    <div class="font-semibold text-slate-700">No configured keys found.</div>
+                                    <p class="text-[10px] text-slate-400 mt-1 max-w-sm mx-auto">Predefined variables must be configured before they are available here. Click the warning button on the header to configure them.</p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+    </mat-card-content>
+</mat-card>
+
+<style>
+  /* Extra styling to make forms inside table grids extremely compact */
+  .field-compact .mat-mdc-form-field-wrapper,
+  .field-compact .mat-mdc-form-field-flex {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    height: 32px !important;
+  }
+  .field-compact .mat-mdc-text-field-wrapper {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+  .field-compact .mat-mdc-form-field-infix {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+    min-height: 24px !important;
+  }
+  .icon-button-dense {
+    width: 32px !important;
+    height: 32px !important;
+    line-height: 32px !important;
+  }
+</style>
+
+
+<!-- ================= MISSING CONFIGS DIALOG ================= -->
+
+<ng-template #missingConfigDialogTpl>
+    <div class="p-6 flex flex-col max-h-160 overflow-hidden">
+        <!-- Dialog Header -->
+        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+            <div>
+                <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <mat-icon class="text-amber-500">warning</mat-icon>
+                    Add Predefined Configurations
+                </h3>
+                <p class="text-xs text-slate-500 mt-1">Select the missing configurations below to add them to this company.</p>
+            </div>
+            <button mat-icon-button (click)="closeMissingConfigsDialog()" [disabled]="isAddingConfigs">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+
+        <!-- Dialog Content -->
+        <div class="flex-grow overflow-y-auto my-4 max-h-100 pr-2">
+            
+            <!-- Select All Checkbox -->
+            <div class="p-2 mb-3 bg-slate-50 rounded-lg flex items-center">
+                <mat-checkbox 
+                    [checked]="isAllMissingSelected()" 
+                    [indeterminate]="hasAnyMissingSelected() && !isAllMissingSelected()"
+                    (change)="toggleSelectAllMissing($event.checked)">
+                    <span class="text-xs font-semibold text-slate-700">Select All Missing Configurations</span>
+                </mat-checkbox>
+            </div>
+
+            <!-- List of Configurations -->
+            <div class="divide-y divide-slate-100">
+                @for (missing of missingConfigs; track missing.configCode) {
+                    <div class="py-3 flex items-start gap-3">
+                        <mat-checkbox 
+                            [(ngModel)]="selectedMissingConfigs[missing.configCode]"
+                            [disabled]="isAddingConfigs">
+                        </mat-checkbox>
+                        <div class="flex-grow">
+                            <div class="flex items-center gap-2 justify-between">
+                                <span class="text-xs font-mono font-bold bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded">
+                                    {{ missing.configCode }}
+                                </span>
+                                <span class="text-xs text-slate-400 font-semibold font-mono">
+                                    {{ missing.configGroup }}
+                                </span>
+                            </div>
+                            <div class="text-sm font-medium text-slate-800 mt-1.5">{{ missing.configName }}</div>
+                            <div class="text-xs text-slate-400 mt-1 font-mono">Default: {{ missing.defaultValue }}</div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+        </div>
+
+        <!-- Dialog Footer -->
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+            <button mat-button (click)="closeMissingConfigsDialog()" [disabled]="isAddingConfigs">
+                Cancel
+            </button>
+            <button 
+                mat-flat-button 
+                color="primary" 
+                class="rounded-lg"
+                [disabled]="!hasAnyMissingSelected() || isAddingConfigs" 
+                (click)="addSelectedConfigs()">
+                <mat-icon class="mr-2">add</mat-icon>
+                {{ isAddingConfigs ? 'Adding...' : 'Add Selected' }}
+            </button>
+        </div>
+    </div>
+</ng-template>

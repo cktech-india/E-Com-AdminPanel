@@ -1,0 +1,86 @@
+[
+  {
+    "configCode": "is-place-order-allowed",
+    "configName": "Can Allow user to place ordr online ?",
+    "configGroup": "ORDER",
+    "controlType": "bool",
+    "defaultValue": "true"
+  },
+  {
+    "configCode": "app-name",
+    "configName": "Application Name",
+    "configGroup": "GENERAL",
+    "controlType": "input",
+    "defaultValue": ""
+  },
+  {
+    "configCode": "company-name",
+    "configName": "Company Name",
+    "configGroup": "COMPANY",
+    "controlType": "input",
+    "defaultValue": ""
+  },
+  {
+    "configCode": "company-address",
+    "configName": "Company Address",
+    "configGroup": "COMPANY",
+    "controlType": "input",
+    "defaultValue": ""
+  },
+  {
+    "configCode": "company-gst",
+    "configName": "Company GST Number",
+    "configGroup": "COMPANY",
+    "controlType": "input",
+    "defaultValue": ""
+  },
+  {
+    "configCode": "company-state",
+    "configName": "Company State",
+    "configGroup": "COMPANY",
+    "controlType": "input",
+    "defaultValue": ""
+  },
+  {
+    "configCode": "company-country",
+    "configName": "Company Country",
+    "configGroup": "COMPANY",
+    "controlType": "input",
+    "defaultValue": ""
+  },
+  {
+    "configCode": "company-phone",
+    "configName": "Company Phone Number",
+    "configGroup": "COMPANY",
+    "controlType": "input",
+    "defaultValue": ""
+  },
+  {
+    "configCode": "company-whatsapp",
+    "configName": "Company WhatsApp Number",
+    "configGroup": "COMPANY",
+    "controlType": "input",
+    "defaultValue": ""
+  },
+  {
+    "configCode": "company-email",
+    "configName": "Company Email Address",
+    "configGroup": "COMPANY",
+    "controlType": "input",
+    "defaultValue": ""
+  },
+  {
+    "configCode": "contact-us-address",
+    "configName": "Contact Us Address",
+    "configGroup": "COMPANY",
+    "controlType": "text",
+    "defaultValue": ""
+  },
+  {
+    "configCode": "show-price",
+    "configName": "Show product price online ?",
+    "configGroup": "PRODUCT",
+    "controlType": "bool",
+    "defaultValue": "true"
+  }
+]

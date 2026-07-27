@@ -34,6 +34,7 @@ export class DataImportExportComponent implements OnInit, OnChanges {
     @Input() data: any[] = [];
     @Input() entityName: string = 'Data';
     @Input() entityType: string = ''; // e.g. "product", "category"
+    @Input() isImportAllowed: boolean = true;
     @Output() onImportComplete = new EventEmitter<void>();
 
     @ViewChild('importDialogTpl') importDialogTpl!: TemplateRef<any>;

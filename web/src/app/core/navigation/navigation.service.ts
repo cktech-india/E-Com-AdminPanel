@@ -226,6 +226,13 @@ const ecomNavigation = [
                 type: 'basic',
                 icon: 'heroicons_outline:home',
                 link: '/home-config'
+            },
+            {
+                id: 'app-config',
+                title: 'App Configuration',
+                type: 'basic',
+                icon: 'heroicons_outline:wrench-screwdriver',
+                link: '/app-config'
             }
         ]
     },

@@ -30,12 +30,6 @@ public class ProductDTO extends Auditable {
     @Column(name = "product_code", nullable = false, length = 50)
     private String productCode;
 
-    @Column(name = "group_code", length = 50)
-    private String groupCode;
-
-    @Column(name = "group_name", length = 255)
-    private String groupName;
-
     @Column(name = "parent_product_id")
     private Long parentProductId;
 

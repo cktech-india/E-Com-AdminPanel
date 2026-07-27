@@ -17,10 +17,12 @@
     </mat-menu>
 
     <!-- IMPORT BUTTON -->
-    <button (click)="openImportDialog()" mat-flat-button color="primary" class="rounded-lg">
-        <mat-icon class="mr-2">upload</mat-icon>
-        Import
-    </button>
+    @if (isImportAllowed) {
+        <button (click)="openImportDialog()" mat-flat-button color="primary" class="rounded-lg">
+            <mat-icon class="mr-2">upload</mat-icon>
+            Import
+        </button>
+    }
 </div>
 
 <!-- IMPORT AND PREVIEW DIALOG -->
