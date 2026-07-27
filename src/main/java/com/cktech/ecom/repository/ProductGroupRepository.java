@@ -15,4 +15,6 @@ public interface ProductGroupRepository extends GenericRepository<ProductGroupDT
     @Override
     List<ProductGroupDTO> findByIsDeletedFalseAndIsActiveTrue();
 
+    @org.springframework.data.jpa.repository.Query("SELECT DISTINCT pg.groupName FROM ProductGroupDTO pg WHERE pg.isDeleted = false AND pg.isActive = true")
+    List<String> findDistinctGroupNames();
 }

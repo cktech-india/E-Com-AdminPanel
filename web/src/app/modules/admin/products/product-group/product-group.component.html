@@ -43,6 +43,16 @@
 </mat-card>
 
 
+<!-- TOGGLE TEMPLATE -->
+<ng-template #toggleTpl let-value let-row="row">
+    <mat-slide-toggle
+        [checked]="value"
+        color="primary"
+        (change)="toggleActive(row)">
+    </mat-slide-toggle>
+</ng-template>
+
+
 <!-- ================= DRAWER ================= -->
 
 <fuse-drawer class="z-999 w-screen min-w-screen sm:w-100 sm:min-w-100 p-2" fixed [mode]="'over'"
@@ -94,6 +104,11 @@
                     <mat-label>Group Value</mat-label>
                     <input matInput formControlName="groupValue" placeholder="e.g. Large, Blue, Winter2026">
                 </mat-form-field>
+
+                <!-- IS ACTIVE -->
+                <div class="flex items-center gap-3">
+                    <mat-slide-toggle formControlName="isActive" color="primary">Active</mat-slide-toggle>
+                </div>
 
             </div>
 

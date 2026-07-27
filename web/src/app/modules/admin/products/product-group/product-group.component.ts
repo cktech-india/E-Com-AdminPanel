@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation, TemplateRef } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs';
 
@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 // Fuse Components
 import { FuseDrawerComponent } from '@fuse/components/drawer';
@@ -28,7 +29,7 @@ import { DataImportExportComponent } from '../../../shared/components/data-impor
     imports: [
         MatButtonModule, FormsModule, ReactiveFormsModule,
         MatCardContent, MatCard, MatOptionModule, MatFormFieldModule,
-        MatInputModule, MatSelectModule,
+        MatInputModule, MatSelectModule, MatSlideToggleModule,
         MatIconModule, FuseAlertComponent, FuseDrawerComponent,
         DataImportExportComponent
     ]
@@ -36,6 +37,7 @@ import { DataImportExportComponent } from '../../../shared/components/data-impor
 export class ProductGroupComponent implements OnInit {
 
     @ViewChild('groupFormTpl') drawer!: FuseDrawerComponent;
+    @ViewChild('toggleTpl', { static: true }) toggleTpl!: TemplateRef<any>;
 
     inputForm!: FormGroup;
     table!: CkTable;
@@ -76,7 +78,8 @@ export class ProductGroupComponent implements OnInit {
             id: new FormControl(null),
             productId: new FormControl(null, Validators.required),
             groupName: new FormControl(null, Validators.required),
-            groupValue: new FormControl(null, Validators.required)
+            groupValue: new FormControl(null, Validators.required),
+            isActive: new FormControl(true)
         });
 
         this.table = {
@@ -92,7 +95,8 @@ export class ProductGroupComponent implements OnInit {
                     }
                 },
                 { header: 'Group Name', column: 'groupName' },
-                { header: 'Group Value', column: 'groupValue' }
+                { header: 'Group Value', column: 'groupValue' },
+                { header: 'Active', column: 'isActive', template: this.toggleTpl }
             ],
             actions: [
                 {
@@ -150,7 +154,22 @@ export class ProductGroupComponent implements OnInit {
     newRowClicked() {
         this.recordMode = 'C';
         this.inputForm.reset();
+        this.inputForm.patchValue({ isActive: true });
         this.drawer.open();
+    }
+
+    toggleActive(row: any) {
+        const updated = { ...row, isActive: !row.isActive, recordMode: 'E' };
+        this._service.saveProductGroup(updated).subscribe({
+            next: () => {
+                row.isActive = !row.isActive;
+                this.table = { ...this.table };
+                this.uiService.showToastr('Success', 'Status updated successfully', 'success');
+            },
+            error: () => {
+                this.uiService.showToastr('Error', 'Failed to update status', 'error');
+            }
+        });
     }
 
     editRow(row: any) {

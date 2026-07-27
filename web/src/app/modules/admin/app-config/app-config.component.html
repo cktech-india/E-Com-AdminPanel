@@ -92,6 +92,12 @@
                                             <option value="true">True</option>
                                             <option value="false">False</option>
                                         </select>
+                                    } @else if (row.controlType === 'select') {
+                                        <select [(ngModel)]="row.configValue" class="w-full bg-white border border-slate-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary h-8">
+                                            @for (opt of getDropdownOptions(row.dropdownKey); track opt) {
+                                                <option [value]="opt">{{ opt }}</option>
+                                            }
+                                        </select>
                                     } @else if (row.controlType === 'input') {
                                         <input [(ngModel)]="row.configValue" class="w-full bg-white border border-slate-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary h-8" placeholder="Enter value" />
                                     } @else {

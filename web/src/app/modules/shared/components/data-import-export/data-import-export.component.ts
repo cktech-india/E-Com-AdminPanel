@@ -55,11 +55,13 @@ export class DataImportExportComponent implements OnInit, OnChanges {
     ) {}
 
     ngOnInit(): void {
-        this.loadDtoColumns();
+        if (this.isImportAllowed) {
+            this.loadDtoColumns();
+        }
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (changes['entityType'] || changes['columns']) {
+        if (this.isImportAllowed && (changes['entityType'] || changes['columns'])) {
             this.loadDtoColumns();
         }
     }

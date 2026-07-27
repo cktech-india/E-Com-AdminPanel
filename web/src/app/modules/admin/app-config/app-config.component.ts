@@ -55,6 +55,7 @@ export class AppConfigComponent implements OnInit {
     missingConfigs: any[] = [];
     dbConfigs: any[] = [];
     configGroups: string[] = ['ALL'];
+    productGroups: string[] = [];
 
     // Dialog reference and selections
     private _dialogRef!: MatDialogRef<any>;
@@ -85,6 +86,14 @@ export class AppConfigComponent implements OnInit {
 
     ngOnInit(): void {
         this.loadDefinitionsAndData();
+        this._service.getProductGroupDistinctNames().subscribe({
+            next: (groups) => {
+                this.productGroups = groups || [];
+            },
+            error: () => {
+                this.productGroups = [];
+            }
+        });
     }
 
     loadDefinitionsAndData() {
@@ -115,6 +124,9 @@ export class AppConfigComponent implements OnInit {
                         }
                         if (!item.configName) {
                             item.configName = def.configName;
+                        }
+                        if (def.dropdownKey) {
+                            item.dropdownKey = def.dropdownKey;
                         }
                     }
                     return item;
@@ -254,5 +266,12 @@ export class AppConfigComponent implements OnInit {
                 this.uiService.showToastr('Error', 'Failed to add some configurations', 'error');
             }
         });
+    }
+
+    getDropdownOptions(dropdownKey: string): string[] {
+        if (dropdownKey === 'PRODUCT_GROUPS') {
+            return this.productGroups.length > 0 ? this.productGroups : ['Size'];
+        }
+        return [];
     }
 }

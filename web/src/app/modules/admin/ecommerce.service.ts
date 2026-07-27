@@ -287,6 +287,9 @@ export class EcommerceService {
     deleteProductGroup(id: number): Observable<any> {
         return this.http.delete<any>(`${this.baseUrl}product-group/${id}`);
     }
+    getProductGroupDistinctNames(): Observable<string[]> {
+        return this.http.get<string[]>(this.baseUrl + 'product-group/distinct-names');
+    }
 
     getProductTags(): Observable<any[]> {
         return this.http.get<any[]>(this.baseUrl + 'product-tag').pipe(

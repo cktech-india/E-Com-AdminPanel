@@ -40,4 +40,7 @@ public class ProductGroupService {
         productGroupRepository.save(productGroup);
     }
 
+    public List<String> getDistinctGroupNames() {
+        return productGroupRepository.findDistinctGroupNames();
+    }
 }

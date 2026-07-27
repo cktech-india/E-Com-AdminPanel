@@ -45,4 +45,9 @@ public class ProductGroupController {
         return ResponseEntity.ok("Product Group deleted successfully");
     }
 
+    @GetMapping("/distinct-names")
+    public ResponseEntity<List<String>> getDistinctNames() {
+        return ResponseEntity.ok(productGroupService.getDistinctGroupNames());
+    }
+
 }

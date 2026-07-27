@@ -82,5 +82,13 @@
     "configGroup": "PRODUCT",
     "controlType": "bool",
     "defaultValue": "true"
+  },
+  {
+    "configCode": "product-grouping",
+    "configName": "Product Grouping Attribute",
+    "configGroup": "PRODUCT",
+    "controlType": "select",
+    "defaultValue": "Size",
+    "dropdownKey": "PRODUCT_GROUPS"
   }
 ]
