@@ -101,14 +101,18 @@
                                 <!-- Actions -->
                                 <td class="px-4 py-1.5 whitespace-nowrap text-center text-sm font-medium">
                                     <div class="flex items-center justify-center gap-0.5">
-                                        <!-- Save inline row -->
-                                        <button mat-icon-button color="primary" class="rounded-lg text-primary icon-button-dense" matTooltip="Save changes" (click)="saveInlineRow(row)">
-                                            <mat-icon class="icon-size-5">save</mat-icon>
-                                        </button>
-                                        <!-- Delete row -->
-                                        <button mat-icon-button color="warn" class="rounded-lg text-warn icon-button-dense" matTooltip="Delete configuration" (click)="deleteInlineRow(row)">
-                                            <mat-icon class="icon-size-5">delete</mat-icon>
-                                        </button>
+                                        @if (row.saving) {
+                                            <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-primary mx-2"></div>
+                                        } @else {
+                                            <!-- Save inline row -->
+                                            <button mat-icon-button color="primary" class="rounded-lg text-primary icon-button-dense" matTooltip="Save changes" (click)="saveInlineRow(row)">
+                                                <mat-icon class="icon-size-5">save</mat-icon>
+                                            </button>
+                                            <!-- Delete row -->
+                                            <button mat-icon-button color="warn" class="rounded-lg text-warn icon-button-dense" matTooltip="Delete configuration" (click)="deleteInlineRow(row)">
+                                                <mat-icon class="icon-size-5">delete</mat-icon>
+                                            </button>
+                                        }
                                     </div>
                                 </td>
                             </tr>

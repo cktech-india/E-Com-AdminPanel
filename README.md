@@ -154,3 +154,10 @@ npm run start
    - Add the database column in the table definition.
    - Update the Java entity DTO (e.g. `ProductDTO.java`) with the field and `@Column` mapping.
    - Since `spring.jpa.hibernate.ddl-auto` is set to `update`, Hibernate will automatically add the column to the physical table on start.
+3. **Database Field Changes Coordination Requirement:**
+   - > [!IMPORTANT]
+   - > Any addition or removal of fields/columns in database tables **MUST** be implemented and coordinated across all layers:
+   - > - The Database Schema ([schema.sql](../website/schema/schema.sql)).
+   - > - The Java Backend Entities (e.g. [ProductDTO.java](../admin-panel/src/main/java/com/cktech/ecom/model/product/ProductDTO.java)).
+   - > - The Admin Panel Frontend Form / HTML (Angular).
+   - > - The Customer-Facing Storefront Pages (PHP / website files).

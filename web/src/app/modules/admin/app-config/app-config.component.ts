@@ -161,14 +161,17 @@ export class AppConfigComponent implements OnInit {
     }
 
     saveInlineRow(row: any) {
-        this.table.loading = true;
+        row.saving = true;
         this._service.saveAppConfig(row).subscribe({
-            next: () => {
-                this.getGridData();
+            next: (res: any) => {
+                row.saving = false;
+                if (res && res.id) {
+                    row.id = res.id;
+                }
                 this.uiService.showToastr('Success', 'Configuration saved successfully', 'success');
             },
             error: () => {
-                this.table.loading = false;
+                row.saving = false;
                 this.uiService.showToastr('Error', 'Failed to save configuration', 'error');
             }
         });

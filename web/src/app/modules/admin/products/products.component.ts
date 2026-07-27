@@ -87,6 +87,7 @@ export class ProductsComponent implements OnInit {
             discountPercentage: new FormControl(0, [Validators.min(0), Validators.max(100)]),
             productType: new FormControl('STANDARD'),
             description: new FormControl(''),
+            productSummary: new FormControl(''),
             imageUrl: new FormControl(''),
             hsnCode: new FormControl(''),
             isTaxInclusive: new FormControl(true),

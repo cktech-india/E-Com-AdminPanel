@@ -65,4 +65,7 @@ public class ProductDTO extends Auditable {
 
     @Column(name = "tax_category_id")
     private Long taxCategoryId;
+
+    @Column(name = "product_summary", length = 500)
+    private String productSummary;
 }
