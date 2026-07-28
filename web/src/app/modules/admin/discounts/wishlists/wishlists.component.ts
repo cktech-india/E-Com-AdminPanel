@@ -78,20 +78,12 @@ export class WishlistsComponent implements OnInit {
                     }
                 },
                 { 
-                    header: 'Product Name', 
-                    column: 'productId',
-                    formatter: (v) => {
-                        const prod = this.products.find(p => p.id === v);
-                        return prod ? `${prod.productName} (${prod.productCode})` : `Product ID: ${v}`;
-                    }
+                    header: 'Product Code', 
+                    column: 'productCode',
                 },
                 { 
-                    header: 'Product Price', 
-                    column: 'productId',
-                    formatter: (v) => {
-                        const prod = this.products.find(p => p.id === v);
-                        return prod ? `₹${Number(prod.price).toFixed(2)}` : 'N/A';
-                    }
+                    header: 'Product Name', 
+                    column: 'productName',
                 }
             ],
             actions: [

@@ -5,13 +5,23 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseDTO {
     private String status;
-    private String message;
+    private Object message;
+    private List<Object> otherMessage;
 
-    public static final ResponseDTO SUCCESS = new ResponseDTO("SUCCESS", "Operation completed successfully");
+    public ResponseDTO(String status) {
+        this.status = status;
+    }
+
+    public ResponseDTO(String status, Object message) {
+        this.status = status;
+        this.message = message;
+    }
 }

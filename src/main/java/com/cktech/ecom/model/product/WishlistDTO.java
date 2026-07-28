@@ -1,5 +1,6 @@
 package com.cktech.ecom.model.product;
 
+import com.cktech.ecom.config.cache.CacheLookup;
 import com.cktech.ecom.model.dto.Auditable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -27,4 +28,10 @@ public class WishlistDTO extends Auditable {
 
     @Column(name = "user_id")
     private Long userId;
+    //@CacheLookup(category = "product", codeField = "productId")
+    @Transient
+    private String productName;
+    @CacheLookup(category = "product", codeField = "productId")
+    @Transient
+    private String productCode;
 }

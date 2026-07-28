@@ -240,6 +240,13 @@ const ecomNavigation = [
                 type: 'basic',
                 icon: 'heroicons_outline:wrench-screwdriver',
                 link: '/app-config'
+            },
+            {
+                id: 'notification-config',
+                title: 'Notification',
+                type: 'basic',
+                icon: 'heroicons_outline:bell',
+                link: '/notification'
             }
         ]
     },

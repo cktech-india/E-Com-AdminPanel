@@ -397,6 +397,21 @@ export class EcommerceService {
     deleteStockNotify(id: number): Observable<any> {
         return this.http.delete<any>(`${this.baseUrl}stock-notify/${id}`);
     }
+
+    
+    // ================= NOTIFICATION CONFIGURATION =================
+    getNotificationList(): Observable<any[]> {
+        return this.http.get<any[]>(this.baseUrl + 'sms/templates');
+    }
+    updateNotificationDetails(data: any): Observable<any> {
+        return this.http.post<any>(this.baseUrl + 'sms/update', data);
+    }
+    triggerNotification(smsCode: string, notifyChannel: string, input: any): Observable<any> {
+        return this.http.post<any>(`${this.baseUrl}sms/trigger-sms/${smsCode}?notifyChannel=${notifyChannel}`, input);
+    }
+    getNotificationLogs(): Observable<any[]> {
+        return this.http.get<any[]>(this.baseUrl + 'sms/logs');
+    }
 }
 
 

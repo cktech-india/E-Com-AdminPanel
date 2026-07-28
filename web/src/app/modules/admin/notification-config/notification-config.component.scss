@@ -1,0 +1,162 @@
+.border-rounded {
+  border-radius: 4px;
+}
+
+.bg-blue-50 {
+  background-color: #e3f2fd;
+}
+
+.text-blue-800 {
+  color: #1565c0;
+}
+
+.bg-blue-100 {
+  background-color: #bbdefb;
+}
+
+.text-blue-900 {
+  color: #0d47a1;
+}
+
+.m-b-16 {
+  margin-bottom: 16px;
+}
+
+.m-r-16 {
+  margin-right: 16px;
+}
+
+.m-t-8 {
+  margin-top: 8px;
+}
+
+.m-t-16 {
+  margin-top: 16px;
+}
+
+.p-12 {
+  padding: 12px;
+}
+
+.p-4 {
+  padding: 4px;
+}
+
+.f-s-12 {
+  font-size: 12px;
+}
+
+/* Button Toggle Color Customizations */
+
+::ng-deep {
+  // WhatsApp (Green)
+  .toggle-whatsapp {
+    mat-icon {
+      color: #25d366 !important;
+    }
+
+    &.mat-button-toggle-checked {
+      background-color: rgba(37, 211, 102, .15) !important;
+
+      .mat-button-toggle-label-content {
+        color: #1b5e20 !important;
+        font-weight: 500 !important;
+      }
+    }
+  }
+
+  // SMS (Blue)
+  .toggle-sms {
+    mat-icon {
+      color: #1976d2 !important;
+    }
+
+    &.mat-button-toggle-checked {
+      background-color: rgba(25, 118, 210, .15) !important;
+
+      .mat-button-toggle-label-content {
+        color: #0d47a1 !important;
+        font-weight: 500 !important;
+      }
+    }
+  }
+
+  // Email (Red)
+  .toggle-email {
+    mat-icon {
+      color: #d32f2f !important;
+    }
+
+    &.mat-button-toggle-checked {
+      background-color: rgba(211, 47, 47, .15) !important;
+
+      .mat-button-toggle-label-content {
+        color: #b71c1c !important;
+        font-weight: 500 !important;
+      }
+    }
+  }
+
+  // Push (Light Blue)
+  .toggle-push {
+    mat-icon {
+      color: #03a9f4 !important;
+    }
+
+    &.mat-button-toggle-checked {
+      background-color: rgba(3, 169, 244, .15) !important;
+
+      .mat-button-toggle-label-content {
+        color: #01579b !important;
+        font-weight: 500 !important;
+      }
+    }
+  }
+
+  /* Table Badge Styles */
+  .badge-type {
+    display: inline-block;
+    min-width: 75px;
+    padding: 4px 8px;
+    font-weight: 600;
+    font-size: 11px;
+    text-align: center;
+    text-transform: uppercase;
+    border-radius: 4px;
+  }
+
+  .badge-whatsapp {
+    color: #1b5e20;
+    background-color: rgba(37, 211, 102, .12);
+    border: 1px solid rgba(37, 211, 102, .3);
+  }
+
+  .badge-sms {
+    color: #0d47a1;
+    background-color: rgba(25, 118, 210, .12);
+    border: 1px solid rgba(25, 118, 210, .3);
+  }
+
+  .badge-email {
+    color: #b71c1c;
+    background-color: rgba(211, 47, 47, .12);
+    border: 1px solid rgba(211, 47, 47, .3);
+  }
+
+  .badge-push {
+    color: #01579b;
+    background-color: rgba(3, 169, 244, .12);
+    border: 1px solid rgba(3, 169, 244, .3);
+  }
+}
+
+.m-b-0 {
+  margin-bottom: 0 !important;
+}
+
+.f-s-13 {
+  font-size: 13px !important;
+}
+
+
+

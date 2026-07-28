@@ -1,12 +1,9 @@
 package com.cktech.ecom.model.product;
 
+import com.cktech.ecom.common.MasterDataEntityListener;
+import com.cktech.ecom.config.MasterCacheConfig;
 import com.cktech.ecom.model.dto.Auditable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,6 +15,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
+@MasterCacheConfig(category = "product", codeField = "id" , nameField = "productCode")
+@EntityListeners(MasterDataEntityListener.class)
 public class ProductDTO extends Auditable {
 
     @Id

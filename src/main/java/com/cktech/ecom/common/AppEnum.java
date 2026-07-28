@@ -14,7 +14,9 @@ public class AppEnum {
         D,
         V
     }
-
+    public enum ChannelType {
+        SMS, EMAIL, PUSH,WHATSAPP
+    }
     public enum EMAIL_TYPE {
         TEXT,
         HTML,

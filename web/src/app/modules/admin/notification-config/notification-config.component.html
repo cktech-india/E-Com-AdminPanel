@@ -1,0 +1,97 @@
+<div class="p-4 sm:p-6 space-y-6">
+  <mat-card class="p-0 shadow-md rounded-xl border border-slate-200/80 bg-white/95 backdrop-blur">
+
+    <mat-tab-group class="p-4" (selectedTabChange)="onTabChange($event)">
+      <!-- Tab 1: Template Configuration and Testing -->
+      <mat-tab label="Notification Templates">
+        <div class="space-y-4 pt-4">
+          <div class="flex flex-col sm:flex-row flex-wrap items-start sm:items-center justify-between gap-4">
+            <mat-card-title class="f-s-16 m-b-0">Templates Configuration</mat-card-title>
+
+            <!-- Channel Filter Toggle Group -->
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="f-w-500 text-grey-600 f-s-13">Channel:</span>
+              <mat-button-toggle-group [(ngModel)]="selectedType" (change)="filterGridData()"
+                aria-label="Notification Channel Filter">
+                <mat-button-toggle value="ALL">All</mat-button-toggle>
+                <mat-button-toggle value="WHATSAPP" class="toggle-whatsapp">
+                  <mat-icon class="icon-16 m-r-4">message</mat-icon>WhatsApp
+                </mat-button-toggle>
+                <mat-button-toggle value="SMS" class="toggle-sms">
+                  <mat-icon class="icon-16 m-r-4">sms</mat-icon>SMS
+                </mat-button-toggle>
+                <mat-button-toggle value="EMAIL" class="toggle-email">
+                  <mat-icon class="icon-16 m-r-4">email</mat-icon>Email
+                </mat-button-toggle>
+                <mat-button-toggle value="PUSH" class="toggle-push">
+                  <mat-icon class="icon-16 m-r-4">notifications_active</mat-icon>Push
+                </mat-button-toggle>
+              </mat-button-toggle-group>
+            </div>
+          </div>
+
+          <div class="rounded-lg overflow-hidden border border-slate-100 shadow-inner mt-4">
+            <ck-table-grid [properties]="table"></ck-table-grid>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Tab 2: Sent Logs Viewer -->
+      <mat-tab label="Sent Notification Logs">
+        <div class="space-y-4 pt-4">
+          <div class="flex flex-col sm:flex-row flex-wrap items-start sm:items-center justify-between gap-4">
+            <div>
+              <mat-card-title class="f-s-16 m-b-0">Delivery Status & History Logs</mat-card-title>
+              <span class="text-xs text-slate-400">Review generated messages and API delivery reports in
+                real-time.</span>
+            </div>
+
+            <button mat-flat-button color="primary" (click)="loadLogs()">
+              <mat-icon class="icon-16 m-r-4">refresh</mat-icon> Refresh Logs
+            </button>
+          </div>
+
+          <div class="rounded-lg overflow-hidden border border-slate-100 shadow-inner mt-4">
+            <ck-table-grid [properties]="logTable"></ck-table-grid>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+
+  </mat-card>
+</div>
+
+<!-- Test Notification cell template -->
+<ng-template #notificationTestTpl let-row="row" let-index="index" let-col="colDef">
+  <div class="flex items-center gap-2 py-2" *ngIf="row.notifyChannel === 'SMS' || row.notifyChannel === 'WHATSAPP'">
+    <mat-form-field class="f-s-12 w-36 fuse-mat-dense" appearance="outline">
+      <mat-label>Mobile No</mat-label>
+      <input matInput placeholder="Mobile No" type="text" [(ngModel)]="row.sendTo">
+    </mat-form-field>
+    <button (click)="sendTestSMS(row)" mat-raised-button color="primary"
+      class="w-10 h-10 min-w-0 p-0 flex items-center justify-center rounded-lg shadow-sm"
+      matTooltip="Send Test Message">
+      <mat-icon class="icon-16">send</mat-icon>
+    </button>
+  </div>
+  <div class="flex items-center gap-2 py-2" *ngIf="row.notifyChannel === 'EMAIL'">
+    <mat-form-field class="f-s-12 w-48 fuse-mat-dense" appearance="outline">
+      <mat-label>Email Id</mat-label>
+      <input matInput placeholder="Email Id" type="email" [(ngModel)]="row.sendTo">
+    </mat-form-field>
+    <button (click)="sendTestSMS(row)" mat-raised-button color="primary"
+      class="w-10 h-10 min-w-0 p-0 flex items-center justify-center rounded-lg shadow-sm" matTooltip="Send Test Email">
+      <mat-icon class="icon-16">send</mat-icon>
+    </button>
+  </div>
+  <div class="flex items-center gap-2 py-2" *ngIf="row.notifyChannel === 'PUSH'">
+    <span class="text-slate-400 f-s-12">N/A</span>
+  </div>
+</ng-template>
+
+<!-- Active Status toggle cell template -->
+<ng-template #notificationStatusTpl let-row="row" let-index="index" let-col="colDef">
+  <mat-slide-toggle (change)="updateSMSDetails(row)" [(ngModel)]="row.activeStatus">{{ row.activeStatus ? 'Active' :
+    'Inactive' }}
+  </mat-slide-toggle>
+</ng-template>
