@@ -36,8 +36,10 @@ export class CartsComponent implements OnInit {
 
     table!: CkTable;
     searchControl = new FormControl('');
-    filterValue = {
-        searchValue: ''
+     filterValue: any = {
+        pageIndex: 0,
+        pageSize: 10,
+        searchValue: '',
     };
 
     products: any[] = [];
@@ -65,85 +67,41 @@ export class CartsComponent implements OnInit {
 
     ngOnInit(): void {
         this.initializeForm();
-        this.loadInitialData();
+        this.getGridData();
     }
 
     initializeForm() {
         this.table = {
             gridData: [],
             columns: [
-                { header: 'Cart ID', column: 'id' },
-                { 
-                    header: 'Customer', 
-                    column: 'userId',
-                    formatter: (v) => {
-                        const cust = this.customers.find(c => c.id === v);
-                        return cust ? `${cust.firstName} ${cust.lastName || ''} (${cust.email})` : `User ID: ${v}`;
-                    }
-                },
-                { 
-                    header: 'Unique Items', 
-                    column: 'items',
-                    formatter: (v) => `${(v || []).length} Item(s)`
-                },
-                { 
-                    header: 'Total Quantity', 
-                    column: 'items',
-                    formatter: (v) => {
-                        return (v || []).reduce((acc, curr) => acc + (curr.quantity || 0), 0);
-                    }
-                }
+                { header: 'Product ID', column: 'productId' },
+                { header: 'Product Code', column: 'productCode' },
+                { header: 'Product Name', column: 'productName' },
+                { header: 'Users', column: 'totalUsers' },
+                { header: 'Total Quantity', column: 'totalQuantity' },
+                { header: 'Wishlist Count', column: 'wishlist' }
             ],
             actions: [
-                {
-                    label: 'View Details',
-                    icon: 'visibility',
-                    action: (row) => this.viewCartDetails(row)
-                },
-                {
-                    label: 'Delete Cart',
-                    icon: 'delete',
-                    confirm: true,
-                    confirmTitle: 'Delete Shopping Cart',
-                    confirmMessage: 'Are you sure you want to delete this customer cart?',
-                    action: (row) => this.deleteRow(row)
-                }
+                
             ],
             isShowFilter: true,
             loading: false
         };
     }
 
-    loadInitialData() {
-        this._service.getActiveProducts().subscribe({
-            next: (res) => {
-                this.products = res || [];
-                this.getGridData();
-            }
-        });
-
-        this._userService.getList().subscribe({
-            next: (res) => {
-                this.customers = res || [];
-                this.table = { ...this.table };
-            }
-        });
-    }
-
     getGridData() {
         this.table.loading = true;
         this.table = { ...this.table };
-        this._service.getCarts().subscribe({
+        this._service.getCartItemCountDetails().subscribe({
             next: (res: any[]) => {
                 const search = this.filterValue.searchValue.toLowerCase();
                 this.table.gridData = (res || []).filter(item => {
-                    const cust = this.customers.find(c => c.id === item.userId);
-                    const custName = cust ? `${cust.firstName} ${cust.lastName || ''}`.toLowerCase() : '';
-                    const custEmail = cust ? cust.email.toLowerCase() : '';
+                    const name = (item.productName || '').toLowerCase();
+                    const code = (item.productCode || '').toLowerCase();
                     return !search || 
-                        custName.includes(search) || 
-                        custEmail.includes(search) ||
-                        String(item.id).includes(search);
+                        name.includes(search) || 
+                        code.includes(search) ||
+                        String(item.productId).includes(search);
                 });
                 this.table.loading = false;
                 this.table = { ...this.table };
@@ -151,32 +109,6 @@ export class CartsComponent implements OnInit {
             error: () => {
                 this.table.loading = false;
                 this.table = { ...this.table };
-            }
-        });
-    }
-
-    viewCartDetails(row: any) {
-        this.selectedCartCustomer = this.customers.find(c => c.id === row.userId) || { firstName: 'Unknown', lastName: 'Customer', email: 'N/A' };
-        this.selectedCartItems = (row.items || []).map(item => {
-            const prod = this.products.find(p => p.id === item.productId);
-            return {
-                ...item,
-                productName: prod ? prod.productName : `Product ID: ${item.productId}`,
-                productCode: prod ? prod.productCode : 'N/A',
-                price: prod ? prod.price : 0
-            };
-        });
-        this.drawer.open();
-    }
-
-    deleteRow(row: any) {
-        this._service.deleteCart(row.id).subscribe({
-            next: () => {
-                this.getGridData();
-                this.uiService.showToastr('Success', 'Cart deleted successfully', 'success');
-            },
-            error: () => {
-                this.uiService.showToastr('Error', 'Failed to delete cart', 'error');
             }
         });
     }

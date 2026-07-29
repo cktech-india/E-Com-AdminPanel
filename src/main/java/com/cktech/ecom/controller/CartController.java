@@ -1,5 +1,6 @@
 package com.cktech.ecom.controller;
 
+import com.cktech.ecom.model.dto.CartItemCountDetailsDTO;
 import com.cktech.ecom.model.product.CartDTO;
 import com.cktech.ecom.service.CartService;
 import org.springframework.http.ResponseEntity;
@@ -33,13 +34,7 @@ public class CartController {
     }
 
     @GetMapping("/active-list")
-    public ResponseEntity<List<CartDTO>> getActiveList() {
-        return ResponseEntity.ok(cartService.getActiveCartList());
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id) {
-        cartService.delete(id);
-        return ResponseEntity.ok("Cart deleted successfully");
+    public ResponseEntity<List<CartItemCountDetailsDTO>> getActiveList() {
+        return ResponseEntity.ok(cartService.getCartItemCountDetails());
     }
 }

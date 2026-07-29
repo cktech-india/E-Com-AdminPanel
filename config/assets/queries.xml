@@ -1,5 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <queries>
+    <query name="SELECT_CART_ITEMS_COUNT_DETAILS">
+        SELECT
+            p.id AS product_id,
+            p.product_code,
+            p.product_name,
+            COALESCE(c.cart_user_count, 0) AS total_users,
+            COALESCE(c.total_cart_quantity, 0) AS total_quantity,
+            COALESCE(w.wishlist_user_count, 0) AS wishlist
+        FROM products_t p
+                 LEFT JOIN (
+            SELECT
+                product_id,
+                COUNT(DISTINCT user_id) AS cart_user_count,
+                SUM(quantity) AS total_cart_quantity
+            FROM cart_item_t
+            GROUP BY product_id
+        ) c
+                           ON p.id = c.product_id
+                 LEFT JOIN (
+            SELECT
+                product_id,
+                COUNT(DISTINCT user_id) AS wishlist_user_count
+            FROM wishlist_t
+            GROUP BY product_id
+        ) w
+                           ON p.id = w.product_id
+
+        ORDER BY
+            cart_user_count DESC,
+            total_cart_quantity DESC,
+            wishlist_user_count DESC
+    </query>
     <query name="SELECT_SALES_SUMMARY">
         SELECT CONCAT('$', ROUND(COALESCE(SUM(grand_total), 0), 2)) as value,
                'monetization_on' as icon,
