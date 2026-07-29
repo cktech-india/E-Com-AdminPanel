@@ -94,12 +94,12 @@ export class ProductsComponent implements OnInit {
             taxCategoryId: new FormControl(null),
             isActive: new FormControl(true)
         });
-
         this.table = {
             gridData: [],
             columns: [
                 { header: 'Code', column: 'productCode' },
                 { header: 'Product Name', column: 'productName' },
+                  { header: 'ParentId', column: 'parentProductId' },
                 { 
                     header: 'Category', 
                     column: 'categoryId',
