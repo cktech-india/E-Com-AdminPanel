@@ -1,12 +1,7 @@
 package com.cktech.ecom.model.tax;
 
 import com.cktech.ecom.model.dto.Auditable;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,7 +12,9 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "gst_hsn_codes_t")
+@Table(name = "gst_hsn_codes_t",uniqueConstraints = {
+        @UniqueConstraint(name = "uni_gst_hsn_t_company_hsn", columnNames = {"hsn_code","company_code"}),
+})
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor

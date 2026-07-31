@@ -15,7 +15,9 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "users_t")
+@Table(name = "users_t",uniqueConstraints = {
+        @UniqueConstraint(name = "users_t_company_email", columnNames = {"company_code","email"}),
+})
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,9 +28,6 @@ public class UserDTO extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "company_code", nullable = false, length = 5)
-    private String companyCode;
 
     @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;

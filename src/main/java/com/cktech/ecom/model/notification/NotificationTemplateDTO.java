@@ -14,7 +14,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Builder
 @NoArgsConstructor
 @lombok.EqualsAndHashCode(callSuper = false)
-@Entity(name = "notification_template_t")
+@Entity
+@Table(name = "notification_template_t",uniqueConstraints = {
+        @UniqueConstraint(name = "uni_notify_template_t_company_channel_notify_code", columnNames = {"channel_type","company_code","notification_code"}),
+})
 @EntityListeners(AuditingEntityListener.class)
 @IdClass(NotificationTemplateId.class)
 public class NotificationTemplateDTO extends Auditable {

@@ -37,6 +37,9 @@ public abstract class Auditable {
     @JsonIgnore
     private LocalDateTime modifiedDate;
 
+    @Column(name = "company_code",length = 10)
+    private String companyCode;
+
     @Column(name = "is_active", columnDefinition = "BIT(1) DEFAULT b'1'")
     private Boolean isActive = true;
     @Column(name = "is_deleted", columnDefinition = "BIT(1) DEFAULT b'0'")

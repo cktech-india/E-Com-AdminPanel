@@ -21,9 +21,6 @@ public class UserAddressDTO extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "company_code", nullable = false, length = 50)
-    private String companyCode;
-
     @Column(name = "address_name", length = 50)
     private String addressName;
 

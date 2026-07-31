@@ -27,9 +27,6 @@ public class ProductMediaDTO extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "company_code", nullable = false, length = 50)
-    private String companyCode;
-
     @Column(name = "product_id", nullable = false)
     private Long productId;
 

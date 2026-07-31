@@ -56,6 +56,7 @@ public class DynamicJobService {
                 java.util.Map<String, Object> input = new java.util.HashMap<>();
                 input.put("emailTo", String.join(",", emailList));
                 notificationService.trigger(input, "STOCK_ALERT", "SYSTEM", "default", "EMAIL");
+                stockNotifyRepository.deleteAll();
             }
 
             System.out.println("Sending Notification for ID via NotificationService");

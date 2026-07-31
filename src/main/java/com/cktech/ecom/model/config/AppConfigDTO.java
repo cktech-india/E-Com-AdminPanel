@@ -1,12 +1,7 @@
 package com.cktech.ecom.model.config;
 
 import com.cktech.ecom.model.dto.Auditable;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,7 +9,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "app_config_t")
+@Table(name = "app_config_t",uniqueConstraints = {
+        @UniqueConstraint(name = "uni_app_config_t_company_config", columnNames = {"company_code","config_code","config_group"}),
+})
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor

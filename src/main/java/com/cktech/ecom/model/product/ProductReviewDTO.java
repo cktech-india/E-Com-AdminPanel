@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "product_reviews_t")
+@Table(name = "product_reviews_t",uniqueConstraints = {
+        @UniqueConstraint(name = "uni_proucts_review_t_company_product_user", columnNames = {"company_code","product_id","user_id"}),
+})
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
@@ -19,9 +21,6 @@ public class ProductReviewDTO extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "company_code", nullable = false, length = 50)
-    private String companyCode;
 
     @Column(name = "product_id", nullable = false)
     private Long productId;

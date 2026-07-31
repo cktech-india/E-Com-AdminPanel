@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "product_group_t")
+@Table(name = "product_group_t",uniqueConstraints = {
+        @UniqueConstraint(name = "uni_proucts_group_t_company_group", columnNames = {"company_code","group_name","group_value"}),
+})
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
