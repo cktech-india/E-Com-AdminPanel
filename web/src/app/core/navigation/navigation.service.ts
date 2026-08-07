@@ -242,6 +242,13 @@ const ecomNavigation = [
                 link: '/app-config'
             },
             {
+                id: 'notification-config',
+                title: 'Notification',
+                type: 'basic',
+                icon: 'heroicons_outline:bell',
+                link: '/notification'
+            },
+            {
                 id: 'secure-store',
                 title: 'Secure Store & Gateways',
                 type: 'basic',

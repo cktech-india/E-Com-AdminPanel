@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { DataService } from '../../data.service';
 import { AuthService } from 'app/core/auth/auth.service';
@@ -335,6 +335,9 @@ export class EcommerceService {
             map(list => (list || []).filter(item => item.companyCode === this.companyCode))
         );
     }
+    getCartItemCountDetails(): Observable<any[]> {
+        return this.http.get<any[]>(this.baseUrl + 'carts/active-list');
+    }
     saveCart(cart: any): Observable<any> {
         cart.companyCode = this.companyCode;
         return this.http.post<any>(this.baseUrl + 'carts', cart);
@@ -397,6 +400,22 @@ export class EcommerceService {
     deleteStockNotify(id: number): Observable<any> {
         return this.http.delete<any>(`${this.baseUrl}stock-notify/${id}`);
     }
+
+    
+    // ================= NOTIFICATION CONFIGURATION =================
+    getNotificationList(): Observable<any[]> {
+        return this.http.get<any[]>(this.baseUrl + 'sms/templates');
+    }
+    updateNotificationDetails(data: any): Observable<any> {
+        return this.http.post<any>(this.baseUrl + 'sms/update', data);
+    }
+    triggerNotification(smsCode: string, notifyChannel: string, input: any): Observable<any> {
+        return this.http.post<any>(`${this.baseUrl}sms/trigger-sms/${smsCode}?notifyChannel=${notifyChannel}`, input);
+    }
+    getNotificationLogs(): Observable<any[]> {
+        return this.http.get<any[]>(this.baseUrl + 'sms/logs');
+    }
+
 
     // ================= SECURE STORE & GATEWAY =================
     getSecureStoreConfigs(groupType?: string, groupName?: string): Observable<any[]> {

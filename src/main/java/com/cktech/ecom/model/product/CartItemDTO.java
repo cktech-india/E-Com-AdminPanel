@@ -1,5 +1,6 @@
 package com.cktech.ecom.model.product;
 
+import com.cktech.ecom.config.cache.CacheLookup;
 import com.cktech.ecom.model.dto.Auditable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,7 +10,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "cart_item_t")
+@Table(name = "cart_item_t",uniqueConstraints = {
+        @UniqueConstraint(name = "uni_cart_item_t_company_product_user", columnNames = {"company_code","product_id","user_id"}),
+})
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
@@ -33,4 +36,8 @@ public class CartItemDTO extends Auditable {
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
+
+    @CacheLookup(category = "product", codeField = "productId")
+    @Transient
+    private String productCode;
 }

@@ -11,7 +11,9 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "billing_t")
+@Table(name = "billing_t",uniqueConstraints = {
+        @UniqueConstraint(name = "uni_billing_t_company_state", columnNames = {"company_code","state"}),
+})
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor

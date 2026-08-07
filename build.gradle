@@ -22,6 +22,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'software.amazon.awssdk:s3:2.25.15'
 	implementation 'org.apache.poi:poi-ooxml:5.2.5'
 	runtimeOnly 'com.mysql:mysql-connector-j'

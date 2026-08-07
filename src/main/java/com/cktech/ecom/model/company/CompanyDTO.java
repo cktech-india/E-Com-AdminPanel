@@ -1,10 +1,7 @@
 package com.cktech.ecom.model.company;
 
 import com.cktech.ecom.model.dto.Auditable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,15 +9,17 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "company_t")
+@Table(name = "company_t",uniqueConstraints = {
+        @UniqueConstraint(name = "uni_company_t", columnNames = {"company_code","company_name"}),
+})
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
 public class CompanyDTO extends Auditable {
 
     @Id
-    @Column(name = "company_code", nullable = false, length = 5)
-    private String companyCode;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "company_name", nullable = false, length = 255)
     private String companyName;

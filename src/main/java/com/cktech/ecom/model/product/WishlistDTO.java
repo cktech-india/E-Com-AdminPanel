@@ -1,5 +1,6 @@
 package com.cktech.ecom.model.product;
 
+import com.cktech.ecom.config.cache.CacheLookup;
 import com.cktech.ecom.model.dto.Auditable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,7 +10,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "wishlist_t")
+@Table(name = "wishlist_t",uniqueConstraints = {
+        @UniqueConstraint(name = "wishlist_t_product_user", columnNames = {"product_id","user_id"}),
+})
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
@@ -27,4 +30,10 @@ public class WishlistDTO extends Auditable {
 
     @Column(name = "user_id")
     private Long userId;
+    //@CacheLookup(category = "product", codeField = "productId")
+    @Transient
+    private String productName;
+    @CacheLookup(category = "product", codeField = "productId")
+    @Transient
+    private String productCode;
 }

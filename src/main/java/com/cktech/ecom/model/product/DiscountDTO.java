@@ -1,12 +1,7 @@
 package com.cktech.ecom.model.product;
 
 import com.cktech.ecom.model.dto.Auditable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,7 +11,9 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "discounts_t")
+@Table(name = "discounts_t",uniqueConstraints = {
+        @UniqueConstraint(name = "uni_discount_t_product_discount_type", columnNames = {"discount_type","product_id"}),
+})
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
@@ -25,9 +22,6 @@ public class DiscountDTO extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "company_code", length = 50)
-    private String companyCode;
 
     @Column(name = "product_id")
     private Long productId;

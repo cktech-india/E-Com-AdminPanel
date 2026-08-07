@@ -86,6 +86,7 @@ export class ProductGroupComponent implements OnInit {
             gridData: [],
             columns: [
                 { header: 'ID', column: 'id' },
+                {header: 'Product Code', column: 'productCode'},
                 { 
                     header: 'Product', 
                     column: 'productId',
