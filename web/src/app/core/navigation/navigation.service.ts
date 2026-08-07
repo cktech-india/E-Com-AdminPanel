@@ -240,6 +240,13 @@ const ecomNavigation = [
                 type: 'basic',
                 icon: 'heroicons_outline:wrench-screwdriver',
                 link: '/app-config'
+            },
+            {
+                id: 'secure-store',
+                title: 'Secure Store & Gateways',
+                type: 'basic',
+                icon: 'heroicons_outline:key',
+                link: '/secure-store'
             }
         ]
     },

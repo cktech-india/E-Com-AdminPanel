@@ -98,6 +98,8 @@ export const appRoutes: Route[] = [
             { path: 'product-recommended', loadComponent: () => import('app/modules/admin/products/product-recommended/product-recommended.component').then(m => m.ProductRecommendedComponent) },
             { path: 'product-reviews', loadComponent: () => import('app/modules/admin/products/product-reviews/product-reviews.component').then(m => m.ProductReviewsComponent) },
             { path: 'home-config', loadComponent: () => import('app/modules/admin/home-config/home-config.component').then(m => m.HomeConfigComponent) },
+            { path: 'app-config', loadComponent: () => import('app/modules/admin/app-config/app-config.component').then(m => m.AppConfigComponent) },
+            { path: 'secure-store', loadComponent: () => import('app/modules/admin/secure-store/secure-store.component').then(m => m.SecureStoreComponent) },
             { path: 'seo-config', loadComponent: () => import('app/modules/admin/seo-config/seo-config.component').then(m => m.SeoConfigComponent) },
             { path: 'app-config', loadComponent: () => import('app/modules/admin/app-config/app-config.component').then(m => m.AppConfigComponent) },
             { path: 'stock-logs', loadComponent: () => import('app/modules/admin/inventory/stock-logs/stock-logs.component').then(m => m.StockLogsComponent) },

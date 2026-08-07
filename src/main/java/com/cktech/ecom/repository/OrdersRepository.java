@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OrdersRepository extends GenericRepository<OrdersDTO, Long> {
 
+    java.util.Optional<OrdersDTO> findByOrderNumber(String orderNumber);
 }

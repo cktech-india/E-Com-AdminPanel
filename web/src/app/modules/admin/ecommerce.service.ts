@@ -397,6 +397,25 @@ export class EcommerceService {
     deleteStockNotify(id: number): Observable<any> {
         return this.http.delete<any>(`${this.baseUrl}stock-notify/${id}`);
     }
+
+    // ================= SECURE STORE & GATEWAY =================
+    getSecureStoreConfigs(groupType?: string, groupName?: string): Observable<any[]> {
+        let url = `${this.baseUrl}secure-store/configs?companyCode=${this.companyCode}`;
+        if (groupType) url += `&groupType=${groupType}`;
+        if (groupName) url += `&groupName=${groupName}`;
+        return this.http.get<any[]>(url);
+    }
+    saveSecureStoreConfig(config: any): Observable<any> {
+        config.companyCode = this.companyCode;
+        return this.http.post<any>(`${this.baseUrl}secure-store/config`, config);
+    }
+    deleteSecureStoreConfig(configCode: string): Observable<any> {
+        return this.http.delete<any>(`${this.baseUrl}secure-store/config?companyCode=${this.companyCode}&configCode=${configCode}`);
+    }
+    getAvailableGateways(): Observable<string[]> {
+        return this.http.get<string[]>(`${this.baseUrl}secure-store/gateways?companyCode=${this.companyCode}`);
+    }
 }
+
 
 

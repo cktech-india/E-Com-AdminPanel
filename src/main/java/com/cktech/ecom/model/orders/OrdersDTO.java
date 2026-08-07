@@ -51,6 +51,15 @@ public class OrdersDTO extends Auditable {
     @Column(name = "payment_method", length = 50)
     private String paymentMethod;
 
+    @Column(name = "payment_gateway", length = 50)
+    private String paymentGateway;
+
+    @Column(name = "gateway_payment_id", length = 100)
+    private String gatewayPaymentId;
+
+    @Column(name = "payment_status", length = 50)
+    private String paymentStatus;
+
     @Column(name = "tax_amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal taxAmount;
 
