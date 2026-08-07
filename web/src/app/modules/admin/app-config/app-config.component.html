@@ -41,6 +41,12 @@
                     (onImportComplete)="getGridData()">
                 </app-data-import-export>
 
+                <!-- RELOAD & CLEAR SESSION BUTTON -->
+                <button (click)="reloadAndClearSession()" mat-flat-button color="primary" class="rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-sm transition-colors duration-150 h-9" [disabled]="isReloading" matTooltip="Clear session configurations and reload fresh settings">
+                    <mat-icon class="mr-1.5 icon-size-5" [class.animate-spin]="isReloading">refresh</mat-icon>
+                    {{ isReloading ? 'Reloading...' : 'Reload Configs' }}
+                </button>
+
                 <!-- MISSING CONFIGS ALERT BUTTON -->
                 @if (missingConfigs.length > 0) {
                     <button (click)="openMissingConfigsDialog()" mat-flat-button color="warn" class="rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-semibold shadow-sm transition-colors duration-150 h-9">

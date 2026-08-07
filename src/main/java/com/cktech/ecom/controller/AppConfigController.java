@@ -37,4 +37,16 @@ public class AppConfigController {
         appConfigService.delete(id);
         return ResponseEntity.ok("App Configuration deleted successfully");
     }
+
+    @RequestMapping(value = {"/reload", "/clear-session"}, method = {RequestMethod.GET, RequestMethod.POST})
+    public ResponseEntity<java.util.Map<String, Object>> reloadAppConfigs() {
+        List<AppConfigDTO> list = appConfigService.getList();
+        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        response.put("status", "success");
+        response.put("statusCode", 200);
+        response.put("message", "App configurations reloaded successfully");
+        response.put("data", list);
+        return ResponseEntity.ok(response);
+    }
 }
+

@@ -387,6 +387,9 @@ export class EcommerceService {
     deleteAppConfig(id: number): Observable<any> {
         return this.http.delete<any>(`${this.baseUrl}app-config/${id}`);
     }
+    reloadAppConfigs(): Observable<any> {
+        return this.http.post<any>(this.baseUrl + 'app-config/reload', {});
+    }
     getAppConfigDefinitions(): Observable<any[]> {
         return this.http.get<any[]>('data/app-config-defs.json');
     }

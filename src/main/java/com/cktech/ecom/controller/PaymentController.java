@@ -133,7 +133,7 @@ public class PaymentController {
                     order.setPaymentGateway("CASHFREE");
                     order.setGatewayPaymentId(paymentId);
                     order.setPaymentStatus(orderStatus);
-                    if ("PAID".equalsIgnoreCase(orderStatus)) {
+                    if ("PAID".equalsIgnoreCase(orderStatus) || "SUCCESS".equalsIgnoreCase(orderStatus)) {
                         order.setStatus(com.cktech.ecom.common.AppEnum.ORDER_STATUS.PAID);
                     }
                     ordersRepository.save(order);

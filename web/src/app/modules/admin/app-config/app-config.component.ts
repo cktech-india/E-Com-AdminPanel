@@ -61,6 +61,7 @@ export class AppConfigComponent implements OnInit {
     private _dialogRef!: MatDialogRef<any>;
     selectedMissingConfigs: { [key: string]: boolean } = {};
     isAddingConfigs: boolean = false;
+    isReloading: boolean = false;
 
     constructor(
         private _service: EcommerceService,
@@ -273,5 +274,20 @@ export class AppConfigComponent implements OnInit {
             return this.productGroups.length > 0 ? this.productGroups : ['Size'];
         }
         return [];
+    }
+
+    reloadAndClearSession() {
+        this.isReloading = true;
+        this._service.reloadAppConfigs().subscribe({
+            next: () => {
+                this.isReloading = false;
+                this.uiService.showToastr('Success', 'Session app configurations reloaded successfully', 'success');
+                this.getGridData();
+            },
+            error: () => {
+                this.isReloading = false;
+                this.uiService.showToastr('Error', 'Failed to reload app configurations', 'error');
+            }
+        });
     }
 }

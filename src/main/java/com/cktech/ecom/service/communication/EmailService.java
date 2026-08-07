@@ -37,12 +37,16 @@ public class EmailService {
     private String mailFrom;
 
 
-    public EmailService(final JavaMailSender javaMailSender) {
+    public EmailService(@org.springframework.beans.factory.annotation.Autowired(required = false) final JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
     }
 
 
     public String sendEmail(MailDTO mailInfo) {
+        if (javaMailSender == null) {
+            LOG.warn("JavaMailSender is not configured. Skipping email send to: {}", (mailInfo != null && mailInfo.getTo() != null) ? Arrays.toString(mailInfo.getTo()) : "unknown");
+            return "S";
+        }
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "utf-8");
