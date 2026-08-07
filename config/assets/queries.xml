@@ -6,24 +6,28 @@
                'green' as iconColor,
                'Total Revenue' as title
         FROM orders_t
+        WHERE is_deleted = 0
         UNION ALL
         SELECT CONCAT('$', ROUND(COALESCE(AVG(grand_total), 0), 2)) as value,
                'shopping_bag' as icon,
                'blue' as iconColor,
                'Avg Order Value' as title
         FROM orders_t
+        WHERE is_deleted = 0
         UNION ALL
         SELECT CAST(COUNT(*) AS CHAR) as value,
                'shopping_cart' as icon,
                'orange' as iconColor,
                'Total Orders' as title
         FROM orders_t
+        WHERE is_deleted = 0
     </query>
     <query name="SELECT_DAILY_REVENUE">
         SELECT DATE_FORMAT(created_date, '%Y-%m-%d') as categoryValue,
                'Revenue' as seriesValue,
                SUM(grand_total) as dataValue
         FROM orders_t
+        WHERE is_deleted = 0
         GROUP BY DATE_FORMAT(created_date, '%Y-%m-%d')
         ORDER BY categoryValue ASC
     </query>
@@ -32,6 +36,7 @@
                'Orders' as seriesValue,
                CAST(COUNT(*) AS DOUBLE) as dataValue
         FROM orders_t
+        WHERE is_deleted = 0
         GROUP BY payment_method
     </query>
     <query name="SELECT_CUSTOMER_GROWTH">
@@ -39,7 +44,7 @@
                'New Customers' as seriesValue,
                CAST(COUNT(*) AS DOUBLE) as dataValue
         FROM users_t
-        WHERE user_type = 'CUSTOMER'
+        WHERE user_type = 'CUSTOMER' AND is_deleted = 0
         GROUP BY DATE_FORMAT(created_date, '%Y-%m')
         ORDER BY categoryValue ASC
     </query>
@@ -49,7 +54,8 @@
                COUNT(o.id) as totalOrders,
                SUM(o.grand_total) as totalSpent
         FROM orders_t o
-        JOIN users_t u ON o.user_id = u.id
+        JOIN users_t u ON o.user_id = u.id AND u.is_deleted = 0
+        WHERE o.is_deleted = 0
         GROUP BY u.id, u.first_name, u.email
         ORDER BY totalSpent DESC
     </query>
@@ -58,7 +64,7 @@
                'Customers' as seriesValue,
                CAST(COUNT(*) AS DOUBLE) as dataValue
         FROM users_t
-        WHERE user_type = 'CUSTOMER'
+        WHERE user_type = 'CUSTOMER' AND is_deleted = 0
         GROUP BY state_code
     </query>
 
@@ -67,7 +73,8 @@
                SUM(oi.quantity) as totalQty,
                SUM(oi.row_total) as totalRevenue
         FROM order_items_t oi
-        JOIN products_t p ON oi.product_id = p.id
+        JOIN products_t p ON oi.product_id = p.id AND p.is_deleted = 0
+        WHERE oi.is_deleted = 0
         GROUP BY p.id, p.product_name
         ORDER BY totalRevenue DESC
     </query>
@@ -76,6 +83,7 @@
                'Products' as seriesValue,
                CAST(COUNT(*) AS DOUBLE) as dataValue
         FROM products_t
+        WHERE is_deleted = 0
         GROUP BY category_id
     </query>
     <query name="SELECT_ORDERS_BY_STATUS">
@@ -83,6 +91,7 @@
                'Orders' as seriesValue,
                CAST(COUNT(*) AS DOUBLE) as dataValue
         FROM orders_t
+        WHERE is_deleted = 0
         GROUP BY status
     </query>
     <query name="SELECT_RECENT_ORDERS_LOG">
@@ -91,6 +100,7 @@
                status,
                DATE_FORMAT(created_date, '%Y-%m-%d %H:%i:%s') as orderDate
         FROM orders_t
+        WHERE is_deleted = 0
         ORDER BY id DESC
     </query>
 
@@ -99,8 +109,8 @@
                i.quantity_on_hand as qtyOnHand,
                i.reorder_level as reorderLevel
         FROM inventory_t i
-        JOIN products_t p ON i.product_id = p.id
-        WHERE i.quantity_on_hand &lt;= i.reorder_level
+        JOIN products_t p ON i.product_id = p.id AND p.is_deleted = 0
+        WHERE i.quantity_on_hand &lt;= i.reorder_level AND i.is_deleted = 0
     </query>
     <query name="SELECT_STOCK_LOGS_AUDIT">
         SELECT p.product_name as productName,
@@ -108,7 +118,8 @@
                sl.reason as reason,
                DATE_FORMAT(sl.created_at, '%Y-%m-%d %H:%i:%s') as logDate
         FROM stock_logs_t sl
-        JOIN products_t p ON sl.product_id = p.id
+        JOIN products_t p ON sl.product_id = p.id AND p.is_deleted = 0
+        WHERE sl.is_deleted = 0
         ORDER BY sl.id DESC
     </query>
 
@@ -119,7 +130,8 @@
                d.starts_at as startDate,
                d.ends_at as endDate
         FROM discounts_t d
-        JOIN products_t p ON d.product_id = p.id
+        JOIN products_t p ON d.product_id = p.id AND p.is_deleted = 0
+        WHERE d.is_deleted = 0
         ORDER BY d.id DESC
     </query>
 
@@ -128,7 +140,8 @@
                ROUND(AVG(pr.rating), 1) as avgRating,
                COUNT(pr.id) as reviewCount
         FROM product_reviews_t pr
-        JOIN products_t p ON pr.product_id = p.id
+        JOIN products_t p ON pr.product_id = p.id AND p.is_deleted = 0
+        WHERE pr.is_deleted = 0
         GROUP BY p.id, p.product_name
         ORDER BY avgRating DESC
     </query>
@@ -138,7 +151,8 @@
                pr.review_title as title,
                pr.review_text as text
         FROM product_reviews_t pr
-        JOIN products_t p ON pr.product_id = p.id
+        JOIN products_t p ON pr.product_id = p.id AND p.is_deleted = 0
+        WHERE pr.is_deleted = 0
         ORDER BY pr.id DESC
     </query>
 
@@ -146,7 +160,8 @@
         SELECT p.product_name as productName,
                CAST(SUM(ci.quantity) AS DOUBLE) as timesAdded
         FROM cart_item_t ci
-        JOIN products_t p ON ci.product_id = p.id
+        JOIN products_t p ON ci.product_id = p.id AND p.is_deleted = 0
+        WHERE ci.is_deleted = 0
         GROUP BY p.id, p.product_name
         ORDER BY timesAdded DESC
     </query>
@@ -155,10 +170,10 @@
                u.email as customerEmail,
                COUNT(ci.id) as itemsCount
         FROM cart_t c
-        JOIN users_t u ON c.user_id = u.id
-        JOIN cart_item_t ci ON c.id = ci.cart_id
-        LEFT JOIN orders_t o ON o.user_id = u.id AND DATE(o.created_date) >= DATE(c.created_date)
-        WHERE o.id IS NULL
+        JOIN users_t u ON c.user_id = u.id AND u.is_deleted = 0
+        JOIN cart_item_t ci ON c.id = ci.cart_id AND ci.is_deleted = 0
+        LEFT JOIN orders_t o ON o.user_id = u.id AND DATE(o.created_date) >= DATE(c.created_date) AND o.is_deleted = 0
+        WHERE o.id IS NULL AND c.is_deleted = 0
         GROUP BY u.id, u.first_name, u.email
     </query>
     <query name="SELECT_TAX_COLLECTED_SUMMARY">
@@ -167,12 +182,14 @@
                'green' as iconColor,
                'Total Tax Collected' as title
         FROM orders_t
+        WHERE is_deleted = 0
         UNION ALL
         SELECT CONCAT('$', ROUND(COALESCE(SUM(cgst_amount), 0), 2)) as value,
                'account_balance' as icon,
                'blue' as iconColor,
                'Total CGST Collected' as title
         FROM order_items_t
+        WHERE is_deleted = 0
     </query>
 
     <query name="SELECT_SUPPORT_TICKETS_SUMMARY">
@@ -181,12 +198,14 @@
                'blue' as iconColor,
                'Total Inquiries' as title
         FROM contact_inquiries_t
+        WHERE is_deleted = 0
         UNION ALL
         SELECT CAST(COUNT(CASE WHEN status = 'NEW' THEN 1 END) AS CHAR) as value,
                'mark_email_unread' as icon,
                'red' as iconColor,
                'New Inquiries' as title
         FROM contact_inquiries_t
+        WHERE is_deleted = 0
     </query>
     <query name="SELECT_PENDING_SUPPORT_TICKETS">
         SELECT full_name as senderName,
@@ -195,7 +214,7 @@
                message as messageContent,
                status
         FROM contact_inquiries_t
-        WHERE status = 'NEW'
+        WHERE status = 'NEW' AND is_deleted = 0
         ORDER BY id DESC
     </query>
 </queries>
